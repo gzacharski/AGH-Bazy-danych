@@ -1,0 +1,9 @@
+# dependencies
+node_modules
+
+# build files
+build
+
+# misc
+.DS_Store
+npm-debug.log
