@@ -1,0 +1,25 @@
+{
+  "name": "AGH-Bazy-danych",
+  "version": "1.0.0",
+  "description": "Celem projektu jest zaimplementowanie systemu realizującego wybrane podstawowe operacje w przykładowej bazie Northwind w wybranej technologii.",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "neo4j-driver": "^4.1.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gzacharski/AGH-Bazy-danych.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gzacharski/AGH-Bazy-danych/issues"
+  },
+  "homepage": "https://github.com/gzacharski/AGH-Bazy-danych#readme"
+}
