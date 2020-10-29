@@ -1,23 +1,10 @@
-const express=require('express');
-const neo4j=require('neo4j-driver');
-const path=require('path');
-const bodyParser=require('body-parser');
-
-const app=express();
-
-const uri='bolt://localhost:7687'; 
-const user='neo4j';
-const password='@Dmin12345';
-
-const driver=neo4j.driver(uri, neo4j.auth.basic(user,password));
-const dbConfig={
-    database: 'movies',
-    defaultAccessMode: neo4j.session.READ,
-}
+const driver=require('../config/dbconfig').driver;
+const config=require('../config/dbconfig').config;
 
 async function testCallDB(){
+    const filmTitle='The Matrix';
 
-    const session = driver.session(dbConfig);
+    const session = driver.session(config);
     const cypherQuery='MATCH (m:Movie) RETURN m LIMIT 10';
     const params={theTitle: filmTitle};
 
@@ -36,13 +23,10 @@ async function testCallDB(){
     return searchedNode;
 }
 
-app.get('/api/films', async (request,response)=>{
+exports.getAllFilms=async (request,response)=>{
 
     let searchedNode=await testCallDB();
 
     if(!searchedNode) return res.status(404).send('The is now film in database.');
     response.send(searchedNode);
-});
-
-const port=process.env.PORT || 3000;
-app.listen(port, () =>console.log(`Listening on port ${port}...`));
+}
