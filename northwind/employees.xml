@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Employees xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<employee>
+		<EmployeeID>1</EmployeeID>
+		<LastName>Davolio</LastName>
+		<FirstName>Nancy</FirstName>
+		<Title>Sales Representative</Title>
+		<TitleOfCourtesy>Ms.</TitleOfCourtesy>
+		<BirthDate>1968-12-08</BirthDate>
+		<HireDate>1992-05-01</HireDate>
+		<Address>507 - 20th Ave. E.\r\nApt. 2A</Address>
+		<City>Seattle</City>
+		<Region>WA</Region>
+		<PostalCode>98122</PostalCode>
+		<Country>United States</Country>
+		<HomePhone>206 555-9857</HomePhone>
+		<Extension>5467</Extension>
+		<Notes>Education includes a BA in psychology from Colorado State University.  She also completed "The Art of the Cold Call."  Nancy is a member of Toastmasters International.</Notes>
+		<ReportsTo>2</ReportsTo>
+	</employee>
+	<employee>
+		<EmployeeID>2</EmployeeID>
+		<LastName>Fuller</LastName>
+		<FirstName>Andrew</FirstName>
+		<Title>Vice President, Sales</Title>
+		<TitleOfCourtesy>Dr.</TitleOfCourtesy>
+		<BirthDate>1952-02-19</BirthDate>
+		<HireDate>1992-08-14</HireDate>
+		<Address>908 W. Capital Way</Address>
+		<City>Tacoma</City>
+		<Region>WA</Region>
+		<PostalCode>98401</PostalCode>
+		<Country>United States</Country>
+		<HomePhone>206 555-9482</HomePhone>
+		<Extension>3457</Extension>
+		<Notes>Andrew received his BTS commercial and a Ph.D. in international marketing from the University of Dallas.  He is fluent in French and Italian and reads German.  He joined the company as a sales representative, was promoted to sales manager and was then named vice president of sales.  Andrew is a member of the Sales Management Roundtable, the Seattle Chamber of Commerce, and the Pacific Rim Importers Association.</Notes>
+		<ReportsTo>0</ReportsTo>
+	</employee>
+	<employee>
+		<EmployeeID>3</EmployeeID>
+		<LastName>Leverling</LastName>
+		<FirstName>Janet</FirstName>
+		<Title>Sales Representative</Title>
+		<TitleOfCourtesy>Ms.</TitleOfCourtesy>
+		<BirthDate>1963-08-30</BirthDate>
+		<HireDate>1992-04-01</HireDate>
+		<Address>722 Moss Bay Blvd.</Address>
+		<City>Kirkland</City>
+		<Region>WA</Region>
+		<PostalCode>98033</PostalCode>
+		<Country>United States</Country>
+		<HomePhone>206 555-3412</HomePhone>
+		<Extension>3355</Extension>
+		<Notes>Janet has a BS degree in chemistry from Boston College.  She has also completed a certificate program in food retailing management.  Janet was hired as a sales associate and was promoted to sales representative.</Notes>
+		<ReportsTo>2</ReportsTo>
+	</employee>
+	<employee>
+		<EmployeeID>4</EmployeeID>
+		<LastName>Peacock</LastName>
+		<FirstName>Margaret</FirstName>
+		<Title>Sales Representative</Title>
+		<TitleOfCourtesy>Mrs.</TitleOfCourtesy>
+		<BirthDate>1958-09-19</BirthDate>
+		<HireDate>1993-05-03</HireDate>
+		<Address>4110 Old Redmond Rd.</Address>
+		<City>Redmond</City>
+		<Region>WA</Region>
+		<PostalCode>98052</PostalCode>
+		<Country>United States</Country>
+		<HomePhone>206 555-8122</HomePhone>
+		<Extension>5176</Extension>
+		<Notes>Margaret holds a BA in English literature from Concordia College and an MA from the American Institute of Culinary Arts. She was temporarily assigned to the London office before returning to her permanent post in Seattle.</Notes>
+		<ReportsTo>2</ReportsTo>
+	</employee>
+	<employee>
+		<EmployeeID>5</EmployeeID>
+		<LastName>Buchanan</LastName>
+		<FirstName>Steven</FirstName>
+		<Title>Sales Manager</Title>
+		<TitleOfCourtesy>Mr.</TitleOfCourtesy>
+		<BirthDate>1955-03-04</BirthDate>
+		<HireDate>1993-10-17</HireDate>
+		<Address>14 Garrett Hill</Address>
+		<City>London</City>
+		<PostalCode>SW1 8JR</PostalCode>
+		<Country>United Kingdom</Country>
+		<HomePhone>71 555-4848</HomePhone>
+		<Extension>3453</Extension>
+		<Notes>Steven Buchanan graduated from St. Andrews University, Scotland, with a BSC degree.  Upon joining the company as a sales representative, he spent 6 months in an orientation program at the Seattle office and then returned to his permanent post in London, where he was promoted to sales manager.  Mr. Buchanan has completed the courses "Successful Telemarketing" and "International Sales Management."  He is fluent in French.</Notes>
+		<ReportsTo>2</ReportsTo>
+	</employee>
+	<employee>
+		<EmployeeID>6</EmployeeID>
+		<LastName>Suyama</LastName>
+		<FirstName>Michael</FirstName>
+		<Title>Sales Representative</Title>
+		<TitleOfCourtesy>Mr.</TitleOfCourtesy>
+		<BirthDate>1963-07-02</BirthDate>
+		<HireDate>1993-10-17</HireDate>
+		<Address>Coventry House\r\nMiner Rd.</Address>
+		<City>London</City>
+		<PostalCode>EC2 7JR</PostalCode>
+		<Country>United Kingdom</Country>
+		<HomePhone>71 555-7773</HomePhone>
+		<Extension>428</Extension>
+		<Notes>Michael is a graduate of Sussex University MA, economics and the University of California at Los Angeles MBA, marketing.  He has also taken the courses "Multi-Cultural Selling" and "Time Management for the Sales Professional."  He is fluent in Japanese and can read and write French, Portuguese, and Spanish.</Notes>
+		<ReportsTo>5</ReportsTo>
+	</employee>
+	<employee>
+		<EmployeeID>7</EmployeeID>
+		<LastName>King</LastName>
+		<FirstName>Robert</FirstName>
+		<Title>Sales Representative</Title>
+		<TitleOfCourtesy>Mr.</TitleOfCourtesy>
+		<BirthDate>1960-05-29</BirthDate>
+		<HireDate>1994-01-02</HireDate>
+		<Address>Edgeham Hollow\r\nWinchester Way</Address>
+		<City>London</City>
+		<PostalCode>RG1 9SP</PostalCode>
+		<Country>United Kingdom</Country>
+		<HomePhone>71 555-5598</HomePhone>
+		<Extension>465</Extension>
+		<Notes>Robert King served in the Peace Corps and traveled extensively before completing his degree in English at the University of Michigan and then joining the company.  After completing a course entitled "Selling in Europe," he was transferred to the London office.</Notes>
+		<ReportsTo>5</ReportsTo>
+	</employee>
+	<employee>
+		<EmployeeID>8</EmployeeID>
+		<LastName>Callahan</LastName>
+		<FirstName>Laura</FirstName>
+		<Title>Inside Sales Coordinator</Title>
+		<TitleOfCourtesy>Ms.</TitleOfCourtesy>
+		<BirthDate>1958-01-09</BirthDate>
+		<HireDate>1994-03-05</HireDate>
+		<Address>4726 - 11th Ave. N.E.</Address>
+		<City>Seattle</City>
+		<Region>WA</Region>
+		<PostalCode>98105</PostalCode>
+		<Country>United States</Country>
+		<HomePhone>206 555-1189</HomePhone>
+		<Extension>2344</Extension>
+		<Notes>Laura received a BA in psychology from the University of Washington.  She has also completed a course in business French.  She reads and writes French.</Notes>
+		<ReportsTo>2</ReportsTo>
+	</employee>
+	<employee>
+		<EmployeeID>9</EmployeeID>
+		<LastName>Dodsworth</LastName>
+		<FirstName>Anne</FirstName>
+		<Title>Sales Representative</Title>
+		<TitleOfCourtesy>Ms.</TitleOfCourtesy>
+		<BirthDate>1969-07-02</BirthDate>
+		<HireDate>1994-11-15</HireDate>
+		<Address>7 Houndstooth Rd.</Address>
+		<City>London</City>
+		<PostalCode>WG2 7LT</PostalCode>
+		<Country>United Kingdom</Country>
+		<HomePhone>71 555-4444</HomePhone>
+		<Extension>452</Extension>
+		<Notes>Anne has a BA degree in English from St. Lawrence College.  She is fluent in French and German.</Notes>
+		<ReportsTo>5</ReportsTo>
+	</employee>
+</Employees>

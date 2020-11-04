@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Categories xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<category>
+		<CategoryID>1</CategoryID>
+		<CategoryName>Beverages</CategoryName>
+		<Description>Soft drinks, coffees, teas, beers, and ales</Description>
+	</category>
+	<category>
+		<CategoryID>2</CategoryID>
+		<CategoryName>Condiments</CategoryName>
+		<Description>Sweet and savory sauces, relishes, spreads, and seasonings</Description>
+	</category>
+	<category>
+		<CategoryID>3</CategoryID>
+		<CategoryName>Confections</CategoryName>
+		<Description>Desserts, candies, and sweet breads</Description>
+	</category>
+	<category>
+		<CategoryID>4</CategoryID>
+		<CategoryName>Dairy Products</CategoryName>
+		<Description>Cheeses</Description>
+	</category>
+	<category>
+		<CategoryID>5</CategoryID>
+		<CategoryName>Grains/Cereals</CategoryName>
+		<Description>Breads, crackers, pasta, and cereal</Description>
+	</category>
+	<category>
+		<CategoryID>6</CategoryID>
+		<CategoryName>Meat/Poultry</CategoryName>
+		<Description>Prepared meats</Description>
+	</category>
+	<category>
+		<CategoryID>7</CategoryID>
+		<CategoryName>Produce</CategoryName>
+		<Description>Dried fruit and bean curd</Description>
+	</category>
+	<category>
+		<CategoryID>8</CategoryID>
+		<CategoryName>Seafood</CategoryName>
+		<Description>Seaweed and fish</Description>
+	</category>
+</Categories>
