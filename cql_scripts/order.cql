@@ -45,4 +45,4 @@ WHERE o.id=toInteger(orderID._text)
     AND s.id=toInteger(shipVia._text)
 MERGE (s)-[:DELIVERS]->(o)
 MERGE (o)-[:ORDERED_BY]->(c)
-MERGE (o)-[:SOLD_BY]->(e)
+MERGE (o)-[:SOLD_BY]->(e);

@@ -18,4 +18,4 @@ WITH
 MERGE (s:Shipper {id: toInteger(shipperID._text)})
 SET
     s.companyName=companyName._text,
-    s.phone=phone._text
+    s.phone=phone._text;

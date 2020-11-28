@@ -38,4 +38,4 @@ WHERE p.id=toInteger(productId._text)
     AND s.id=toInteger(supplierID._text)
     AND c.id=toInteger(categoryID._text)
 MERGE (s)-[:SUPPLIES]->(p)
-MERGE (p)-[:BELONGS_TO]->(c)
+MERGE (p)-[:BELONGS_TO]->(c);

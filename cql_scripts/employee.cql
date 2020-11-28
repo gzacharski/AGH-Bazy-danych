@@ -1,3 +1,5 @@
+CREATE DATABASE northwind;
+:use northwind;
 //*************************************
 //constraints for northwind database
 //*************************************
@@ -49,4 +51,5 @@ WITH employeeID, reportsTo
 MATCH (e1:Employee),(e2:Employee)
 WHERE e1.id=toInteger(employeeID._text) AND e2.id=toInteger(reportsTo._text)
 MERGE (e1)-[:REPORTS_TO]->(e2)
-RETURN e1,e2
+RETURN e1,e2;
+

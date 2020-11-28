@@ -30,4 +30,4 @@ SET
     s.city=city._text,
     s.postalCode=postalCode._text,
     s.country=country._text,
-    s.phone=phone._text
+    s.phone=phone._text;

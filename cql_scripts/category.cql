@@ -17,4 +17,4 @@ WITH
 MERGE (c:Category {name:categoryName._text})
 SET 
     c.id=toInteger(categoryId._text), 
-    c.description=description._text
+    c.description=description._text;

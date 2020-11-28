@@ -32,4 +32,4 @@ SET
     c.postalCode=postalCode._text,
     c.country=country._text,
     c.phone=phone._text,
-    c.fax=fax._text
+    c.fax=fax._text;

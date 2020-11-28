@@ -27,5 +27,5 @@ SET c = {
         unitPrice : toFloat(unitPrice._text),
         quantity : toInteger(quantity._text),
         discount : toFloat(discount._text)
-}
+};
     
