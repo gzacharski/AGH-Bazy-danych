@@ -2,11 +2,10 @@ const driver=require('../config/dbconfig').driver;
 const config=require('../config/dbconfig').config;
 
 async function testCallDB(){
-    const filmTitle='The Matrix';
 
     const session = driver.session(config);
-    const cypherQuery='MATCH (m:Movie) RETURN m LIMIT 10';
-    const params={theTitle: filmTitle};
+    const cypherQuery='MATCH (c:Customer) RETURN c LIMIT 10';
+    const params={};
 
     let searchedNode;
 
@@ -23,10 +22,10 @@ async function testCallDB(){
     return searchedNode;
 }
 
-exports.getAllFilms=async (request,response)=>{
+exports.getSampleCustomers=async (request,response)=>{
 
     let searchedNode=await testCallDB();
 
-    if(!searchedNode) return res.status(404).send('The is now film in database.');
+    if(!searchedNode) return res.status(404).send('The database is empty.');
     response.send(searchedNode);
 }

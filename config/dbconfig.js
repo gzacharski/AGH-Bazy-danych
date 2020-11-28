@@ -7,7 +7,7 @@ const password='@Dmin12345';
 const driver=neo4j.driver(uri, neo4j.auth.basic(user,password));
 
 const dbConfig={
-    database: 'movies',
+    database: 'northwind',
     defaultAccessMode: neo4j.session.READ,
 }
 
