@@ -5,8 +5,6 @@ module.exports.select = (request, response, next) => {
     let label = request.path.split('/')[2];
     label=mapPathToNode(label);
     
-    console.log(label);
-
     request.headers['node_label']= label;
     next();
 }

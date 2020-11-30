@@ -2,9 +2,32 @@
 const driver = require('../config/dbconfig').driver;
 const config = require('../config/dbconfig').config;
 
+const nodeExists = async (id, label) => {
+
+    const session = driver.session(config);    
+    let exists;
+
+    try {
+        const checkQuery = `MATCH (n:${label}) WHERE n.id=$id RETURN n`;
+        const params = {
+            id: Number.parseInt(id)
+        };
+
+        const result = await session.readTransaction(tx => tx.run(checkQuery, params));
+
+        exists = result.records.length !== 0 && result.records[0].get(0).properties.id.low === Number.parseInt(id);
+
+    } finally {
+        await session.close();
+    }
+
+    return exists;
+}
+
+
 module.exports.getAll = async (request, response) => {
 
-    console.log('Get all supplies...');
+    console.log('Get all ...');
     const session = driver.session(config);
 
     const node_label = request.get('node_label');
@@ -34,6 +57,50 @@ module.exports.getAll = async (request, response) => {
                 message: error.message
             });
 
+    } finally {
+        await session.close();
+    }
+}
+
+
+//HTTP GET
+//get Customer by Id
+module.exports.getById = async (request, response) => {
+    console.log("get by id...");
+
+    const id = request.params.id;
+    const session = driver.session(config);
+
+    const node_label = request.get('node_label');
+
+    try {
+        if (!await nodeExists(id, node_label)) {
+            response
+                .status(404)
+                .send({
+                    message: `There is no ${node_label} with provided id: ${id}`
+                });
+
+        } else {
+            const query = `MATCH (n:${node_label}) WHERE n.id=$id RETURN n`;
+            const params = {
+                id: Number.parseInt(id)
+            };
+
+            const result = await session.readTransaction(tx => tx.run(query, params));
+            const node = result.records[0];
+
+            if (!node) throw new Error(`The server was not able to get a ${node_label}.`);
+
+            response
+                .status(200)
+                .send(node.get(0).properties);
+        }
+
+    } catch (error) {
+        response
+            .status(500)
+            .send(error.message);
     } finally {
         await session.close();
     }

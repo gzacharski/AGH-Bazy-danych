@@ -13,7 +13,7 @@ router.put('/api/customers/:id',CustomerController.updateById);
 router.delete('/api/customers/:id',CustomerController.deleteById);
 
 router.get('/api/suppliers', switchToNode.select, Controller.getAll);
-router.get('/api/suppliers/:id',SupplierController.getById);
+router.get('/api/suppliers/:id',switchToNode.select, Controller.getById);
 router.post('/api/suppliers',SupplierController.create)
 router.put('/api/suppliers/:id',SupplierController.updateById);
 router.delete('/api/suppliers/:id',SupplierController.deleteById);
