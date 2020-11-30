@@ -1,85 +1,201 @@
-const { response } = require('../app');
+const driver = require('../config/dbconfig').driver;
+const config = require('../config/dbconfig').config;
+const uuid = require('uuid');
 
-const driver=require('../config/dbconfig').driver;
-const config=require('../config/dbconfig').config;
+const customerExists = async (id) => {
 
-async function getCustomer(userId){
+    const checkQuery = `MATCH (c:Customer) WHERE c.id='${id}' RETURN c`;
+    const session = driver.session(config);
+    let exists;
 
-    const session=driver.session(config);
-    const query=`MATCH (c:Customer) WHERE c.id='${userId}' RETURN c`;
+    try {
+        const result = await session.readTransaction(tx => tx.run(checkQuery));
+        exists = result.records.length !== 0 && result.records[0].get(0).properties.id === id;
 
-    let theCustomer;
-
-    try{
-        const result=await session.readTransaction(tx => tx.run(query));
-
-        theCustomer=result.records.map(record => record.get(0));
-    }finally{
+    } finally {
         await session.close();
     }
 
-    return theCustomer;
+    return exists;
 }
 
-let getById=async (request, response) => {
-    let userId=request.params.id;
-    console.log(`User id is ${userId}`);
+//HTTP GET
+//get Customer by Id
+module.exports.getById = async (request, response) => {
+    console.log("get by id...");
 
-    let theCustomer=await getCustomer(userId);
+    const userId = request.params.id;
+    const session = driver.session(config);
 
-    if(!theCustomer) {
-        return response.status(404).send(`There is no customer with provided id: ${userId}`);
-    }else{
-        response.send(theCustomer);
-    }
-}
+    try {
 
-let updateById=async (request,response) => {
+        if (!await customerExists(userId)) {
+            response
+                .status(404)
+                .send({
+                    message: `There is no customer with provided id: ${userId}`
+                });
 
-    const userId=request.params.id;
-    const userProps=request.body;
-    console.log(`User id is ${userId}`);
-    console.log(userProps);
+        } else {
+            const query = `MATCH (c:Customer) WHERE c.id='${userId}' RETURN c`;
 
-    const session=driver.session(config);
-    const query=`MATCH (c:Customer) WHERE c.id='${userId}' SET c+=$properties RETURN c;`;
-    const params=userProps;
+            const result = await session.readTransaction(tx => tx.run(query));
+            const theCustomer = result.records[0].get(0).properties;
 
-    let theCustomer;
+            response
+                .status(200)
+                .send(theCustomer);
+        }
 
-    try{
-        const result=await session.writeTransaction(tx=> tx.run(query,params));
-
-        theCustomer=result.records.map(record=>record.get(0));
-    }finally{
+    } catch (error) {
+        response
+            .status(500)
+            .send(error.message);
+    } finally {
         await session.close();
     }
-
-    response
-        .status(201)
-        .send(theCustomer);
 }
 
-let create=async (request,response) => {
-    response
-        .status(200)
-        .send();
+//HTTP PUT
+//update Customer by Id
+module.exports.updateById = async (request, response) => {
+    console.log('update by Id...')
+
+    const userProps = {
+        properties: request.body
+    };
+    const id = request.params.id;
+
+    const session = driver.session(config);
+    const query = `MATCH (c:Customer) WHERE c.id='${id}' SET c+=$properties RETURN c;`;
+    const params = userProps;
+
+    try {
+        if (!await customerExists(id)) throw new Error(`There is no such a customer with provided id: ${id}`);
+
+        const result = await session.writeTransaction(tx => tx.run(query, params));
+
+        const theCustomer = result.records[0].get(0).properties;
+
+        response
+            .status(201)
+            .send(theCustomer);
+
+    } catch (error) {
+        response
+            .status(404)
+            .send(error.message);
+    } finally {
+        await session.close();
+    }
 }
 
-let deleteById=async (request,response) => {
-    response
-        .status(200)
-        .send();
+//HTTP POST
+//create Customer
+module.exports.create = async (request, response) => {
+    console.log('create...')
+
+    const userDetails = request.body;
+    const query = `CREATE (c:Customer) SET c+=$properties RETURN c;`
+    const session = driver.session(config);
+
+    let id = userDetails.properties.id;
+
+    if (!id) id = userDetails.properties.id = uuid.v4();
+
+    try {
+        if (await customerExists(id)) throw new Error(`There is a customer with provided id: ${id}`);
+
+        const result = await session.writeTransaction(tx => tx.run(query, userDetails));
+
+        const newCustomer = result.records[0].get(0).properties;
+
+        if (!newCustomer) throw new Error("The server couldn't register a new user.");
+
+        response
+            .status(201)
+            .send(newCustomer);
+
+    } catch (error) {
+        response
+            .status(400)
+            .send({
+                message: error.message,
+                userDetails
+            });
+
+    } finally {
+        await session.close();
+    }
 }
 
-let getAll=async (request,response) => {
-    response
-        .status(200)
-        .send();
+//DELETE
+module.exports.deleteById = async (request, response) => {
+    console.log('delete by id...');
+
+    const id = request.params.id;
+    const query = `MATCH (c:Customer) WHERE c.id='${id}' DETACH DELETE c;`;
+    const session = driver.session(config);
+
+    try {
+
+        if (!await customerExists(id)) {
+            throw new Error(`There is no customer with provided id: ${id}`);
+        }
+
+        await session.writeTransaction(tx => tx.run(query));
+
+        //send response if customer has been deleted
+        response
+            .status(200)
+            .send({
+                id,
+                message: "User has been deleted."
+            });
+
+    } catch (error) {
+        //send response if customer hasn't been found in database
+        //or other error took place
+        response
+            .status(404)
+            .send(error.message);
+
+    } finally {
+        await session.close();
+    }
 }
 
-module.exports.getAll=getAll;
-module.exports.getById=getById;
-module.exports.updateById=updateById;
-module.exports.create=create;
-module.exports.deleteById=deleteById;
+//HTTP GET
+//get all user
+module.exports.getAll = async (request, response) => {
+    console.log('get all ...')
+
+    const session = driver.session(config);
+    const query = `MATCH (c:Customer) RETURN c`;
+
+    try {
+        const result = await session.readTransaction(tx => tx.run(query));
+
+        const customers = result.records.map(record => record.get(0).properties);
+
+        if (customers.length === 0) throw new Error("There is no customers in database.");
+
+        //send resposne with status 200 with found customers
+        response
+            .status(200)
+            .send({
+                quantity: customers.length,
+                customers
+            });
+
+    } catch (error) {
+
+        //send response with status 404 if error took place
+        response
+            .status(404)
+            .send(error.message);
+
+    } finally {
+        await session.close();
+    }
+}
