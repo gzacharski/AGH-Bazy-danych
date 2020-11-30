@@ -8,6 +8,8 @@ const customerExists = async (id) => {
     const session = driver.session(config);
     let exists;
 
+    console.log(checkQuery);
+
     try {
         const result = await session.readTransaction(tx => tx.run(checkQuery));
         exists = result.records.length !== 0 && result.records[0].get(0).properties.id === id;
@@ -95,7 +97,7 @@ module.exports.updateById = async (request, response) => {
 module.exports.create = async (request, response) => {
     console.log('create...')
 
-    const userDetails = request.body;
+    const userDetails = { properties: request.body };
     const query = `CREATE (c:Customer) SET c+=$properties RETURN c;`
     const session = driver.session(config);
 
@@ -108,13 +110,13 @@ module.exports.create = async (request, response) => {
 
         const result = await session.writeTransaction(tx => tx.run(query, userDetails));
 
-        const newCustomer = result.records[0].get(0).properties;
+        const newCustomer = result.records[0];
 
         if (!newCustomer) throw new Error("The server couldn't register a new user.");
 
         response
             .status(201)
-            .send(newCustomer);
+            .send(newCustomer.get(0).properties);
 
     } catch (error) {
         response
