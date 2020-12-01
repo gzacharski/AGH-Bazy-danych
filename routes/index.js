@@ -41,4 +41,10 @@ router.post('/api/employees', select, create)
 router.put('/api/employees/:id', select, updateById);
 router.delete('/api/employees/:id', select, deleteById);
 
+router.get('/api/categories', select, getAll);
+router.get('/api/categories/:id', select, getById);
+router.post('/api/categories', select, create)
+router.put('/api/categories/:id', select, updateById);
+router.delete('/api/categories/:id', select, deleteById);
+
 module.exports = router;

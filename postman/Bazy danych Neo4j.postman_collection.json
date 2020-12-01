@@ -1,0 +1,701 @@
+{
+	"info": {
+		"_postman_id": "f700e280-6963-4293-8c2b-b5d37e937315",
+		"name": "Bazy danych Neo4j",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "CRUD",
+			"item": [
+				{
+					"name": "Employee",
+					"item": [
+						{
+							"name": "Get all employees",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "5bc38c03-1ed5-4870-9a67-ad35eb33d742",
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "3f2b6dd4-8894-4abd-9bb7-1a33313630cc",
+										"exec": [
+											"pm.test(\"Status test\", ()=>{\r",
+											"    pm.expect(pm.response.code).to.be.equal(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body should have 'quantity' and 'node'\", () => {\r",
+											"    pm.response.to.be.json;\r",
+											"\r",
+											"    const body=pm.response.json();\r",
+											"\r",
+											"    pm.response.to.have.jsonBody(\"quantity\");\r",
+											"    pm.expect(body.quantity).to.be.not.null;\r",
+											"\r",
+											"    pm.response.to.have.jsonBody(\"nodes\");\r",
+											"    pm.expect(body.nodes).to.not.be.null;\r",
+											"    pm.expect(body.nodes).to.not.be.empty;\r",
+											"});\r",
+											"\r",
+											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"pm.test(`Response time should be less than ${resTime}`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/employees",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"employees"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create employee",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "09e030d6-391b-4fbd-a24f-dc0219f17da4",
+										"exec": [
+											"const requestBody=JSON.parse(pm.request.body.raw);\r",
+											"pm.collectionVariables.set(\"employee_body\",requestBody);"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "e9073040-35c9-4f15-8e84-48110f6e58e3",
+										"exec": [
+											"pm.test(\"Status test\", ()=>{\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200,201]);\r",
+											"});\r",
+											"\r",
+											"pm.collectionVariables.set(\"employee_id\", pm.response.json().id.low);\r",
+											"\r",
+											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"pm.test(`Response time should be less than ${resTime}`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});\r",
+											"\r",
+											"//todo\r",
+											"// pm.test(\"Response body should be have the same values compare to request body\", ()=>{\r",
+											"   \r",
+											"// });\r",
+											"\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"lastName\": \"Davolio\",\r\n    \"country\": \"United States\",\r\n    \"hireDate\": \"1992-05-01\",\r\n    \"extension\": 5467,\r\n    \"address\": \"507 - 20th Ave. E.\\\\r\\\\nApt. 2A\",\r\n    \"notes\": \"Education includes a BA in psychology from Colorado State University.  She also completed \\\"The Art of the Cold Call.\\\"  Nancy is a member of Toastmasters International.\",\r\n    \"city\": \"Seattle\",\r\n    \"postalCode\": \"98122\",\r\n    \"homePhone\": \"206 555-9857\",\r\n    \"title\": \"Sales Representative\",\r\n    \"titleOfCourtesy\": \"Ms.\",\r\n    \"birthDate\": \"1968-12-08\",\r\n    \"firstName\": \"Nancy\",\r\n    \"region\": \"WA\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/employees",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"employees"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get employee by Id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "2915cbd4-2b0c-4fb5-86d5-8eca68739ac1",
+										"exec": [
+											"pm.test(\"Status test\", ()=>{\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+											"});\r",
+											"\r",
+											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"pm.test(`Response time should be less than ${resTime}`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/employees/{{employee_id}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"employees",
+										"{{employee_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update employee by Id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "8f65b0c6-a066-4f4d-8bce-4c0b4ab6ae6f",
+										"exec": [
+											"pm.test(\"Status test\", ()=>{\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+											"});\r",
+											"\r",
+											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"pm.test(`Response time should be less than ${resTime}`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"country\": \"Poland\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/employees/{{employee_id}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"employees",
+										"{{employee_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete user by Id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "51150568-bc64-4998-bcd4-5723a55b0993",
+										"exec": [
+											"pm.test(\"Status test\", ()=>{\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+											"});\r",
+											"\r",
+											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"pm.test(`Response time should be less than ${resTime}`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body should have properties 'id' and 'message'\", () => {\r",
+											"    pm.expect(pm.response).to.be.json;\r",
+											"    pm.expect(pm.response).to.have.jsonBody(\"id\");\r",
+											"    pm.expect(pm.response).to.have.jsonBody(\"message\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Id of deleted employee shoud be equal to employee_id\", ()=>{\r",
+											"    pm.expect(Number.parseInt(pm.response.json().id))\r",
+											"            .to.be.equal(Number.parseInt(pm.collectionVariables.get(\"employee_id\")));\r",
+											"});\r",
+											"\r",
+											"pm.collectionVariables.unset(\"employee_id\");"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/employees/{{employee_id}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"employees",
+										"{{employee_id}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Category",
+					"item": [],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Customer",
+					"item": [
+						{
+							"name": "Create customer",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"properties\": {\r\n        \"country\": \"Germany\",\r\n        \"address\": \"Obere Str. 57\",\r\n        \"city\": \"Berlin\",\r\n        \"phone\": \"030-0074321\",\r\n        \"postalCode\": \"12209\",\r\n        \"name\": \"Grzegorz Zacharski\",\r\n        \"company\": \"Alfreds Futterkiste\",\r\n        \"title\": \"Sales Representative\",\r\n        \"fax\": \"030-0076545\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/customers",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"customers"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get customer by Id",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"properties\": {\r\n        \"country\": \"Germany\",\r\n        \"address\": \"Obere Str. 57\",\r\n        \"phone\": \"030-0074321\",\r\n        \"city\": \"Berlin\",\r\n        \"postalCode\": \"12209\",\r\n        \"name\": \"Grzegorz Zacharski\",\r\n        \"company\": \"Alfreds Futterkiste\",\r\n        \"id\": \"Kuba\",\r\n        \"fax\": \"030-0076545\",\r\n        \"title\": \"Sales Representative\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/customers/ALFKI",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"customers",
+										"ALFKI"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update customer by Id",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"country\": \"Germany\",\r\n    \"address\": \"Obere Str. 57\",\r\n    \"city\": \"Berlin\",\r\n    \"phone\": \"030-0074321\",\r\n    \"postalCode\": \"12209\",\r\n    \"name\": \"Wojciech Zacharski\",\r\n    \"company\": \"Alfreds Futterkiste\",\r\n    \"id\": \"d47acf67-d23f-42d0-95fa-e282e4075452\",\r\n    \"title\": \"Sales Representative\",\r\n    \"fax\": \"030-0076545\",\r\n    \"driver\" : \"true\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/customers/b98d82a1-168c-4655-93cf-b94df094b8d8",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"customers",
+										"b98d82a1-168c-4655-93cf-b94df094b8d8"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete customer by Id",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/customers/Batman",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"customers",
+										"Batman"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get all customers",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/customers",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"customers"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Order",
+					"item": [],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Product",
+					"item": [
+						{
+							"name": "Create product",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"unitPrice\": 0.0,\r\n    \"unitsInStock\": 39,\r\n    \"reorderLevel\": 10,\r\n    \"name\": \"Chai\",\r\n    \"quantityPerUnit\": \"10 boxes x 20 bags\",\r\n    \"discontinued\": 0,\r\n    \"unitsOnOrder\": 0\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/products",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"products"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get product by Id",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"country\": \"United Kingdom\",\r\n    \"address\": \"49 Gilbert St.\",\r\n    \"contactTitle\": \"Purchasing Manager\",\r\n    \"city\": \"London\",\r\n    \"phone\": \"(171) 555-2222\",\r\n    \"contactName\": \"Charlotte Cooper\",\r\n    \"postalCode\": \"EC1 4SD\",\r\n    \"companyName\": \"Exotic Liquids\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/products/31063",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"products",
+										"31063"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update product by Id",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"city\": \"Warszawa\",\r\n    \"year\" : 1990\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/suppliers/31063",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"suppliers",
+										"31063"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Shipper",
+					"item": [],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Supplier",
+					"item": [
+						{
+							"name": "Create supplier",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"country\": \"Poland\",\r\n    \"address\": \"49 Gilbert St.\",\r\n    \"contactTitle\": \"Purchasing Manager\",\r\n    \"city\": \"Warsaw\",\r\n    \"phone\": \"(171) 555-2222\",\r\n    \"contactName\": \"Charlotte Cooper\",\r\n    \"postalCode\": \"EC1 4SD\",\r\n    \"companyName\": \"Exotic Liquids\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/suppliers",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"suppliers"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get supplier by Id",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"country\": \"United Kingdom\",\r\n    \"address\": \"49 Gilbert St.\",\r\n    \"contactTitle\": \"Purchasing Manager\",\r\n    \"city\": \"London\",\r\n    \"phone\": \"(171) 555-2222\",\r\n    \"contactName\": \"Charlotte Cooper\",\r\n    \"postalCode\": \"EC1 4SD\",\r\n    \"companyName\": \"Exotic Liquids\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/suppliers/31063",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"suppliers",
+										"31063"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update supplier by Id",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"city\": \"Warszawa\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/suppliers/31063",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"suppliers",
+										"31063"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete supplier by Id",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/suppliers/31063",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"suppliers",
+										"31063"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get all suppliers",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/suppliers",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"suppliers"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"variable": [
+		{
+			"id": "3406ec6b-c682-4e98-979c-fc0d0e29c734",
+			"key": "employee_body",
+			"value": ""
+		}
+	],
+	"protocolProfileBehavior": {}
+}
