@@ -180,3 +180,46 @@ module.exports.updateById = async (request, response) => {
         await session.close();
     }
 }
+
+
+module.exports.deleteById = async (request, response) => {
+    console.log('Delete by Id...');
+
+    //get supplier id from url
+    const id = request.params.id;
+    const session = driver.session(config);
+    const node_label = request.get('node_label');
+
+    try {
+        if (!await nodeExists(id, node_label)) {
+            response
+                .status(404)
+                .send({
+                    message: `There is no ${node_label} with provided id: ${id}`
+                });
+
+        } else {
+            const query = `MATCH (s:${node_label}) WHERE s.id=$id DETACH DELETE s;`;
+            const params = {
+                id: Number.parseInt(id)
+            };
+
+            await session.writeTransaction(tx => tx.run(query, params));
+
+            response
+                .status(200)
+                .send({
+                    id,
+                    message: `${node_label} has been deleted.`
+                });
+        }
+    } catch (error) {
+        response
+            .status(500)
+            .send({
+                error: error.message
+            });
+    } finally {
+        await session.close();
+    }
+}
