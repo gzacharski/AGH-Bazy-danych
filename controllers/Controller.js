@@ -4,7 +4,7 @@ const config = require('../config/dbconfig').config;
 
 const nodeExists = async (id, label) => {
 
-    const session = driver.session(config);    
+    const session = driver.session(config);
     let exists;
 
     try {
@@ -101,6 +101,39 @@ module.exports.getById = async (request, response) => {
         response
             .status(500)
             .send(error.message);
+    } finally {
+        await session.close();
+    }
+}
+
+
+module.exports.create = async (request, response) => {
+    console.log('Create ...');
+
+    const node_label = request.get('node_label');
+    const session = driver.session(config);
+
+    try {
+        const query = `CREATE (n:${node_label}) SET n+=$properties, n.id=id(n) RETURN n;`;
+        const supplierDetails = {
+            properties: request.body
+        };
+
+        const result = await session.writeTransaction(tx => tx.run(query, supplierDetails));
+        const node = result.records[0];
+
+        if (!node) throw new Error(`The server was not able to register a new ${node_label}.`);
+
+        response
+            .status(201)
+            .send(node.get(0).properties);
+
+    } catch (error) {
+        response
+            .status(500)
+            .send({
+                error: error.message
+            });
     } finally {
         await session.close();
     }
