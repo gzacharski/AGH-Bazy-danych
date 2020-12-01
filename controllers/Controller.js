@@ -138,3 +138,45 @@ module.exports.create = async (request, response) => {
         await session.close();
     }
 }
+
+module.exports.updateById = async (request, response) => {
+    console.log('Update by Id...');
+
+    const id = Number.parseInt(request.params.id);
+    const session = driver.session(config);
+    const node_label = request.get('node_label');
+
+    try {
+        if (!await nodeExists(id, node_label)) {
+            response
+                .status(404)
+                .send({
+                    message: `There is no ${node_label} with provided id: ${id}`
+                });
+
+        } else {
+            const query = `MERGE (s:${node_label} {id:$id}) SET s+=$properties RETURN s;`;
+            const params = {
+                id: Number.parseInt(id),
+                properties: request.body
+            };
+
+            const result = await session.writeTransaction(tx => tx.run(query, params));
+            const node = result.records[0];
+
+            if (!node ) throw new Error(`The server was not able to update the ${node_label}.`);
+
+            response
+                .status(200)
+                .send(node .get(0).properties);
+        }
+    } catch (error) {
+        response
+            .status(500)
+            .send({
+                error: error.message
+            });
+    } finally {
+        await session.close();
+    }
+}
