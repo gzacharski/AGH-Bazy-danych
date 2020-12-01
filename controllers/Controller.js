@@ -36,17 +36,17 @@ module.exports.getAll = async (request, response) => {
     try {
         if (!node_label) throw new Error("Node label has not been specified.");
 
-        const query = `MATCH (s:${node_label}) RETURN s`;
+        const query = `MATCH (n:${node_label}) RETURN n`;
         console.log(query);
 
         const result = await session.readTransaction(tx => tx.run(query));
-        const suppliers = result.records.map(record => record.get(0).properties);
+        const nodes = result.records.map(record => record.get(0).properties);
 
         response
             .status(200)
             .send({
-                quantity: suppliers.length,
-                suppliers
+                quantity: nodes.length,
+                nodes
             })
 
     } catch (error) {
