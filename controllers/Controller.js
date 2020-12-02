@@ -150,9 +150,9 @@ module.exports.create = async (request, response) => {
 module.exports.updateById = async (request, response) => {
     console.log('Update by Id...');
 
-    const id = Number.parseInt(request.params.id);
     const session = driver.session(config);
     const node_label = request.get('node_label');
+    const id = (node_label==='Customer')?request.params.id:Number.parseInt(request.params.id);
 
     try {
         if (!await nodeExists(id, node_label)) {
@@ -165,7 +165,7 @@ module.exports.updateById = async (request, response) => {
         } else {
             const query = `MERGE (s:${node_label} {id:$id}) SET s+=$properties RETURN s;`;
             const params = {
-                id: Number.parseInt(id),
+                id: (node_label==='Customer')?id:Number.parseInt(id),
                 properties: request.body
             };
 

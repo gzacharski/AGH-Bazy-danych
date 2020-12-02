@@ -8,7 +8,7 @@ const { select } = require('../middlewares/switchToNode');
 router.get('/api/customers', select, getAll);
 router.get('/api/customers/:id', select, getById);
 router.post('/api/customers', select, create);
-router.put('/api/customers/:id', CustomerController.updateById);
+router.put('/api/customers/:id', select, updateById);
 router.delete('/api/customers/:id', CustomerController.deleteById);
 
 router.get('/api/suppliers', select, getAll);
