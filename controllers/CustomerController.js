@@ -160,7 +160,7 @@ module.exports.deleteById = async (request, response) => {
         //or other error took place
         response
             .status(404)
-            .send(error.message);
+            .send({message: error.message});
 
     } finally {
         await session.close();
@@ -195,7 +195,7 @@ module.exports.getAll = async (request, response) => {
         //send response with status 404 if error took place
         response
             .status(404)
-            .send(error.message);
+            .send({message: error.message});
 
     } finally {
         await session.close();

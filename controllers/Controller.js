@@ -9,13 +9,15 @@ const nodeExists = async (id, label) => {
 
     try {
         const checkQuery = `MATCH (n:${label}) WHERE n.id=$id RETURN n`;
-        const params = {
-            id: Number.parseInt(id)
-        };
+        const params = (label === 'Customer') ? { id } : { id: Number.parseInt(id) };
 
         const result = await session.readTransaction(tx => tx.run(checkQuery, params));
 
-        exists = result.records.length !== 0 && result.records[0].get(0).properties.id.low === Number.parseInt(id);
+        if (label === 'Customer') {
+            exists = result.records.length !== 0 && result.records[0].get(0).properties.id === id;
+        } else {
+            exists = result.records.length !== 0 && result.records[0].get(0).properties.id.low === Number.parseInt(id);
+        }
 
     } finally {
         await session.close();
@@ -23,7 +25,6 @@ const nodeExists = async (id, label) => {
 
     return exists;
 }
-
 
 module.exports.getAll = async (request, response) => {
 
@@ -83,9 +84,7 @@ module.exports.getById = async (request, response) => {
 
         } else {
             const query = `MATCH (n:${node_label}) WHERE n.id=$id RETURN n`;
-            const params = {
-                id: Number.parseInt(id)
-            };
+            const params = (node_label === 'Customer') ? { id } : { id: Number.parseInt(id) };
 
             const result = await session.readTransaction(tx => tx.run(query, params));
             const node = result.records[0];
@@ -100,7 +99,9 @@ module.exports.getById = async (request, response) => {
     } catch (error) {
         response
             .status(500)
-            .send(error.message);
+            .send({
+                error: error.message
+            });
     } finally {
         await session.close();
     }
@@ -164,11 +165,11 @@ module.exports.updateById = async (request, response) => {
             const result = await session.writeTransaction(tx => tx.run(query, params));
             const node = result.records[0];
 
-            if (!node ) throw new Error(`The server was not able to update the ${node_label}.`);
+            if (!node) throw new Error(`The server was not able to update the ${node_label}.`);
 
             response
                 .status(200)
-                .send(node .get(0).properties);
+                .send(node.get(0).properties);
         }
     } catch (error) {
         response

@@ -6,7 +6,7 @@ const { getAll, getById, create, deleteById, updateById } = require('../controll
 const { select } = require('../middlewares/switchToNode');
 
 router.get('/api/customers', CustomerController.getAll);
-router.get('/api/customers/:id', CustomerController.getById);
+router.get('/api/customers/:id', select, getById);
 router.post('/api/customers', CustomerController.create)
 router.put('/api/customers/:id', CustomerController.updateById);
 router.delete('/api/customers/:id', CustomerController.deleteById);
