@@ -155,6 +155,72 @@
 							"response": []
 						},
 						{
+							"name": "Create employee - 500",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "78adf061-2b61-4c66-8bb1-85a0aff2d3ab",
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "db9a0cef-59ba-48d5-a49e-d28c8f2f6c56",
+										"exec": [
+											"pm.test(\"Response status should be 500.\", () => {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([500]);\r",
+											"});\r",
+											"\r",
+											"const resTime = Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body should have property 'error'.\", ()=>{\r",
+											"    pm.expect(pm.response).to.have.jsonBody(\"error\");\r",
+											"});\r",
+											"\r",
+											"postman.setNextRequest('Update employee by ID');"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"lastName\": \"Davolio\",\r\n    \"country\": \"United States\",\r\n    \"hireDate\": \"1992-05-01\",\r\n    \"extension\": 5467,\r\n    \"address\": \"507 - 20th Ave. E.\\\\r\\\\nApt. 2A\",\r\n    \"notes\": \"Education includes a BA in psychology from Colorado State University.  She also completed \\\"The Art of the Cold Call.\\\"  Nancy is a member of Toastmasters International.\",\r\n    \"city\": \"Seattle\",\r\n    \"postalCode\": \"98122\",\r\n    \"homePhone\": \"206 555-9857\",\r\n    \"title\": \"Sales Representative\",\r\n    \"titleOfCourtesy\": \"Ms.\",\r\n    \"birthDate\": \"1968-12-08\",\r\n    \"firstName\": \"Nancy\",\r\n    \"region\": \"WA\",\r\n    \"id\": {{employee_id}}\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/employees",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"employees"
+									]
+								},
+								"description": "App should create a new employee and return its properties."
+							},
+							"response": []
+						},
+						{
 							"name": "Get employee by ID",
 							"event": [
 								{
@@ -439,11 +505,11 @@
 									"script": {
 										"id": "88780576-e4e6-4865-9e2a-133c6bc88773",
 										"exec": [
-											"pm.test(\"Status test\", () => {\r",
+											"pm.test(\"Response status should be 200.\", () => {\r",
 											"    pm.expect(pm.response.code).to.be.equal(200);\r",
 											"});\r",
 											"\r",
-											"pm.test(\"Response body should have 'quantity' and 'customers'\", () => {\r",
+											"pm.test(\"Response body should have properties: 'quantity' and 'node'.\", () => {\r",
 											"    pm.response.to.be.json;\r",
 											"\r",
 											"    const body = pm.response.json();\r",
@@ -451,13 +517,13 @@
 											"    pm.response.to.have.jsonBody(\"quantity\");\r",
 											"    pm.expect(body.quantity).to.be.not.null;\r",
 											"\r",
-											"    pm.response.to.have.jsonBody(\"customers\");\r",
-											"    pm.expect(body.customers).to.not.be.null;\r",
-											"    pm.expect(body.customers).to.not.be.empty;\r",
+											"    pm.response.to.have.jsonBody(\"nodes\");\r",
+											"    pm.expect(body.nodes).to.not.be.null;\r",
+											"    pm.expect(body.nodes).to.not.be.empty;\r",
 											"});\r",
 											"\r",
 											"const resTime = Number.parseInt(pm.environment.get(\"responseTime\"));\r",
-											"pm.test(`Response time should be less than ${resTime}ms`, () => {\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
 											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
 											"});\r",
 											"\r",
@@ -534,7 +600,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"properties\": {\r\n        \"country\": \"Germany\",\r\n        \"address\": \"Obere Str. 57\",\r\n        \"city\": \"Berlin\",\r\n        \"phone\": \"030-0074321\",\r\n        \"postalCode\": \"12209\",\r\n        \"name\": \"Jan Kowalski\",\r\n        \"company\": \"Alfreds Futterkiste\",\r\n        \"title\": \"Sales Representative\",\r\n        \"fax\": \"030-0076545\"\r\n    }\r\n}",
+									"raw": "{\r\n    \"country\": \"Germany\",\r\n    \"address\": \"Obere Str. 57\",\r\n    \"city\": \"Berlin\",\r\n    \"phone\": \"030-0074321\",\r\n    \"postalCode\": \"12209\",\r\n    \"name\": \"Jan Kowalski\",\r\n    \"company\": \"Alfreds Futterkiste\",\r\n    \"title\": \"Sales Representative\",\r\n    \"fax\": \"030-0076545\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -638,7 +704,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"country\": \"Germany\",\r\n    \"address\": \"Obere Str. 57\",\r\n    \"city\": \"Berlin\",\r\n    \"phone\": \"030-0074321\",\r\n    \"postalCode\": \"12209\",\r\n    \"name\": \"Wojciech Zacharski\",\r\n    \"company\": \"Alfreds Futterkiste\",\r\n    \"id\": \"d47acf67-d23f-42d0-95fa-e282e4075452\",\r\n    \"title\": \"Sales Representative\",\r\n    \"fax\": \"030-0076545\",\r\n    \"driver\" : \"true\"\r\n}",
+									"raw": "{\r\n    \"country\": \"Germany\",\r\n    \"address\": \"Obere Str. 57\",\r\n    \"city\": \"Berlin\",\r\n    \"phone\": \"030-0074321\",\r\n    \"postalCode\": \"12209\",\r\n    \"name\": \"Wojciech Zacharski\",\r\n    \"company\": \"Alfreds Futterkiste\",\r\n    \"title\": \"Sales Representative\",\r\n    \"fax\": \"030-0076545\",\r\n    \"driver\" : \"true\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -1028,13 +1094,23 @@
 	],
 	"variable": [
 		{
-			"id": "e330aec2-db5b-4bd8-b32a-1063c81eb34d",
+			"id": "a4e9d55d-010e-44b6-a437-3b531ef1ac3f",
 			"key": "customer_body",
 			"value": ""
 		},
 		{
-			"id": "b8ca5088-1db6-41f1-8512-76d24a4fd81b",
+			"id": "c4872ba0-3896-4079-9527-bbe7291c6c23",
 			"key": "customer_id",
+			"value": ""
+		},
+		{
+			"id": "c8325dca-3fea-44f0-9c99-e89ccc79794e",
+			"key": "employee_body",
+			"value": ""
+		},
+		{
+			"id": "06697ef0-b67f-40a6-8bd8-a3555eab8fe0",
+			"key": "employee_id",
 			"value": ""
 		}
 	],
