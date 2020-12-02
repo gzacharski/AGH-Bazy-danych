@@ -29,11 +29,11 @@
 									"script": {
 										"id": "3f2b6dd4-8894-4abd-9bb7-1a33313630cc",
 										"exec": [
-											"pm.test(\"Status test\", ()=>{\r",
+											"pm.test(\"Response status should be 200.\", ()=>{\r",
 											"    pm.expect(pm.response.code).to.be.equal(200);\r",
 											"});\r",
 											"\r",
-											"pm.test(\"Response body should have 'quantity' and 'node'\", () => {\r",
+											"pm.test(\"Response body should have properties: 'quantity' and 'node'.\", () => {\r",
 											"    pm.response.to.be.json;\r",
 											"\r",
 											"    const body=pm.response.json();\r",
@@ -47,10 +47,11 @@
 											"});\r",
 											"\r",
 											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
-											"pm.test(`Response time should be less than ${resTime}`, () => {\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
 											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
 											"});\r",
-											""
+											"\r",
+											"postman.setNextRequest('Create employee');"
 										],
 										"type": "text/javascript"
 									}
@@ -70,7 +71,8 @@
 										"api",
 										"employees"
 									]
-								}
+								},
+								"description": "App should return all employees with theirs properties."
 							},
 							"response": []
 						},
@@ -93,24 +95,32 @@
 									"script": {
 										"id": "e9073040-35c9-4f15-8e84-48110f6e58e3",
 										"exec": [
-											"pm.test(\"Status test\", ()=>{\r",
-											"    pm.expect(pm.response.code).to.be.oneOf([200,201]);\r",
+											"const { isEqual } = require('lodash');\r",
+											"\r",
+											"pm.test(\"Response status should be 200 or 201.\", () => {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
 											"});\r",
 											"\r",
-											"pm.collectionVariables.set(\"employee_id\", pm.response.json().id.low);\r",
+											"const resTime = Number.parseInt(pm.environment.get(\"responseTime\"));\r",
 											"\r",
-											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
-											"pm.test(`Response time should be less than ${resTime}`, () => {\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
 											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
 											"});\r",
 											"\r",
-											"//todo\r",
-											"// pm.test(\"Response body should be have the same values compare to request body\", ()=>{\r",
-											"   \r",
-											"// });\r",
+											"pm.test(\"Response body should have property 'id'.\", ()=>{\r",
+											"    pm.expect(pm.response).to.have.jsonBody(\"id\");\r",
+											"});\r",
 											"\r",
+											"pm.test(\"Except property 'id', request and response bodies should be equal.\", () => {\r",
+											"    const requestBody = pm.collectionVariables.get(\"employee_body\");\r",
+											"    let responseBody = pm.response.json();\r",
+											"    delete responseBody.id;\r",
 											"\r",
-											""
+											"    pm.expect(isEqual(requestBody,responseBody)).to.be.true;\r",
+											"});\r",
+											"\r",
+											"pm.collectionVariables.set(\"employee_id\", pm.response.json().id.low);\r",
+											"postman.setNextRequest('Update employee by ID');"
 										],
 										"type": "text/javascript"
 									}
@@ -139,26 +149,29 @@
 										"api",
 										"employees"
 									]
-								}
+								},
+								"description": "App should create a new employee and return its properties."
 							},
 							"response": []
 						},
 						{
-							"name": "Get employee by Id",
+							"name": "Get employee by ID",
 							"event": [
 								{
 									"listen": "test",
 									"script": {
 										"id": "2915cbd4-2b0c-4fb5-86d5-8eca68739ac1",
 										"exec": [
-											"pm.test(\"Status test\", ()=>{\r",
+											"pm.test(\"Response status should be 200.\", ()=>{\r",
 											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
 											"});\r",
 											"\r",
 											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
-											"pm.test(`Response time should be less than ${resTime}`, () => {\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
 											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
-											"});"
+											"});\r",
+											"\r",
+											"postman.setNextRequest('Delete user by ID');"
 										],
 										"type": "text/javascript"
 									}
@@ -184,21 +197,48 @@
 							"response": []
 						},
 						{
-							"name": "Update employee by Id",
+							"name": "Update employee by ID",
 							"event": [
 								{
 									"listen": "test",
 									"script": {
 										"id": "8f65b0c6-a066-4f4d-8bce-4c0b4ab6ae6f",
 										"exec": [
-											"pm.test(\"Status test\", ()=>{\r",
+											"const { isEqual } = require('lodash');\r",
+											"\r",
+											"pm.test(\"Response status should be 200.\", ()=>{\r",
 											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
 											"});\r",
 											"\r",
 											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
-											"pm.test(`Response time should be less than ${resTime}`, () => {\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
 											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
-											"});"
+											"});\r",
+											"\r",
+											"pm.test(\"Except property 'id' request and response bodies should be equal.\", () => {\r",
+											"    const requestBody = pm.collectionVariables.get(\"employee_body\");\r",
+											"    let responseBody = pm.response.json();\r",
+											"    delete responseBody.id;\r",
+											"\r",
+											"    pm.expect(isEqual(requestBody,responseBody)).to.be.true;\r",
+											"});\r",
+											"\r",
+											"postman.setNextRequest('Get employee by ID');"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "a48cf3e0-354a-4956-a6db-8b7e390ed0a1",
+										"exec": [
+											"const requestBody=JSON.parse(pm.request.body.raw);\r",
+											"let employeeBody=pm.collectionVariables.get(\"employee_body\");\r",
+											"console.log(employeeBody);\r",
+											"Object.assign(employeeBody,requestBody);\r",
+											"console.log(employeeBody);\r",
+											"pm.collectionVariables.set(\"employee_body\",employeeBody);"
 										],
 										"type": "text/javascript"
 									}
@@ -209,7 +249,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"country\": \"Poland\"\r\n}",
+									"raw": "{\r\n    \"country\": \"Poland\",\r\n    \"car\": \"Volvo\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -233,23 +273,23 @@
 							"response": []
 						},
 						{
-							"name": "Delete user by Id",
+							"name": "Delete user by ID",
 							"event": [
 								{
 									"listen": "test",
 									"script": {
 										"id": "51150568-bc64-4998-bcd4-5723a55b0993",
 										"exec": [
-											"pm.test(\"Status test\", ()=>{\r",
+											"pm.test(\"Response status should be 200.\", ()=>{\r",
 											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
 											"});\r",
 											"\r",
 											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
-											"pm.test(`Response time should be less than ${resTime}`, () => {\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
 											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
 											"});\r",
 											"\r",
-											"pm.test(\"Response body should have properties 'id' and 'message'\", () => {\r",
+											"pm.test(\"Response body should have properties: 'id' and 'message'.\", () => {\r",
 											"    pm.expect(pm.response).to.be.json;\r",
 											"    pm.expect(pm.response).to.have.jsonBody(\"id\");\r",
 											"    pm.expect(pm.response).to.have.jsonBody(\"message\");\r",
@@ -260,7 +300,7 @@
 											"            .to.be.equal(Number.parseInt(pm.collectionVariables.get(\"employee_id\")));\r",
 											"});\r",
 											"\r",
-											"pm.collectionVariables.unset(\"employee_id\");"
+											"postman.setNextRequest('Get employee by ID - 404');"
 										],
 										"type": "text/javascript"
 									}
@@ -281,7 +321,100 @@
 										"employees",
 										"{{employee_id}}"
 									]
+								},
+								"description": "App should delete employee with provided ID."
+							},
+							"response": []
+						},
+						{
+							"name": "Get employee by ID - 404",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "2da7c54f-3706-48fb-9f39-a50b9d3f5989",
+										"exec": [
+											"pm.test(\"Response status should be 404.\", ()=>{\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([404]);\r",
+											"});\r",
+											"\r",
+											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});\r",
+											"\r",
+											"postman.setNextRequest('Delete employee by ID - 404');"
+										],
+										"type": "text/javascript"
+									}
 								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/employees/{{employee_id}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"employees",
+										"{{employee_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete employee by ID - 404",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "cbe9a7d2-951e-4aad-a50e-414dd4fc1701",
+										"exec": [
+											"pm.test(\"Response should have status 404.\", ()=>{\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([404]);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body should have only one property 'message'.\", () => {\r",
+											"    pm.expect(pm.response).to.be.json;\r",
+											"    pm.expect(pm.response).to.have.jsonBody('message');\r",
+											"    pm.expect(pm.response).to.not.have.jsonBody('id');\r",
+											"});\r",
+											"\r",
+											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});\r",
+											"\r",
+											"pm.collectionVariables.unset(\"employee_id\");\r",
+											"pm.collectionVariables.unset(\"employee_body\");"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/employees/{{employee_id}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"employees",
+										"{{employee_id}}"
+									]
+								},
+								"description": "App should delete employee with provided ID."
 							},
 							"response": []
 						}
@@ -299,13 +432,109 @@
 					"name": "Customer",
 					"item": [
 						{
+							"name": "Get all customers",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "88780576-e4e6-4865-9e2a-133c6bc88773",
+										"exec": [
+											"pm.test(\"Status test\", () => {\r",
+											"    pm.expect(pm.response.code).to.be.equal(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body should have 'quantity' and 'customers'\", () => {\r",
+											"    pm.response.to.be.json;\r",
+											"\r",
+											"    const body = pm.response.json();\r",
+											"\r",
+											"    pm.response.to.have.jsonBody(\"quantity\");\r",
+											"    pm.expect(body.quantity).to.be.not.null;\r",
+											"\r",
+											"    pm.response.to.have.jsonBody(\"customers\");\r",
+											"    pm.expect(body.customers).to.not.be.null;\r",
+											"    pm.expect(body.customers).to.not.be.empty;\r",
+											"});\r",
+											"\r",
+											"const resTime = Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"pm.test(`Response time should be less than ${resTime}ms`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});\r",
+											"\r",
+											"postman.setNextRequest('Create customer');"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/customers",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"customers"
+									]
+								}
+							},
+							"response": []
+						},
+						{
 							"name": "Create customer",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "a718c00f-ffa1-4b80-aa11-66f31005e73d",
+										"exec": [
+											"const requestBody=JSON.parse(pm.request.body.raw);\r",
+											"pm.collectionVariables.set(\"customer_body\",requestBody);"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "48ca9167-43c0-4c91-a717-8ba7ca5b2d6c",
+										"exec": [
+											"const { isEqual } = require('lodash');\r",
+											"\r",
+											"console.log(pm.collectionVariables.get(\"customer_id\"));\r",
+											"console.log(pm.collectionVariables.get(\"customer_body\"));\r",
+											"console.log(pm.response.json());\r",
+											"//console.log(isEqual(object, other));\r",
+											"\r",
+											"pm.test(\"Status test\", ()=>{\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200,201]);\r",
+											"});\r",
+											"\r",
+											"pm.collectionVariables.set(\"customer_id\", pm.response.json().id);\r",
+											"\r",
+											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"pm.test(`Response time should be less than ${resTime}ms`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});\r",
+											"\r",
+											"\r",
+											"postman.setNextRequest('Get customer by Id');"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "POST",
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"properties\": {\r\n        \"country\": \"Germany\",\r\n        \"address\": \"Obere Str. 57\",\r\n        \"city\": \"Berlin\",\r\n        \"phone\": \"030-0074321\",\r\n        \"postalCode\": \"12209\",\r\n        \"name\": \"Grzegorz Zacharski\",\r\n        \"company\": \"Alfreds Futterkiste\",\r\n        \"title\": \"Sales Representative\",\r\n        \"fax\": \"030-0076545\"\r\n    }\r\n}",
+									"raw": "{\r\n    \"properties\": {\r\n        \"country\": \"Germany\",\r\n        \"address\": \"Obere Str. 57\",\r\n        \"city\": \"Berlin\",\r\n        \"phone\": \"030-0074321\",\r\n        \"postalCode\": \"12209\",\r\n        \"name\": \"Jan Kowalski\",\r\n        \"company\": \"Alfreds Futterkiste\",\r\n        \"title\": \"Sales Representative\",\r\n        \"fax\": \"030-0076545\"\r\n    }\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -329,6 +558,27 @@
 						},
 						{
 							"name": "Get customer by Id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "50ed4e94-a469-4772-b323-38859afea0b1",
+										"exec": [
+											"pm.test(\"Status test\", ()=>{\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+											"});\r",
+											"\r",
+											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"pm.test(`Response time should be less than ${resTime}ms`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});\r",
+											"\r",
+											"postman.setNextRequest('Update customer by Id');"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"protocolProfileBehavior": {
 								"disableBodyPruning": true
 							},
@@ -345,7 +595,7 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:3000/api/customers/ALFKI",
+									"raw": "http://localhost:3000/api/customers/{{customer_id}}",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -354,7 +604,7 @@
 									"path": [
 										"api",
 										"customers",
-										"ALFKI"
+										"{{customer_id}}"
 									]
 								}
 							},
@@ -362,6 +612,27 @@
 						},
 						{
 							"name": "Update customer by Id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "85ebaad3-d9c0-4b02-a055-1f49ddbdb7e2",
+										"exec": [
+											"pm.test(\"Status test\", ()=>{\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+											"});\r",
+											"\r",
+											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"pm.test(`Response time should be less than ${resTime}ms`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});\r",
+											"\r",
+											"postman.setNextRequest('Delete customer by Id');"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "PUT",
 								"header": [],
@@ -375,7 +646,7 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:3000/api/customers/b98d82a1-168c-4655-93cf-b94df094b8d8",
+									"raw": "http://localhost:3000/api/customers/{{customer_id}}",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -384,7 +655,7 @@
 									"path": [
 										"api",
 										"customers",
-										"b98d82a1-168c-4655-93cf-b94df094b8d8"
+										"{{customer_id}}"
 									]
 								}
 							},
@@ -392,11 +663,45 @@
 						},
 						{
 							"name": "Delete customer by Id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "3234fbc8-54a8-495d-94ee-ccbc62b71698",
+										"exec": [
+											"pm.test(\"Response should have status 200\", ()=>{\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+											"});\r",
+											"\r",
+											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"pm.test(`Response time should be less than ${resTime}ms`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body should have properties 'id' and 'message'\", () => {\r",
+											"    pm.expect(pm.response).to.be.json;\r",
+											"    pm.expect(pm.response).to.have.jsonBody(\"id\");\r",
+											"    pm.expect(pm.response).to.have.jsonBody('message');\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Id of deleted employee shoud be equal to customer_id\", ()=>{\r",
+											"    pm.expect(pm.response.json().id)\r",
+											"            .to.be.equal(pm.collectionVariables.get(\"customer_id\"));\r",
+											"});\r",
+											"\r",
+											"\r",
+											"postman.setNextRequest('Check if customer deleted');\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "DELETE",
 								"header": [],
 								"url": {
-									"raw": "http://localhost:3000/api/customers/Batman",
+									"raw": "http://localhost:3000/api/customers/{{customer_id}}",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -405,19 +710,49 @@
 									"path": [
 										"api",
 										"customers",
-										"Batman"
+										"{{customer_id}}"
 									]
 								}
 							},
 							"response": []
 						},
 						{
-							"name": "Get all customers",
+							"name": "Check if customer is deleted",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "4a543a55-86e5-443b-93a9-aea43d97e947",
+										"exec": [
+											"pm.test(\"Response should have status 404\", ()=>{\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([404]);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body should have only one property 'message'\", () => {\r",
+											"    pm.expect(pm.response).to.be.json;\r",
+											"    pm.expect(pm.response).to.have.jsonBody('message');\r",
+											"    pm.expect(pm.response).to.not.have.jsonBody('id');\r",
+											"});\r",
+											"\r",
+											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"pm.test(`Response time should be less than ${resTime}ms`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});\r",
+											"\r",
+											"\r",
+											"pm.collectionVariables.unset(\"customer_id\");\r",
+											"pm.collectionVariables.unset(\"customer_body\");\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
-								"method": "GET",
+								"method": "DELETE",
 								"header": [],
 								"url": {
-									"raw": "http://localhost:3000/api/customers",
+									"raw": "http://localhost:3000/api/customers/{{customer_id}}",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -425,7 +760,8 @@
 									"port": "3000",
 									"path": [
 										"api",
-										"customers"
+										"customers",
+										"{{customer_id}}"
 									]
 								}
 							},
@@ -692,8 +1028,13 @@
 	],
 	"variable": [
 		{
-			"id": "3406ec6b-c682-4e98-979c-fc0d0e29c734",
-			"key": "employee_body",
+			"id": "e330aec2-db5b-4bd8-b32a-1063c81eb34d",
+			"key": "customer_body",
+			"value": ""
+		},
+		{
+			"id": "b8ca5088-1db6-41f1-8512-76d24a4fd81b",
+			"key": "customer_id",
 			"value": ""
 		}
 	],
