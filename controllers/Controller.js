@@ -1,6 +1,7 @@
 
 const driver = require('../config/dbconfig').driver;
 const config = require('../config/dbconfig').config;
+const uuid = require('uuid');
 
 const nodeExists = async (id, label) => {
 
@@ -113,12 +114,20 @@ module.exports.create = async (request, response) => {
     const session = driver.session(config);
 
     try {
-        const query = `CREATE (n:${node_label}) SET n+=$properties, n.id=id(n) RETURN n;`;
-        const supplierDetails = {
-            properties: request.body
-        };
+        let query, nodeDetails = { properties: request.body };
 
-        const result = await session.writeTransaction(tx => tx.run(query, supplierDetails));
+        if (node_label === 'Customer') {
+            query = `CREATE (n:${node_label}) SET n+=$properties RETURN n;`
+
+            let id = nodeDetails.properties.id;
+
+            if (!id) id = nodeDetails.properties.id = uuid.v4();
+            if (await nodeExists(id, node_label)) throw new Error(`There is a customer with provided id: ${id}`);
+        } else {
+            query = `CREATE (n:${node_label}) SET n+=$properties, n.id=id(n) RETURN n;`;
+        }
+
+        const result = await session.writeTransaction(tx => tx.run(query, nodeDetails));
         const node = result.records[0];
 
         if (!node) throw new Error(`The server was not able to register a new ${node_label}.`);
