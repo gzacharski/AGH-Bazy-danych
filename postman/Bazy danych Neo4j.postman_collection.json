@@ -1906,7 +1906,457 @@
 				},
 				{
 					"name": "Shipper",
-					"item": [],
+					"item": [
+						{
+							"name": "Get all shippers",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "a7d5aead-aeee-4e6d-9115-38a80cb0d502",
+										"exec": [
+											"pm.test(\"Response status should be 200.\", ()=>{\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+											"});\r",
+											"\r",
+											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/shippers",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"shippers"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create shipper",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "7cd4ed43-1b96-436c-973c-381b17daf518",
+										"exec": [
+											"const requestBody=JSON.parse(pm.request.body.raw);\r",
+											"pm.collectionVariables.set(\"shipper_body\",requestBody);"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "b318bd08-c149-4228-a6d3-563bf024f127",
+										"exec": [
+											"pm.test(\"Response status should be 200 or 201.\", () => {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+											"});\r",
+											"\r",
+											"const resTime = Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body should have property 'id'.\", ()=>{\r",
+											"    pm.expect(pm.response).to.have.jsonBody(\"id\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Except property 'id', request and response bodies should be equal.\", () => {\r",
+											"    const { isEqual } = require('lodash');\r",
+											"\r",
+											"    const requestBody = pm.collectionVariables.get(\"shipper_body\");\r",
+											"    let responseBody = pm.response.json();\r",
+											"    delete responseBody.id;\r",
+											"\r",
+											"    pm.expect(isEqual(requestBody,responseBody)).to.be.true;\r",
+											"});\r",
+											"\r",
+											"pm.collectionVariables.set(\"shipper_id\", pm.response.json().id.low);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"phone\": \"(503) 555-9831\",\r\n    \"companyName\": \"Speedy Express\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/shippers",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"shippers"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create shipper - 500",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "a39933d6-8976-4013-9299-62271225f255",
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "bc3608a7-7f68-4596-9296-a808ba91f7be",
+										"exec": [
+											"pm.test(\"Response status should be 500.\", () => {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([500]);\r",
+											"});\r",
+											"\r",
+											"const resTime = Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body should have property 'error'.\", ()=>{\r",
+											"    pm.expect(pm.response).to.have.jsonBody(\"error\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"phone\": \"(503) 555-9831\",\r\n    \"companyName\": \"Speedy Express\",\r\n    \"id\": {{shipper_id}}\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/shippers",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"shippers"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get shipper by ID",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "cfc895f4-2354-467c-8f91-7de1ac6d8cdd",
+										"exec": [
+											"pm.test(\"Response status should be 200.\", ()=>{\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+											"});\r",
+											"\r",
+											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Except property 'id', response body should be equal to shipper_body\", () => {\r",
+											"    const { isEqual } = require('lodash');\r",
+											"    \r",
+											"    const body = pm.collectionVariables.get(\"shipper_body\");\r",
+											"    let responseBody = pm.response.json();\r",
+											"    delete responseBody.id;\r",
+											"\r",
+											"    pm.expect(isEqual(body,responseBody)).to.be.true;\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/shippers/{{shipper_id}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"shippers",
+										"{{shipper_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update shipper by ID",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "5fd850a6-8b63-4de7-add0-6ae9caa30116",
+										"exec": [
+											"const requestBody=JSON.parse(pm.request.body.raw);\r",
+											"let body=pm.collectionVariables.get(\"shipper_body\");\r",
+											"Object.assign(body,requestBody);\r",
+											"pm.collectionVariables.set(\"shipper_body\",body);"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "aed8ca9f-d5c9-4454-8bfd-bc464954c65e",
+										"exec": [
+											"pm.test(\"Response status should be 200.\", ()=>{\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+											"});\r",
+											"\r",
+											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Except property 'id' request and response bodies should be equal.\", () => {\r",
+											"    const { isEqual } = require('lodash');\r",
+											"\r",
+											"    const requestBody = pm.collectionVariables.get(\"shipper_body\");\r",
+											"    let responseBody = pm.response.json();\r",
+											"    delete responseBody.id;\r",
+											"\r",
+											"    pm.expect(isEqual(requestBody,responseBody)).to.be.true;\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"companyName\": \"Speedy Express\",\r\n    \"gender\" : \"male\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/shippers/{{shipper_id}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"shippers",
+										"{{shipper_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete shipper by ID",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "02470e49-9a43-4731-98b9-2d09f1b6f6b6",
+										"exec": [
+											"pm.test(\"Response should have status 200\", ()=>{\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+											"});\r",
+											"\r",
+											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body should have properties: 'id' and 'message'.\", () => {\r",
+											"    pm.expect(pm.response).to.be.json;\r",
+											"    pm.expect(pm.response).to.have.jsonBody(\"id\");\r",
+											"    pm.expect(pm.response).to.have.jsonBody(\"message\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Id of deleted shipper shoud be equal to shipper_id\", ()=>{\r",
+											"    pm.expect(Number.parseInt(pm.response.json().id))\r",
+											"            .to.be.equal(Number.parseInt(pm.collectionVariables.get(\"shipper_id\")));\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/shippers/{{shipper_id}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"shippers",
+										"{{shipper_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get shipper by ID - 404",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "8f5b244d-ccd7-4832-96c9-80a4436e20c1",
+										"exec": [
+											"pm.test(\"Response status should be 404.\", ()=>{\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([404]);\r",
+											"});\r",
+											"\r",
+											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body should have only one property 'message'.\", () => {\r",
+											"    pm.expect(pm.response).to.be.json;\r",
+											"    pm.expect(pm.response).to.have.jsonBody('message');\r",
+											"    pm.expect(pm.response).to.not.have.jsonBody('id');\r",
+											"    pm.expect(Object.keys(pm.response.json()).length).to.be.equal(1);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/shippers/{{shipper_id}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"shippers",
+										"{{shipper_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete shipper by ID - 404",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "5faae66d-2345-4182-9150-ce10f90c815e",
+										"exec": [
+											"pm.test(\"Response should have status 404.\", ()=>{\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([404]);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body should have only one property 'message'.\", () => {\r",
+											"    pm.expect(pm.response).to.be.json;\r",
+											"    pm.expect(pm.response).to.have.jsonBody('message');\r",
+											"    pm.expect(pm.response).to.not.have.jsonBody('id');\r",
+											"    pm.expect(Object.keys(pm.response.json()).length).to.be.equal(1);\r",
+											"});\r",
+											"\r",
+											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});\r",
+											"\r",
+											"pm.collectionVariables.unset(\"shipper_id\");\r",
+											"pm.collectionVariables.unset(\"shipper_body\");"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/shippers/{{shipper_id}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"shippers",
+										"{{shipper_id}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
 					"protocolProfileBehavior": {},
 					"_postman_isSubFolder": true
 				},
@@ -1914,7 +2364,93 @@
 					"name": "Supplier",
 					"item": [
 						{
+							"name": "Get all suppliers",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "3e924783-e6c3-4c3e-9d5d-0274899ff78f",
+										"exec": [
+											"pm.test(\"Response status should be 200.\", ()=>{\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+											"});\r",
+											"\r",
+											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/suppliers",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"suppliers"
+									]
+								}
+							},
+							"response": []
+						},
+						{
 							"name": "Create supplier",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "f936b005-f989-4e6b-a2d5-d1b437f39f33",
+										"exec": [
+											"const requestBody=JSON.parse(pm.request.body.raw);\r",
+											"pm.collectionVariables.set(\"supplier_body\",requestBody);"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "1e367d5a-e901-4738-801a-8c24ef10601d",
+										"exec": [
+											"pm.test(\"Response status should be 200 or 201.\", () => {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+											"});\r",
+											"\r",
+											"const resTime = Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body should have property 'id'.\", ()=>{\r",
+											"    pm.expect(pm.response).to.have.jsonBody(\"id\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Except property 'id', request and response bodies should be equal.\", () => {\r",
+											"    const { isEqual } = require('lodash');\r",
+											"\r",
+											"    const requestBody = pm.collectionVariables.get(\"supplier_body\");\r",
+											"    let responseBody = pm.response.json();\r",
+											"    delete responseBody.id;\r",
+											"\r",
+											"    pm.expect(isEqual(requestBody,responseBody)).to.be.true;\r",
+											"});\r",
+											"\r",
+											"pm.collectionVariables.set(\"supplier_id\", pm.response.json().id.low);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "POST",
 								"header": [],
@@ -1943,16 +2479,47 @@
 							"response": []
 						},
 						{
-							"name": "Get supplier by Id",
-							"protocolProfileBehavior": {
-								"disableBodyPruning": true
-							},
+							"name": "Create supplier - 500",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "bd98cee2-66df-4483-848f-7c976e0185c3",
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "467ba7b7-93e4-4535-8892-d6c8a950ba46",
+										"exec": [
+											"pm.test(\"Response status should be 500.\", () => {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([500]);\r",
+											"});\r",
+											"\r",
+											"const resTime = Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body should have property 'error'.\", ()=>{\r",
+											"    pm.expect(pm.response).to.have.jsonBody(\"error\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
-								"method": "GET",
+								"method": "POST",
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"country\": \"United Kingdom\",\r\n    \"address\": \"49 Gilbert St.\",\r\n    \"contactTitle\": \"Purchasing Manager\",\r\n    \"city\": \"London\",\r\n    \"phone\": \"(171) 555-2222\",\r\n    \"contactName\": \"Charlotte Cooper\",\r\n    \"postalCode\": \"EC1 4SD\",\r\n    \"companyName\": \"Exotic Liquids\"\r\n}",
+									"raw": "{\r\n    \"country\": \"Poland\",\r\n    \"address\": \"49 Gilbert St.\",\r\n    \"contactTitle\": \"Purchasing Manager\",\r\n    \"city\": \"Warsaw\",\r\n    \"phone\": \"(171) 555-2222\",\r\n    \"contactName\": \"Charlotte Cooper\",\r\n    \"postalCode\": \"EC1 4SD\",\r\n    \"companyName\": \"Exotic Liquids\",\r\n    \"id\" : {{supplier_id}}\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -1960,7 +2527,57 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:3000/api/suppliers/31063",
+									"raw": "http://localhost:3000/api/suppliers",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"suppliers"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get supplier by Id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "f2873ee9-0c8a-457a-919b-4ffb54a759e0",
+										"exec": [
+											"pm.test(\"Response status should be 200.\", ()=>{\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+											"});\r",
+											"\r",
+											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Except property 'id', response body should be equal to supplier_body\", () => {\r",
+											"    const { isEqual } = require('lodash');\r",
+											"    \r",
+											"    const body = pm.collectionVariables.get(\"supplier_body\");\r",
+											"    let responseBody = pm.response.json();\r",
+											"    delete responseBody.id;\r",
+											"\r",
+											"    pm.expect(isEqual(body,responseBody)).to.be.true;\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/suppliers/{{supplier_id}}",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -1969,7 +2586,7 @@
 									"path": [
 										"api",
 										"suppliers",
-										"31063"
+										"{{supplier_id}}"
 									]
 								}
 							},
@@ -1977,6 +2594,48 @@
 						},
 						{
 							"name": "Update supplier by Id",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "d9319699-911f-42b1-8c4c-f8dafd04d8fc",
+										"exec": [
+											"const requestBody=JSON.parse(pm.request.body.raw);\r",
+											"let body=pm.collectionVariables.get(\"supplier_body\");\r",
+											"Object.assign(body,requestBody);\r",
+											"pm.collectionVariables.set(\"supplier_body\",body);"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "dc1afb7c-f1c0-4ffc-92e9-c8aa28770b4d",
+										"exec": [
+											"pm.test(\"Response status should be 200.\", ()=>{\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+											"});\r",
+											"\r",
+											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Except property 'id' request and response bodies should be equal.\", () => {\r",
+											"    const { isEqual } = require('lodash');\r",
+											"\r",
+											"    const requestBody = pm.collectionVariables.get(\"supplier_body\");\r",
+											"    let responseBody = pm.response.json();\r",
+											"    delete responseBody.id;\r",
+											"\r",
+											"    pm.expect(isEqual(requestBody,responseBody)).to.be.true;\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "PUT",
 								"header": [],
@@ -1990,7 +2649,7 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:3000/api/suppliers/31063",
+									"raw": "http://localhost:3000/api/suppliers/{{supplier_id}}",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -1999,7 +2658,7 @@
 									"path": [
 										"api",
 										"suppliers",
-										"31063"
+										"{{supplier_id}}"
 									]
 								}
 							},
@@ -2007,11 +2666,41 @@
 						},
 						{
 							"name": "Delete supplier by Id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "1b6f9b2f-b314-48f2-b3fc-a48e50200980",
+										"exec": [
+											"pm.test(\"Response should have status 200\", ()=>{\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+											"});\r",
+											"\r",
+											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body should have properties: 'id' and 'message'.\", () => {\r",
+											"    pm.expect(pm.response).to.be.json;\r",
+											"    pm.expect(pm.response).to.have.jsonBody(\"id\");\r",
+											"    pm.expect(pm.response).to.have.jsonBody(\"message\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Id of deleted supplier shoud be equal to supplier_id\", ()=>{\r",
+											"    pm.expect(Number.parseInt(pm.response.json().id))\r",
+											"            .to.be.equal(Number.parseInt(pm.collectionVariables.get(\"supplier_id\")));\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "DELETE",
 								"header": [],
 								"url": {
-									"raw": "http://localhost:3000/api/suppliers/31063",
+									"raw": "http://localhost:3000/api/suppliers/{{supplier_id}}",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -2020,19 +2709,45 @@
 									"path": [
 										"api",
 										"suppliers",
-										"31063"
+										"{{supplier_id}}"
 									]
 								}
 							},
 							"response": []
 						},
 						{
-							"name": "Get all suppliers",
+							"name": "Get supplier by ID - 404",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "3befe478-feb5-42c1-b464-c55719ed82db",
+										"exec": [
+											"pm.test(\"Response status should be 404.\", ()=>{\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([404]);\r",
+											"});\r",
+											"\r",
+											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body should have only one property 'message'.\", () => {\r",
+											"    pm.expect(pm.response).to.be.json;\r",
+											"    pm.expect(pm.response).to.have.jsonBody('message');\r",
+											"    pm.expect(pm.response).to.not.have.jsonBody('id');\r",
+											"    pm.expect(Object.keys(pm.response.json()).length).to.be.equal(1);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "http://localhost:3000/api/suppliers",
+									"raw": "http://localhost:3000/api/suppliers/{{supplier_id}}",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -2040,7 +2755,58 @@
 									"port": "3000",
 									"path": [
 										"api",
-										"suppliers"
+										"suppliers",
+										"{{supplier_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete supplier by ID - 404",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "1d33a6b7-fd38-4149-bf98-2ac818a02c91",
+										"exec": [
+											"pm.test(\"Response should have status 404.\", ()=>{\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([404]);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body should have only one property 'message'.\", () => {\r",
+											"    pm.expect(pm.response).to.be.json;\r",
+											"    pm.expect(pm.response).to.have.jsonBody('message');\r",
+											"    pm.expect(pm.response).to.not.have.jsonBody('id');\r",
+											"    pm.expect(Object.keys(pm.response.json()).length).to.be.equal(1);\r",
+											"});\r",
+											"\r",
+											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});\r",
+											"\r",
+											"pm.collectionVariables.unset(\"supplier_id\");\r",
+											"pm.collectionVariables.unset(\"supplier_body\");"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/suppliers/{{supplier_id}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"suppliers",
+										"{{supplier_id}}"
 									]
 								}
 							},
@@ -2056,7 +2822,7 @@
 	],
 	"variable": [
 		{
-			"id": "8a3b3995-4f51-4c7b-b2cf-c6afd91f14d9",
+			"id": "89e8b46c-7c5d-47d7-a8d1-9660b5d42710",
 			"key": "order_body",
 			"value": ""
 		}
