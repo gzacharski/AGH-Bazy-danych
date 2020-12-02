@@ -32,13 +32,11 @@ module.exports.getAll = async (request, response) => {
     const session = driver.session(config);
 
     const node_label = request.get('node_label');
-    console.log(node_label);
 
     try {
         if (!node_label) throw new Error("Node label has not been specified.");
 
         const query = `MATCH (n:${node_label}) RETURN n`;
-        console.log(query);
 
         const result = await session.readTransaction(tx => tx.run(query));
         const nodes = result.records.map(record => record.get(0).properties);
