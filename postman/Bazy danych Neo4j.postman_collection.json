@@ -49,9 +49,7 @@
 											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
 											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
 											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
-											"});\r",
-											"\r",
-											"postman.setNextRequest('Create employee');"
+											"});"
 										],
 										"type": "text/javascript"
 									}
@@ -119,8 +117,7 @@
 											"    pm.expect(isEqual(requestBody,responseBody)).to.be.true;\r",
 											"});\r",
 											"\r",
-											"pm.collectionVariables.set(\"employee_id\", pm.response.json().id.low);\r",
-											"postman.setNextRequest('Update employee by ID');"
+											"pm.collectionVariables.set(\"employee_id\", pm.response.json().id.low);"
 										],
 										"type": "text/javascript"
 									}
@@ -184,9 +181,7 @@
 											"\r",
 											"pm.test(\"Response body should have property 'error'.\", ()=>{\r",
 											"    pm.expect(pm.response).to.have.jsonBody(\"error\");\r",
-											"});\r",
-											"\r",
-											"postman.setNextRequest('Update employee by ID');"
+											"});"
 										],
 										"type": "text/javascript"
 									}
@@ -235,9 +230,7 @@
 											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
 											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
 											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
-											"});\r",
-											"\r",
-											"postman.setNextRequest('Delete user by ID');"
+											"});"
 										],
 										"type": "text/javascript"
 									}
@@ -287,9 +280,7 @@
 											"    delete responseBody.id;\r",
 											"\r",
 											"    pm.expect(isEqual(requestBody,responseBody)).to.be.true;\r",
-											"});\r",
-											"\r",
-											"postman.setNextRequest('Get employee by ID');"
+											"});"
 										],
 										"type": "text/javascript"
 									}
@@ -300,11 +291,9 @@
 										"id": "a48cf3e0-354a-4956-a6db-8b7e390ed0a1",
 										"exec": [
 											"const requestBody=JSON.parse(pm.request.body.raw);\r",
-											"let employeeBody=pm.collectionVariables.get(\"employee_body\");\r",
-											"console.log(employeeBody);\r",
-											"Object.assign(employeeBody,requestBody);\r",
-											"console.log(employeeBody);\r",
-											"pm.collectionVariables.set(\"employee_body\",employeeBody);"
+											"let body=pm.collectionVariables.get(\"employee_body\");\r",
+											"Object.assign(body,requestBody);\r",
+											"pm.collectionVariables.set(\"employee_body\",body);"
 										],
 										"type": "text/javascript"
 									}
@@ -339,7 +328,7 @@
 							"response": []
 						},
 						{
-							"name": "Delete user by ID",
+							"name": "Delete employee by ID",
 							"event": [
 								{
 									"listen": "test",
@@ -364,9 +353,7 @@
 											"pm.test(\"Id of deleted employee shoud be equal to employee_id\", ()=>{\r",
 											"    pm.expect(Number.parseInt(pm.response.json().id))\r",
 											"            .to.be.equal(Number.parseInt(pm.collectionVariables.get(\"employee_id\")));\r",
-											"});\r",
-											"\r",
-											"postman.setNextRequest('Get employee by ID - 404');"
+											"});"
 										],
 										"type": "text/javascript"
 									}
@@ -409,7 +396,12 @@
 											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
 											"});\r",
 											"\r",
-											"postman.setNextRequest('Delete employee by ID - 404');"
+											"pm.test(\"Response body should have only one property 'message'.\", () => {\r",
+											"    pm.expect(pm.response).to.be.json;\r",
+											"    pm.expect(pm.response).to.have.jsonBody('message');\r",
+											"    pm.expect(pm.response).to.not.have.jsonBody('id');\r",
+											"    pm.expect(Object.keys(pm.response.json()).length).to.be.equal(1);\r",
+											"});"
 										],
 										"type": "text/javascript"
 									}
@@ -450,6 +442,7 @@
 											"    pm.expect(pm.response).to.be.json;\r",
 											"    pm.expect(pm.response).to.have.jsonBody('message');\r",
 											"    pm.expect(pm.response).to.not.have.jsonBody('id');\r",
+											"    pm.expect(Object.keys(pm.response.json()).length).to.be.equal(1);\r",
 											"});\r",
 											"\r",
 											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
@@ -490,7 +483,461 @@
 				},
 				{
 					"name": "Category",
-					"item": [],
+					"item": [
+						{
+							"name": "Get all categories",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "97e21e78-af71-485e-8c62-a20359f00caf",
+										"exec": [
+											"pm.test(\"Response status should be 200.\", ()=>{\r",
+											"    pm.expect(pm.response.code).to.be.equal(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body should have properties: 'quantity' and 'node'.\", () => {\r",
+											"    pm.response.to.be.json;\r",
+											"\r",
+											"    const body=pm.response.json();\r",
+											"\r",
+											"    pm.response.to.have.jsonBody(\"quantity\");\r",
+											"    pm.expect(body.quantity).to.be.not.null;\r",
+											"\r",
+											"    pm.response.to.have.jsonBody(\"nodes\");\r",
+											"    pm.expect(body.nodes).to.not.be.null;\r",
+											"    pm.expect(body.nodes).to.not.be.empty;\r",
+											"});\r",
+											"\r",
+											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/categories",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"categories"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create category",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "bd77dfd9-ef79-4ea8-a41c-927d9f9168fe",
+										"exec": [
+											"const requestBody=JSON.parse(pm.request.body.raw);\r",
+											"pm.collectionVariables.set(\"category_body\",requestBody);"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "73a7b40f-e25a-4211-be87-f97e4dc431a0",
+										"exec": [
+											"const { isEqual } = require('lodash');\r",
+											"\r",
+											"pm.test(\"Response status should be 200 or 201.\", () => {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+											"});\r",
+											"\r",
+											"const resTime = Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body should have property 'id'.\", ()=>{\r",
+											"    pm.expect(pm.response).to.have.jsonBody(\"id\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Except property 'id', request and response bodies should be equal.\", () => {\r",
+											"    const requestBody = pm.collectionVariables.get(\"category_body\");\r",
+											"    let responseBody = pm.response.json();\r",
+											"    delete responseBody.id;\r",
+											"\r",
+											"    console.log(requestBody);\r",
+											"\r",
+											"    pm.expect(isEqual(requestBody,responseBody)).to.be.true;\r",
+											"});\r",
+											"\r",
+											"pm.collectionVariables.set(\"category_id\", pm.response.json().id.low);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Beverages\",\r\n    \"description\": \"Soft drinks, coffees, teas, beers, and ales\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/categories",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"categories"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create category - 500",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "401aa77e-652b-4a1d-aadf-9ed3eb72d5e1",
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "8993b190-3a57-4f52-94ee-12c01ab41dc9",
+										"exec": [
+											"pm.test(\"Response status should be 500.\", () => {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([500]);\r",
+											"});\r",
+											"\r",
+											"const resTime = Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body should have property 'error'.\", ()=>{\r",
+											"    pm.expect(pm.response).to.have.jsonBody(\"error\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Beverages\",\r\n    \"description\": \"Soft drinks, coffees, teas, beers, and ales\",\r\n    \"id\": {{category_id}}\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/categories",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"categories"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get category by ID",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "50fc2d82-1e93-4fd5-86dc-248c928e7ab2",
+										"exec": [
+											"pm.test(\"Response status should be 200.\", ()=>{\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+											"});\r",
+											"\r",
+											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/categories/{{category_id}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"categories",
+										"{{category_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update category by ID",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "c663e540-eebd-451c-b5d8-cb4041c856c3",
+										"exec": [
+											"const requestBody=JSON.parse(pm.request.body.raw);\r",
+											"let body=pm.collectionVariables.get(\"category_body\");\r",
+											"Object.assign(body,requestBody);\r",
+											"pm.collectionVariables.set(\"category_body\",body);"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "28b412b4-f9f9-40e6-80f9-a6201d5d7300",
+										"exec": [
+											"const { isEqual } = require('lodash');\r",
+											"\r",
+											"pm.test(\"Response status should be 200.\", ()=>{\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+											"});\r",
+											"\r",
+											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Except property 'id' request and response bodies should be equal.\", () => {\r",
+											"    const requestBody = pm.collectionVariables.get(\"category_body\");\r",
+											"    let responseBody = pm.response.json();\r",
+											"    delete responseBody.id;\r",
+											"\r",
+											"    pm.expect(isEqual(requestBody,responseBody)).to.be.true;\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Beverages 2\",\r\n    \"date\": \"2020-12-11\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/categories/{{category_id}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"categories",
+										"{{category_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete category by ID",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "30ac1283-5a52-4894-aa53-99ea7f4a0190",
+										"exec": [
+											"pm.test(\"Response status should be 200.\", ()=>{\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+											"});\r",
+											"\r",
+											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body should have properties: 'id' and 'message'.\", () => {\r",
+											"    pm.expect(pm.response).to.be.json;\r",
+											"    pm.expect(pm.response).to.have.jsonBody(\"id\");\r",
+											"    pm.expect(pm.response).to.have.jsonBody(\"message\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Id of deleted category shoud be equal to category_id\", ()=>{\r",
+											"    pm.expect(Number.parseInt(pm.response.json().id))\r",
+											"            .to.be.equal(Number.parseInt(pm.collectionVariables.get(\"category_id\")));\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/categories/{{category_id}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"categories",
+										"{{category_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get category by ID - 404",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "e33cc75a-f279-42e1-b585-9e9b21722cf0",
+										"exec": [
+											"pm.test(\"Response status should be 404.\", ()=>{\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([404]);\r",
+											"});\r",
+											"\r",
+											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body should have only one property 'message'.\", () => {\r",
+											"    pm.expect(pm.response).to.be.json;\r",
+											"    pm.expect(pm.response).to.have.jsonBody('message');\r",
+											"    pm.expect(pm.response).to.not.have.jsonBody('id');\r",
+											"    pm.expect(Object.keys(pm.response.json()).length).to.be.equal(1);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/categories/{{category_id}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"categories",
+										"{{category_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete category by ID - 404",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "5c1e1897-4681-4495-a38f-a1820e27e165",
+										"exec": [
+											"pm.test(\"Response should have status 404.\", ()=>{\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([404]);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body should have only one property 'message'.\", () => {\r",
+											"    pm.expect(pm.response).to.be.json;\r",
+											"    pm.expect(pm.response).to.have.jsonBody('message');\r",
+											"    pm.expect(pm.response).to.not.have.jsonBody('id');\r",
+											"    pm.expect(Object.keys(pm.response.json()).length).to.be.equal(1);\r",
+											"});\r",
+											"\r",
+											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});\r",
+											"\r",
+											"pm.collectionVariables.unset(\"category_id\");\r",
+											"pm.collectionVariables.unset(\"category_body\");"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/categories/{{category_id}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"categories",
+										"{{category_id}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
 					"protocolProfileBehavior": {},
 					"_postman_isSubFolder": true
 				},
@@ -505,14 +952,14 @@
 									"script": {
 										"id": "88780576-e4e6-4865-9e2a-133c6bc88773",
 										"exec": [
-											"pm.test(\"Response status should be 200.\", () => {\r",
+											"pm.test(\"Response status should be 200.\", ()=>{\r",
 											"    pm.expect(pm.response.code).to.be.equal(200);\r",
 											"});\r",
 											"\r",
 											"pm.test(\"Response body should have properties: 'quantity' and 'node'.\", () => {\r",
 											"    pm.response.to.be.json;\r",
 											"\r",
-											"    const body = pm.response.json();\r",
+											"    const body=pm.response.json();\r",
 											"\r",
 											"    pm.response.to.have.jsonBody(\"quantity\");\r",
 											"    pm.expect(body.quantity).to.be.not.null;\r",
@@ -522,12 +969,10 @@
 											"    pm.expect(body.nodes).to.not.be.empty;\r",
 											"});\r",
 											"\r",
-											"const resTime = Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
 											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
 											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
-											"});\r",
-											"\r",
-											"postman.setNextRequest('Create customer');"
+											"});"
 										],
 										"type": "text/javascript"
 									}
@@ -572,24 +1017,29 @@
 										"exec": [
 											"const { isEqual } = require('lodash');\r",
 											"\r",
-											"console.log(pm.collectionVariables.get(\"customer_id\"));\r",
-											"console.log(pm.collectionVariables.get(\"customer_body\"));\r",
-											"console.log(pm.response.json());\r",
-											"//console.log(isEqual(object, other));\r",
-											"\r",
-											"pm.test(\"Status test\", ()=>{\r",
-											"    pm.expect(pm.response.code).to.be.oneOf([200,201]);\r",
+											"pm.test(\"Response status should be 200 or 201.\", () => {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
 											"});\r",
 											"\r",
-											"pm.collectionVariables.set(\"customer_id\", pm.response.json().id);\r",
+											"const resTime = Number.parseInt(pm.environment.get(\"responseTime\"));\r",
 											"\r",
-											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
-											"pm.test(`Response time should be less than ${resTime}ms`, () => {\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
 											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
 											"});\r",
 											"\r",
+											"pm.test(\"Response body should have property 'id'.\", ()=>{\r",
+											"    pm.expect(pm.response).to.have.jsonBody(\"id\");\r",
+											"});\r",
 											"\r",
-											"postman.setNextRequest('Get customer by Id');"
+											"pm.test(\"Except property 'id', request and response bodies should be equal.\", () => {\r",
+											"    const requestBody = pm.collectionVariables.get(\"customer_body\");\r",
+											"    let responseBody = pm.response.json();\r",
+											"    delete responseBody.id;\r",
+											"\r",
+											"    pm.expect(isEqual(requestBody,responseBody)).to.be.true;\r",
+											"});\r",
+											"\r",
+											"pm.collectionVariables.set(\"customer_id\", pm.response.json().id);"
 										],
 										"type": "text/javascript"
 									}
@@ -623,43 +1073,82 @@
 							"response": []
 						},
 						{
-							"name": "Get customer by Id",
+							"name": "Create customer - 500",
 							"event": [
 								{
 									"listen": "test",
 									"script": {
-										"id": "50ed4e94-a469-4772-b323-38859afea0b1",
+										"id": "1c764c52-79a6-4f33-a3ff-125a3ec83bd0",
 										"exec": [
-											"pm.test(\"Status test\", ()=>{\r",
-											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+											"pm.test(\"Response status should be 500.\", () => {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([500]);\r",
 											"});\r",
 											"\r",
-											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
-											"pm.test(`Response time should be less than ${resTime}ms`, () => {\r",
+											"const resTime = Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
 											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
 											"});\r",
 											"\r",
-											"postman.setNextRequest('Update customer by Id');"
+											"pm.test(\"Response body should have property 'error'.\", ()=>{\r",
+											"    pm.expect(pm.response).to.have.jsonBody(\"error\");\r",
+											"});"
 										],
 										"type": "text/javascript"
 									}
 								}
 							],
-							"protocolProfileBehavior": {
-								"disableBodyPruning": true
-							},
 							"request": {
-								"method": "GET",
+								"method": "POST",
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"properties\": {\r\n        \"country\": \"Germany\",\r\n        \"address\": \"Obere Str. 57\",\r\n        \"phone\": \"030-0074321\",\r\n        \"city\": \"Berlin\",\r\n        \"postalCode\": \"12209\",\r\n        \"name\": \"Grzegorz Zacharski\",\r\n        \"company\": \"Alfreds Futterkiste\",\r\n        \"id\": \"Kuba\",\r\n        \"fax\": \"030-0076545\",\r\n        \"title\": \"Sales Representative\"\r\n    }\r\n}",
+									"raw": "{\r\n    \"country\": \"Germany\",\r\n    \"address\": \"Obere Str. 57\",\r\n    \"city\": \"Berlin\",\r\n    \"phone\": \"030-0074321\",\r\n    \"postalCode\": \"12209\",\r\n    \"name\": \"Jan Kowalski\",\r\n    \"company\": \"Alfreds Futterkiste\",\r\n    \"title\": \"Sales Representative\",\r\n    \"fax\": \"030-0076545\",\r\n    \"id\": \"{{customer_id}}\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
 										}
 									}
 								},
+								"url": {
+									"raw": "http://localhost:3000/api/customers",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"customers"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get customer by ID",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "50ed4e94-a469-4772-b323-38859afea0b1",
+										"exec": [
+											"pm.test(\"Response status should be 200.\", ()=>{\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+											"});\r",
+											"\r",
+											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
 								"url": {
 									"raw": "http://localhost:3000/api/customers/{{customer_id}}",
 									"protocol": "http",
@@ -677,23 +1166,44 @@
 							"response": []
 						},
 						{
-							"name": "Update customer by Id",
+							"name": "Update customer by ID",
 							"event": [
 								{
 									"listen": "test",
 									"script": {
 										"id": "85ebaad3-d9c0-4b02-a055-1f49ddbdb7e2",
 										"exec": [
-											"pm.test(\"Status test\", ()=>{\r",
+											"const { isEqual } = require('lodash');\r",
+											"\r",
+											"pm.test(\"Response status should be 200.\", ()=>{\r",
 											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
 											"});\r",
 											"\r",
 											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
-											"pm.test(`Response time should be less than ${resTime}ms`, () => {\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
 											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
 											"});\r",
 											"\r",
-											"postman.setNextRequest('Delete customer by Id');"
+											"pm.test(\"Except property 'id' request and response bodies should be equal.\", () => {\r",
+											"    const requestBody = pm.collectionVariables.get(\"customer_body\");\r",
+											"    let responseBody = pm.response.json();\r",
+											"    delete responseBody.id;\r",
+											"\r",
+											"    pm.expect(isEqual(requestBody,responseBody)).to.be.true;\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "ce22310c-2a11-4bb3-9168-62c25dd4d759",
+										"exec": [
+											"const requestBody=JSON.parse(pm.request.body.raw);\r",
+											"let body=pm.collectionVariables.get(\"customer_body\");\r",
+											"Object.assign(body,requestBody);\r",
+											"pm.collectionVariables.set(\"customer_body\",body);"
 										],
 										"type": "text/javascript"
 									}
@@ -704,7 +1214,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"country\": \"Germany\",\r\n    \"address\": \"Obere Str. 57\",\r\n    \"city\": \"Berlin\",\r\n    \"phone\": \"030-0074321\",\r\n    \"postalCode\": \"12209\",\r\n    \"name\": \"Wojciech Zacharski\",\r\n    \"company\": \"Alfreds Futterkiste\",\r\n    \"title\": \"Sales Representative\",\r\n    \"fax\": \"030-0076545\",\r\n    \"driver\" : \"true\"\r\n}",
+									"raw": "{\r\n    \"country\": \"Germany\",\r\n    \"address\": \"Obere Str. 57\",\r\n    \"city\": \"Berlin\",\r\n    \"phone\": \"030-0074321\",\r\n    \"postalCode\": \"12209\",\r\n    \"name\": \"Wojciech Zacharski\",\r\n    \"company\": \"Alfreds Futterkiste\",\r\n    \"title\": \"Sales Representative\",\r\n    \"fax\": \"030-0076545\",\r\n    \"driver\": \"true\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -728,7 +1238,7 @@
 							"response": []
 						},
 						{
-							"name": "Delete customer by Id",
+							"name": "Delete customer by ID",
 							"event": [
 								{
 									"listen": "test",
@@ -740,24 +1250,20 @@
 											"});\r",
 											"\r",
 											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
-											"pm.test(`Response time should be less than ${resTime}ms`, () => {\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
 											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
 											"});\r",
 											"\r",
-											"pm.test(\"Response body should have properties 'id' and 'message'\", () => {\r",
+											"pm.test(\"Response body should have properties: 'id' and 'message'.\", () => {\r",
 											"    pm.expect(pm.response).to.be.json;\r",
 											"    pm.expect(pm.response).to.have.jsonBody(\"id\");\r",
-											"    pm.expect(pm.response).to.have.jsonBody('message');\r",
+											"    pm.expect(pm.response).to.have.jsonBody(\"message\");\r",
 											"});\r",
 											"\r",
 											"pm.test(\"Id of deleted employee shoud be equal to customer_id\", ()=>{\r",
 											"    pm.expect(pm.response.json().id)\r",
 											"            .to.be.equal(pm.collectionVariables.get(\"customer_id\"));\r",
-											"});\r",
-											"\r",
-											"\r",
-											"postman.setNextRequest('Check if customer deleted');\r",
-											""
+											"});"
 										],
 										"type": "text/javascript"
 									}
@@ -783,32 +1289,78 @@
 							"response": []
 						},
 						{
-							"name": "Check if customer is deleted",
+							"name": "Get customer by ID - 404",
 							"event": [
 								{
 									"listen": "test",
 									"script": {
-										"id": "4a543a55-86e5-443b-93a9-aea43d97e947",
+										"id": "bd458b7c-9b61-4e4e-8471-0280338c3795",
 										"exec": [
-											"pm.test(\"Response should have status 404\", ()=>{\r",
+											"pm.test(\"Response status should be 404.\", ()=>{\r",
 											"    pm.expect(pm.response.code).to.be.oneOf([404]);\r",
 											"});\r",
 											"\r",
-											"pm.test(\"Response body should have only one property 'message'\", () => {\r",
-											"    pm.expect(pm.response).to.be.json;\r",
-											"    pm.expect(pm.response).to.have.jsonBody('message');\r",
-											"    pm.expect(pm.response).to.not.have.jsonBody('id');\r",
-											"});\r",
-											"\r",
 											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
-											"pm.test(`Response time should be less than ${resTime}ms`, () => {\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
 											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
 											"});\r",
 											"\r",
+											"pm.test(\"Response body should have only one property 'message'.\", () => {\r",
+											"    pm.expect(pm.response).to.be.json;\r",
+											"    pm.expect(pm.response).to.have.jsonBody('message');\r",
+											"    pm.expect(pm.response).to.not.have.jsonBody('id');\r",
+											"    pm.expect(Object.keys(pm.response.json()).length).to.be.equal(1);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/customers/{{customer_id}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"customers",
+										"{{customer_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete customer by ID - 404",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "6c7e7b40-f127-4a1e-89dd-e1f40b88535c",
+										"exec": [
+											"pm.test(\"Response should have status 404.\", ()=>{\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([404]);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body should have only one property 'message'.\", () => {\r",
+											"    pm.expect(pm.response).to.be.json;\r",
+											"    pm.expect(pm.response).to.have.jsonBody('message');\r",
+											"    pm.expect(pm.response).to.not.have.jsonBody('id');\r",
+											"    pm.expect(Object.keys(pm.response.json()).length).to.be.equal(1);\r",
+											"});\r",
+											"\r",
+											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});\r",
 											"\r",
 											"pm.collectionVariables.unset(\"customer_id\");\r",
-											"pm.collectionVariables.unset(\"customer_body\");\r",
-											""
+											"pm.collectionVariables.unset(\"customer_body\");"
 										],
 										"type": "text/javascript"
 									}
@@ -839,7 +1391,47 @@
 				},
 				{
 					"name": "Order",
-					"item": [],
+					"item": [
+						{
+							"name": "Get all orders",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "89185c6a-dbc3-4413-9ff0-7fd33ea6dbd2",
+										"exec": [
+											"pm.test(\"Response status should be 200.\", ()=>{\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+											"});\r",
+											"\r",
+											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"pm.test(`Response time should be less than ${4*resTime} ms.`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(4*resTime);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/orders",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"orders"
+									]
+								}
+							},
+							"response": []
+						}
+					],
 					"protocolProfileBehavior": {},
 					"_postman_isSubFolder": true
 				},
@@ -847,7 +1439,106 @@
 					"name": "Product",
 					"item": [
 						{
+							"name": "Get all products",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "7614b5f7-5da6-4e2f-8262-03d656aebb18",
+										"exec": [
+											"pm.test(\"Response status should be 200.\", ()=>{\r",
+											"    pm.expect(pm.response.code).to.be.equal(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body should have properties: 'quantity' and 'node'.\", () => {\r",
+											"    pm.response.to.be.json;\r",
+											"\r",
+											"    const body=pm.response.json();\r",
+											"\r",
+											"    pm.response.to.have.jsonBody(\"quantity\");\r",
+											"    pm.expect(body.quantity).to.be.not.null;\r",
+											"\r",
+											"    pm.response.to.have.jsonBody(\"nodes\");\r",
+											"    pm.expect(body.nodes).to.not.be.null;\r",
+											"    pm.expect(body.nodes).to.not.be.empty;\r",
+											"});\r",
+											"\r",
+											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/products",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"products"
+									]
+								}
+							},
+							"response": []
+						},
+						{
 							"name": "Create product",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "d7481e8d-96f7-4f75-b563-926ed4764a3e",
+										"exec": [
+											"const requestBody=JSON.parse(pm.request.body.raw);\r",
+											"pm.collectionVariables.set(\"product_body\",requestBody);"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "bc1aa3f5-3b52-4f7b-a1fb-2f2aba1d1f45",
+										"exec": [
+											"const { isEqual } = require('lodash');\r",
+											"\r",
+											"pm.test(\"Response status should be 200 or 201.\", () => {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+											"});\r",
+											"\r",
+											"const resTime = Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body should have property 'id'.\", ()=>{\r",
+											"    pm.expect(pm.response).to.have.jsonBody(\"id\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Except property 'id', request and response bodies should be equal.\", () => {\r",
+											"    const requestBody = pm.collectionVariables.get(\"product_body\");\r",
+											"    let responseBody = pm.response.json();\r",
+											"    delete responseBody.id;\r",
+											"\r",
+											"    pm.expect(isEqual(requestBody,responseBody)).to.be.true;\r",
+											"});\r",
+											"\r",
+											"pm.collectionVariables.set(\"product_id\", pm.response.json().id.low);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "POST",
 								"header": [],
@@ -876,16 +1567,47 @@
 							"response": []
 						},
 						{
-							"name": "Get product by Id",
-							"protocolProfileBehavior": {
-								"disableBodyPruning": true
-							},
+							"name": "Create product - 500",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "daf80373-a772-40f7-a928-51658ad1275a",
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "a2fe11ea-3da6-4127-ab4a-a6b1f98c9cf5",
+										"exec": [
+											"pm.test(\"Response status should be 500.\", () => {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([500]);\r",
+											"});\r",
+											"\r",
+											"const resTime = Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body should have property 'error'.\", ()=>{\r",
+											"    pm.expect(pm.response).to.have.jsonBody(\"error\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
-								"method": "GET",
+								"method": "POST",
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"country\": \"United Kingdom\",\r\n    \"address\": \"49 Gilbert St.\",\r\n    \"contactTitle\": \"Purchasing Manager\",\r\n    \"city\": \"London\",\r\n    \"phone\": \"(171) 555-2222\",\r\n    \"contactName\": \"Charlotte Cooper\",\r\n    \"postalCode\": \"EC1 4SD\",\r\n    \"companyName\": \"Exotic Liquids\"\r\n}",
+									"raw": "{\r\n    \"unitPrice\": 0.0,\r\n    \"unitsInStock\": 39,\r\n    \"reorderLevel\": 10,\r\n    \"name\": \"Chai\",\r\n    \"quantityPerUnit\": \"10 boxes x 20 bags\",\r\n    \"discontinued\": 0,\r\n    \"unitsOnOrder\": 0,\r\n    \"id\" : {{product_id}}\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -893,7 +1615,57 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:3000/api/products/31063",
+									"raw": "http://localhost:3000/api/products",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"products"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get product by ID",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "ebe100c8-1fc1-4d6d-9dec-db32ea9d9f28",
+										"exec": [
+											"pm.test(\"Response status should be 200.\", ()=>{\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+											"});\r",
+											"\r",
+											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Except property 'id', response body should be equal to product_body\", () => {\r",
+											"    const { isEqual } = require('lodash');\r",
+											"    \r",
+											"    const body = pm.collectionVariables.get(\"product_body\");\r",
+											"    let responseBody = pm.response.json();\r",
+											"    delete responseBody.id;\r",
+											"\r",
+											"    pm.expect(isEqual(body,responseBody)).to.be.true;\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/products/{{product_id}}",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -902,20 +1674,62 @@
 									"path": [
 										"api",
 										"products",
-										"31063"
+										"{{product_id}}"
 									]
 								}
 							},
 							"response": []
 						},
 						{
-							"name": "Update product by Id",
+							"name": "Update product by ID",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "a934da74-e793-433d-8316-a26b99232a3f",
+										"exec": [
+											"const requestBody=JSON.parse(pm.request.body.raw);\r",
+											"let body=pm.collectionVariables.get(\"product_body\");\r",
+											"Object.assign(body,requestBody);\r",
+											"pm.collectionVariables.set(\"product_body\",body);"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "a6872faa-90ce-4a86-b38a-c4586ba3da01",
+										"exec": [
+											"pm.test(\"Response status should be 200.\", ()=>{\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+											"});\r",
+											"\r",
+											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Except property 'id' request and response bodies should be equal.\", () => {\r",
+											"    const { isEqual } = require('lodash');\r",
+											"\r",
+											"    const requestBody = pm.collectionVariables.get(\"product_body\");\r",
+											"    let responseBody = pm.response.json();\r",
+											"    delete responseBody.id;\r",
+											"\r",
+											"    pm.expect(isEqual(requestBody,responseBody)).to.be.true;\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "PUT",
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"city\": \"Warszawa\",\r\n    \"year\" : 1990\r\n}",
+									"raw": "{\r\n    \"unitPrice\": 0.0,\r\n    \"unitsInStock\": 39,\r\n    \"reorderLevel\": 10,\r\n    \"name\": \"Chai\",\r\n    \"quantityPerUnit\": \"10 boxes x 20 bags\",\r\n    \"discontinued\": 0,\r\n    \"unitsOnOrder\": 0,\r\n    \"year\": 1990\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -923,7 +1737,7 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:3000/api/suppliers/31063",
+									"raw": "http://localhost:3000/api/products/{{product_id}}",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -931,8 +1745,156 @@
 									"port": "3000",
 									"path": [
 										"api",
-										"suppliers",
-										"31063"
+										"products",
+										"{{product_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete product by ID",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "25f4804b-7271-42d8-8725-a9d18b5998c3",
+										"exec": [
+											"pm.test(\"Response should have status 200\", ()=>{\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+											"});\r",
+											"\r",
+											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body should have properties: 'id' and 'message'.\", () => {\r",
+											"    pm.expect(pm.response).to.be.json;\r",
+											"    pm.expect(pm.response).to.have.jsonBody(\"id\");\r",
+											"    pm.expect(pm.response).to.have.jsonBody(\"message\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Id of deleted product shoud be equal to product_id\", ()=>{\r",
+											"    pm.expect(Number.parseInt(pm.response.json().id))\r",
+											"            .to.be.equal(Number.parseInt(pm.collectionVariables.get(\"product_id\")));\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/products/{{product_id}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"products",
+										"{{product_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get product by ID - 404",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "3a5479e9-8a3e-401b-aab3-93a350081b79",
+										"exec": [
+											"pm.test(\"Response status should be 404.\", ()=>{\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([404]);\r",
+											"});\r",
+											"\r",
+											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body should have only one property 'message'.\", () => {\r",
+											"    pm.expect(pm.response).to.be.json;\r",
+											"    pm.expect(pm.response).to.have.jsonBody('message');\r",
+											"    pm.expect(pm.response).to.not.have.jsonBody('id');\r",
+											"    pm.expect(Object.keys(pm.response.json()).length).to.be.equal(1);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/products/{{product_id}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"products",
+										"{{product_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete product by ID - 404",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "6e610881-b094-4457-bf43-7db014eadcb0",
+										"exec": [
+											"pm.test(\"Response should have status 404.\", ()=>{\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([404]);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body should have only one property 'message'.\", () => {\r",
+											"    pm.expect(pm.response).to.be.json;\r",
+											"    pm.expect(pm.response).to.have.jsonBody('message');\r",
+											"    pm.expect(pm.response).to.not.have.jsonBody('id');\r",
+											"    pm.expect(Object.keys(pm.response.json()).length).to.be.equal(1);\r",
+											"});\r",
+											"\r",
+											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});\r",
+											"\r",
+											"pm.collectionVariables.unset(\"product_id\");\r",
+											"pm.collectionVariables.unset(\"product_body\");"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/products/{{product_id}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"products",
+										"{{product_id}}"
 									]
 								}
 							},
@@ -1094,23 +2056,8 @@
 	],
 	"variable": [
 		{
-			"id": "a4e9d55d-010e-44b6-a437-3b531ef1ac3f",
-			"key": "customer_body",
-			"value": ""
-		},
-		{
-			"id": "c4872ba0-3896-4079-9527-bbe7291c6c23",
-			"key": "customer_id",
-			"value": ""
-		},
-		{
-			"id": "c8325dca-3fea-44f0-9c99-e89ccc79794e",
-			"key": "employee_body",
-			"value": ""
-		},
-		{
-			"id": "06697ef0-b67f-40a6-8bd8-a3555eab8fe0",
-			"key": "employee_id",
+			"id": "8a3b3995-4f51-4c7b-b2cf-c6afd91f14d9",
+			"key": "order_body",
 			"value": ""
 		}
 	],
