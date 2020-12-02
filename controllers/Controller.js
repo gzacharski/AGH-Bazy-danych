@@ -163,7 +163,7 @@ module.exports.updateById = async (request, response) => {
                 });
 
         } else {
-            const query = `MERGE (s:${node_label} {id:$id}) SET s+=$properties RETURN s;`;
+            const query = `MERGE (n:${node_label} {id:$id}) SET n+=$properties RETURN n;`;
             const params = {
                 id: (node_label==='Customer')?id:Number.parseInt(id),
                 properties: request.body
@@ -207,9 +207,9 @@ module.exports.deleteById = async (request, response) => {
                 });
 
         } else {
-            const query = `MATCH (s:${node_label}) WHERE s.id=$id DETACH DELETE s;`;
+            const query = `MATCH (n:${node_label}) WHERE n.id=$id DETACH DELETE n;`;
             const params = {
-                id: Number.parseInt(id)
+                id: (node_label==='Customer')?id:Number.parseInt(id),
             };
 
             await session.writeTransaction(tx => tx.run(query, params));
