@@ -270,3 +270,43 @@ module.exports.createOrderRelation = async (request, response) => {
     }
 
 }
+
+//create supplies relation
+module.exports.createSuppliesRelation = async (request, response) => {
+    console.log('Create supplies relation...');
+
+    const supplierId = request.params.supplier;
+    const productId = request.params.product;
+    const session = driver.session(config);
+    const supplierNodeLabel = 'Supplier';
+    const productNodeLabel = 'Product';
+
+    try {
+        const relationSuppliesQuery = `MATCH (a:${supplierNodeLabel}),(b:${productNodeLabel}) WHERE a.id = ${supplierId} AND b.id = ${productId} CREATE (a)-[r:SUPPLIES]->(b) RETURN type(r)`;
+
+        const result = await session.writeTransaction(tx => tx.run(relationSuppliesQuery));
+        const node = result.records[0];
+
+        if (!node) throw new Error(`ERROR - cannot create SUPPLIES relationship between supplier: ${supplierId} and product: ${productId} `);
+
+        response
+            .status(200)
+            .send({
+                quantity: node.length,
+                node
+            })
+
+    } catch (error) {
+        //send response with status 500 if error took place
+        response
+            .status(500)
+            .send({
+                message: error.message
+            });
+
+    } finally {
+        await session.close();
+    }
+
+}
+
