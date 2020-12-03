@@ -231,3 +231,42 @@ module.exports.deleteById = async (request, response) => {
         await session.close();
     }
 }
+
+//create order relation
+module.exports.createOrderRelation = async (request, response) => {
+    console.log('Create relation...');
+
+    const customerId = request.params.customer;
+    const productId = request.params.product;
+    const session = driver.session(config);
+    const customerNodeLabel = 'Customer';
+    const productNodeLabel = 'Product';
+
+    try {
+        const relationOrderQuery = `MATCH (a:${customerNodeLabel}),(b:${productNodeLabel}) WHERE a.id = '${customerId}' AND b.id = ${productId} CREATE (a)-[r:ORDER]->(b) RETURN type(r)`;
+
+        const result = await session.writeTransaction(tx => tx.run(relationOrderQuery));
+        const node = result.records[0];
+
+        if (!node) throw new Error(`ERROR - cannot create ORDER relationship between customer: ${customerId} and product: ${productId} `);
+
+        response
+            .status(200)
+            .send({
+                quantity: node.length,
+                node
+            })
+
+    } catch (error) {
+        //send response with status 500 if error took place
+        response
+            .status(500)
+            .send({
+                message: error.message
+            });
+
+    } finally {
+        await session.close();
+    }
+
+}
