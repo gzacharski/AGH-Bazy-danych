@@ -13,3 +13,17 @@ Celem projektu jest zaimplementowanie systemu realizującego wybrane podstawowe 
 * Konteneryzacja: Docker
 * Ciągła integracja (CI): GitHub Actions
 
+## Uruchamianie
+
+1. Wystartowanie Neo4j w kontenerze Dockerowym:
+    ```shell script
+    docker-compose up -d
+    ```
+1. Utworzenie bazy Northwind (o ile nie była wcześniej utworzona) i dodanie danych:
+    ```shell script
+    ./createDatabase.sh
+    ```
+1. Wystartowanie aplikacji:
+    ```shell script
+    npm start
+    ```

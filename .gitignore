@@ -7,3 +7,9 @@ build
 # misc
 .DS_Store
 npm-debug.log
+
+# IntelliJ
+.idea
+
+# Neo4j
+neo4j
