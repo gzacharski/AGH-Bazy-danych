@@ -20,7 +20,7 @@ services:
     volumes:
       - ./neo4j/data:/data
       - ./neo4j/logs:/logs
-      - ./northwind:/var/lib/neo4j/import
+      - ./northwind:/var/lib/neo4j/import/northwind
       - ./cql_scripts/createNorthwind.cql:/createNorthwind.cql
     networks:
       - agh-db

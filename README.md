@@ -21,7 +21,7 @@ Celem projektu jest zaimplementowanie systemu realizującego wybrane podstawowe 
     ```
 1. Utworzenie bazy Northwind (o ile nie była wcześniej utworzona) i dodanie danych:
     ```shell script
-    ./createDatabase.sh
+    docker exec neo4j-db cat /createNorthwind.cql | cypher-shell -u neo4j -p test
     ```
 1. Wystartowanie aplikacji:
     ```shell script
