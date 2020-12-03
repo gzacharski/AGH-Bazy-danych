@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const { getAll, getById, create, deleteById, updateById } = require('../controllers/Controller');
+const { getAll, getById, create, deleteById, updateById, createOrderRelation} = require('../controllers/Controller');
 const { select } = require('../middlewares/switchToNode');
 
 router.get('/api/customers', select, getAll);
@@ -45,5 +45,7 @@ router.get('/api/categories/:id', select, getById);
 router.post('/api/categories', select, create)
 router.put('/api/categories/:id', select, updateById);
 router.delete('/api/categories/:id', select, deleteById);
+
+router.put('/api/orderrelation/:customer/:product', select, createOrderRelation);
 
 module.exports = router;
