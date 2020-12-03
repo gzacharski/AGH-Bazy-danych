@@ -6,6 +6,7 @@ networks:
 services:
   neo4j-db:
     image: neo4j:4.2.1-enterprise
+    container_name: neo4j-db
     ports:
       - "7474:7474"
       - "7687:7687"
