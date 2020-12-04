@@ -233,22 +233,22 @@ module.exports.deleteById = async (request, response) => {
 }
 
 //create order relation
-module.exports.createOrderRelation = async (request, response) => {
+module.exports.createOrderedByRelation = async (request, response) => {
     console.log('Create relation...');
 
     const customerId = request.params.customer;
-    const productId = request.params.product;
+    const orderId = request.params.order;
     const session = driver.session(config);
     const customerNodeLabel = 'Customer';
-    const productNodeLabel = 'Product';
+    const orderNodeLabel = 'Order';
 
     try {
-        const relationOrderQuery = `MATCH (a:${customerNodeLabel}),(b:${productNodeLabel}) WHERE a.id = '${customerId}' AND b.id = ${productId} CREATE (a)-[r:ORDER]->(b) RETURN type(r)`;
+        const relationOrderQuery = `MATCH (a:${orderNodeLabel}),(b:${customerNodeLabel}) WHERE a.id = ${orderId} AND b.id = '${customerId}'CREATE (a)-[r:ORDERED_BY]->(b) RETURN type(r)`;
 
         const result = await session.writeTransaction(tx => tx.run(relationOrderQuery));
         const node = result.records[0];
 
-        if (!node) throw new Error(`ERROR - cannot create ORDER relationship between customer: ${customerId} and product: ${productId} `);
+        if (!node) throw new Error(`ERROR - cannot create ORDERED BY relationship between order: ${orderId} and product: ${customerId} `);
 
         response
             .status(200)
