@@ -9,7 +9,8 @@
     "express": "^4.17.1",
     "neo4j-driver": "^4.2.1",
     "pug": "^3.0.0",
-    "uuid": "^8.3.1"
+    "uuid": "^8.3.1",
+    "wait-on": "^5.2.0"
   },
   "devDependencies": {
     "chai": "^4.2.0",
@@ -17,7 +18,8 @@
     "mocha": "^8.2.1"
   },
   "scripts": {
-    "test": "mocha --exit"
+    "test": "mocha --exit",
+    "run": "npm start & wait-on http://localhost:3000/health && mocha --exit"
   },
   "repository": {
     "type": "git",

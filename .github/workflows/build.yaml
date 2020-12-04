@@ -1,0 +1,28 @@
+name: build
+on: push
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '14'
+      - name: Start the database
+        run: docker-compose up -d
+      - name: Wait until database is ready
+        run: |
+          for _ in $(seq 1 20); do
+            if curl --output /dev/null --silent --head --fail http://localhost:7474; then
+              echo "Database up and running"
+              sleep 20
+              break;
+            fi
+            sleep 5
+          done
+      - name: Install dependencies
+        run: npm install
+      - name: Run REST API and execute tests
+        run: npm run-script run

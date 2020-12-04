@@ -1,9 +1,11 @@
 const express = require('express');
 const router = express.Router();
 
-const { getAll, getById, create, deleteById, updateById, createOrderedByRelation, createSuppliesRelation,
+const { health, getAll, getById, create, deleteById, updateById, createOrderedByRelation, createSuppliesRelation,
     getProductSuppliedBySupplier, getSuppliersWhichSupplyProduct} = require('../controllers/Controller');
 const { select } = require('../middlewares/switchToNode');
+
+router.get('/health', health)
 
 router.get('/api/customers', select, getAll);
 router.get('/api/customers/:id', select, getById);

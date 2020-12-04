@@ -27,6 +27,10 @@ const nodeExists = async (id, label) => {
     return exists;
 }
 
+module.exports.health = async (request, response) => {
+    response.status(200).send("ok")
+}
+
 module.exports.getAll = async (request, response) => {
 
     console.log('Get all ...');
