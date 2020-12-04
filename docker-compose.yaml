@@ -24,6 +24,7 @@ services:
       - ./northwind:/var/lib/neo4j/import/northwind
       - ./cql_scripts/createNorthwind.cql:/createNorthwind.cql
       - ./entrypointWrapper.sh:/entrypointWrapper.sh
-    entrypoint: /entrypointWrapper.sh
+      - ./test.sh:/test.sh
+    entrypoint: /test.sh
     networks:
       - agh-db
