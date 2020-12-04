@@ -1,6 +1,5 @@
 #!/bin/bash
 set -m
-
 /docker-entrypoint.sh neo4j &
 
 for try in $(seq 1 20); do
