@@ -15,13 +15,13 @@ Celem projektu jest zaimplementowanie systemu realizującego wybrane podstawowe 
 
 ## Uruchamianie
 
-1. Wystartowanie Neo4j w kontenerze Dockerowym:
+1. Wystartowanie Neo4j wraz z bazą Northwind w kontenerze Dockerowym:
     ```shell script
     docker-compose up -d
     ```
-1. Utworzenie bazy Northwind (o ile nie była wcześniej utworzona) i dodanie danych:
+1. Zainstalowanie bibliotek
     ```shell script
-    docker exec neo4j-db cat /createNorthwind.cql | cypher-shell -u neo4j -p test
+    npm install
     ```
 1. Wystartowanie aplikacji:
     ```shell script
