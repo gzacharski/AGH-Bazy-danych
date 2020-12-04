@@ -27,3 +27,10 @@ Celem projektu jest zaimplementowanie systemu realizującego wybrane podstawowe 
     ```shell script
     npm start
     ```
+   
+## Testowanie
+
+1. Uruchomienie testów
+    ```shell script
+    npm test
+    ```
