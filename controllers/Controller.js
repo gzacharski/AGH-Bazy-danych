@@ -270,3 +270,110 @@ module.exports.createOrderedByRelation = async (request, response) => {
     }
 
 }
+
+//create supplies relation
+module.exports.createSuppliesRelation = async (request, response) => {
+    console.log('Create supplies relation...');
+
+    const supplierId = request.params.supplier;
+    const productId = request.params.product;
+    const session = driver.session(config);
+    const supplierNodeLabel = 'Supplier';
+    const productNodeLabel = 'Product';
+
+    try {
+        const relationSuppliesQuery = `MATCH (a:${supplierNodeLabel}),(b:${productNodeLabel}) WHERE a.id = ${supplierId} AND b.id = ${productId} CREATE (a)-[r:SUPPLIES]->(b) RETURN type(r)`;
+
+        const result = await session.writeTransaction(tx => tx.run(relationSuppliesQuery));
+        const node = result.records[0];
+
+        if (!node) throw new Error(`ERROR - cannot create SUPPLIES relationship between supplier: ${supplierId} and product: ${productId} `);
+
+        response
+            .status(200)
+            .send({
+                quantity: node.length,
+                node
+            })
+
+    } catch (error) {
+        //send response with status 500 if error took place
+        response
+            .status(500)
+            .send({
+                message: error.message
+            });
+
+    } finally {
+        await session.close();
+    }
+
+}
+
+module.exports.getProductSuppliedBySupplier = async (request, response) => {
+    console.log('Get Products supplied by Supplier...');
+
+    const id = request.params.id;
+    const session = driver.session(config);
+
+    try{
+        const query = `MATCH (supplier:Supplier)-[r:SUPPLIES]->(product:Product) WHERE supplier.id=$id RETURN product`;
+        const params =  {id: Number.parseInt(id) };
+
+        const result = await session.readTransaction(tx => tx.run(query,params));
+        const nodes = result.records.map(record => record.get(0).properties);
+
+        if (!nodes) throw new Error(`The server was not able to get Products supplies by Supplier: ${id}.`);
+
+    response
+        .status(200)
+        .send({
+            quantity: nodes.length,
+            nodes
+        })
+    }
+
+     catch (error) {
+        response
+            .status(500)
+            .send({
+                error: error.message
+            });
+    } finally {
+        await session.close();
+    }
+}
+
+module.exports.getSuppliersWhichSupplyProduct = async (request, response) => {
+    console.log('Get Products supplied by Supplier...');
+
+    const id = request.params.id;
+    const session = driver.session(config);
+
+    try{
+        const query = `MATCH (supplier:Supplier)-[r:SUPPLIES]->(product:Product) WHERE product.id=$id RETURN supplier`;
+        const params =  {id: Number.parseInt(id) };
+
+        const result = await session.readTransaction(tx => tx.run(query, params));
+        const nodes = result.records.map(record => record.get(0).properties);
+
+        if (!nodes) throw new Error(`The server was not able to get Suppliers which supply Product: ${id}.`);
+
+        response
+            .status(200)
+            .send({
+                quantity: nodes.length,
+                nodes
+            })
+    }
+
+    catch (error) {
+        response
+            .status(500)
+            .send({
+                error: error.message
+            });
+    } finally {
+        await session.close();
+    }
+}
