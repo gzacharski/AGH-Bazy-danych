@@ -75,7 +75,7 @@ describe("Update product by ID", () => {
         chai
             .request(app)
             .put("/api/products/" + id)
-            .send({"name":"testProductV2"})
+            .send({"name":updatedProductName})
             .end((err, res) => {
                 expect(res).to.have.status(200);
                 expect(res.body.id.low).equals(id)
