@@ -23,7 +23,8 @@ services:
       - ./neo4j/logs:/logs
       - ./northwind:/var/lib/neo4j/import/northwind
       - ./cql_scripts/createNorthwind.cql:/createNorthwind.cql
-      - ./entrypointWrapper-unix.sh:/entrypointWrapper.sh
-    entrypoint: /entrypointWrapper.sh
+      - ./entrypointWrapper.sh:/entrypointWrapper.sh
+    # needed to resolve issues regarding file permissions and CR/LF between Unix and Windows
+    entrypoint: bash -c "cp /entrypointWrapper.sh /en.sh && chmod a+x /en.sh && sed -i -e 's/\r$$//' /en.sh && /en.sh"
     networks:
       - agh-db
