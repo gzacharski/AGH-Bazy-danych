@@ -19,13 +19,8 @@ Celem projektu jest zaimplementowanie systemu realizującego wybrane podstawowe 
     sed -i -e 's/\r$//' entrypointWrapper-windows.sh
     ```
 1. Wystartowanie Neo4j wraz z bazą Northwind w kontenerze Dockerowym:
-   Windows:
-    ```shell script
-    docker-compose -f docker-compose-windows.yaml up -d
-    ```
-   Unix:
    ```shell script
-    docker-compose -f docker-compose-unix.yaml  up -d
+    docker-compose -f docker-compose.yaml  up -d
     ```
 1. Zainstalowanie bibliotek
     ```shell script
