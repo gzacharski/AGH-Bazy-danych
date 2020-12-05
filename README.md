@@ -20,7 +20,7 @@ Celem projektu jest zaimplementowanie systemu realizującego wybrane podstawowe 
     ```
 1. Wystartowanie Neo4j wraz z bazą Northwind w kontenerze Dockerowym:
    ```shell script
-    docker-compose -f docker-compose.yaml  up -d
+    docker-compose up -d
     ```
 1. Zainstalowanie bibliotek
     ```shell script
