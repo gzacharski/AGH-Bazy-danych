@@ -14,7 +14,10 @@ Celem projektu jest zaimplementowanie systemu realizującego wybrane podstawowe 
 * Ciągła integracja (CI): GitHub Actions
 
 ## Uruchamianie
-
+0. Jeżeli pracujesz na Windowsie musisz odpalić polecenie np. w GitBashu, aby skonwertować znaki końca linii na Unixowe:
+   ```shell script
+    sed -i -e 's/\r$//' entrypointWrapper-windows.sh
+    ```
 1. Wystartowanie Neo4j wraz z bazą Northwind w kontenerze Dockerowym:
    Windows:
     ```shell script
