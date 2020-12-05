@@ -6,6 +6,9 @@ Celem projektu jest zaimplementowanie systemu realizującego wybrane podstawowe 
 2. Marcin Włodarczyk (mwlodarc@student.agh.edu.pl)
 3. Grzegorz Zacharski (gzacharski@student.agh.edu.pl)
 
+## Dokumentacja
+Dokumentacja projektu jest dostępna w sekcji [Wiki](https://github.com/gzacharski/AGH-Bazy-danych/wiki).
+
 ## Technologie
 * Front-end: React (opcjonalnie)
 * Back-end: Node.js oraz Express.js (REST API)
