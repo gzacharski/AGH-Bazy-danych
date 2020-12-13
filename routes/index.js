@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
 
-const { health, getAll, getById, create, deleteById, updateById, createOrderedByRelation, createSuppliesRelation,
-    getProductSuppliedBySupplier, getSuppliersWhichSupplyProduct} = require('../controllers/Controller');
+const { health, getAll, getById, create, deleteById, updateById, createOrderedByRelation, getCustomersWhoOrderedOrder, getOrdersOrderedByCustomer,
+        createSuppliesRelation, getProductSuppliedBySupplier, getSuppliersWhichSupplyProduct, createBelongsToRelation, getProductCategories,
+        getProductsBelongToCategory } = require('../controllers/Controller');
 const { select } = require('../middlewares/switchToNode');
 
 router.get('/health', health)
@@ -50,8 +51,12 @@ router.put('/api/categories/:id', select, updateById);
 router.delete('/api/categories/:id', select, deleteById);
 
 router.post('/api/orders/:order/customers/:customer', select, createOrderedByRelation);
+router.get('/api/orders/:id/customers', select, getCustomersWhoOrderedOrder);
+router.get('/api/customers/:id/orders', select, getOrdersOrderedByCustomer);
 router.post('/api/suppliers/:supplier/products/:product', select, createSuppliesRelation);
 router.get('/api/suppliers/:id/products', select, getProductSuppliedBySupplier);
 router.get('/api/products/:id/suppliers', select, getSuppliersWhichSupplyProduct);
-
+router.post('/api/products/:product/categories/:category', select, createBelongsToRelation);
+router.get('/api/products/:id/categories', select, getProductCategories);
+router.get('/api/category/:id/products', select, getProductsBelongToCategory);
 module.exports = router;
