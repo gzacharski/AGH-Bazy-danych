@@ -2,8 +2,10 @@ const express = require('express');
 const router = express.Router();
 
 const { health, getAll, getById, create, deleteById, updateById, createOrderedByRelation, getCustomersWhoOrderedOrder, getOrdersOrderedByCustomer,
-        createSuppliesRelation, getProductSuppliedBySupplier, getSuppliersWhichSupplyProduct, createBelongsToRelation, getProductCategories,
-        getProductsBelongToCategory } = require('../controllers/Controller');
+        createSuppliesRelation, getProductSuppliedBySupplier, getSuppliersWhichSupplyProduct, createBelongsToRelation, getCategoriesAssignedToProduct,
+        getProductsBelongToCategory, getAllContainsRelations, getContainsRelationById, createContainsRelation, getProductsContainedInOrder,
+        getContainsRelationsByOrderProduct, getOrdersWhichContainProduct, deleteContainsRelationsOrderProduct, deleteContainsRelationById,
+        updateContainsRelationById } = require('../controllers/Controller');
 const { select } = require('../middlewares/switchToNode');
 
 router.get('/health', health)
@@ -50,13 +52,27 @@ router.post('/api/categories', select, create)
 router.put('/api/categories/:id', select, updateById);
 router.delete('/api/categories/:id', select, deleteById);
 
+
 router.post('/api/orders/:order/customers/:customer', select, createOrderedByRelation);
 router.get('/api/orders/:id/customers', select, getCustomersWhoOrderedOrder);
 router.get('/api/customers/:id/orders', select, getOrdersOrderedByCustomer);
+
 router.post('/api/suppliers/:supplier/products/:product', select, createSuppliesRelation);
 router.get('/api/suppliers/:id/products', select, getProductSuppliedBySupplier);
 router.get('/api/products/:id/suppliers', select, getSuppliersWhichSupplyProduct);
+
 router.post('/api/products/:product/categories/:category', select, createBelongsToRelation);
-router.get('/api/products/:id/categories', select, getProductCategories);
+router.get('/api/products/:id/categories', select, getCategoriesAssignedToProduct);
 router.get('/api/category/:id/products', select, getProductsBelongToCategory);
+
+router.get('/api/orders/products/all', select, getAllContainsRelations);
+router.get('/api/orders/products/:id', select, getContainsRelationById);
+router.get('/api/orders/:order/products/:product', select, getContainsRelationsByOrderProduct);
+router.post('/api/orders/:order/products/:product', select, createContainsRelation);
+router.get('/api/orders/:id/products', select, getProductsContainedInOrder);
+router.get('/api/products/:id/orders', select, getOrdersWhichContainProduct);
+router.delete('/api/orders/:order/products/:product', select, deleteContainsRelationsOrderProduct);
+router.delete('/api/orders/products/:id', select, deleteContainsRelationById);
+router.put('/api/orders/products/:id', select, updateContainsRelationById);
+
 module.exports = router;

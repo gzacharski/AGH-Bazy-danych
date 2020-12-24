@@ -266,7 +266,7 @@ module.exports.createOrderedByRelation = async (request, response) => {
         if (!node) throw new Error(`ERROR - cannot create ORDERED BY relationship between Order: ${orderId} and Customer: ${customerId} `);
 
         response
-            .status(200)
+            .status(201)
             .send({
                 quantity: node.length,
                 node
@@ -299,7 +299,7 @@ module.exports.getCustomersWhoOrderedOrder = async (request, response) => {
         const result = await session.readTransaction(tx => tx.run(query,params));
         const nodes = result.records.map(record => record.get(0).properties);
 
-        if (!nodes) throw new Error(`The server was not able to get Customers who ordered the Order: ${id}.`);
+        if (!nodes) throw new Error(`ERROR -The server was not able to get Customers who ordered the Order: ${id}.`);
 
         response
             .status(200)
@@ -333,7 +333,7 @@ module.exports.getOrdersOrderedByCustomer = async (request, response) => {
         const result = await session.readTransaction(tx => tx.run(query,params));
         const nodes = result.records.map(record => record.get(0).properties);
 
-        if (!nodes) throw new Error(`The server was not able to get Order ordered by Customer: ${id}.`);
+        if (!nodes) throw new Error(`ERROR - The server was not able to get Order ordered by Customer: ${id}.`);
 
         response
             .status(200)
@@ -384,7 +384,7 @@ module.exports.createSuppliesRelation = async (request, response) => {
         if (!node) throw new Error(`ERROR - cannot create SUPPLIES relationship between supplier: ${supplierId} and product: ${productId} `);
 
         response
-            .status(200)
+            .status(201)
             .send({
                 quantity: node.length,
                 node
@@ -417,7 +417,7 @@ module.exports.getProductSuppliedBySupplier = async (request, response) => {
         const result = await session.readTransaction(tx => tx.run(query,params));
         const nodes = result.records.map(record => record.get(0).properties);
 
-        if (!nodes) throw new Error(`The server was not able to get Products supplies by Supplier: ${id}.`);
+        if (!nodes) throw new Error(`ERROR - The server was not able to get Products supplies by Supplier: ${id}.`);
 
     response
         .status(200)
@@ -451,7 +451,7 @@ module.exports.getSuppliersWhichSupplyProduct = async (request, response) => {
         const result = await session.readTransaction(tx => tx.run(query, params));
         const nodes = result.records.map(record => record.get(0).properties);
 
-        if (!nodes) throw new Error(`The server was not able to get Suppliers which supply Product: ${id}.`);
+        if (!nodes) throw new Error(`ERROR - The server was not able to get Suppliers which supply Product: ${id}.`);
 
         response
             .status(200)
@@ -501,7 +501,7 @@ module.exports.createBelongsToRelation = async (request, response) => {
         if (!node) throw new Error(`ERROR - cannot create BELONGS TO relationship between Product: ${productId} and Category: ${categoryId}.`);
 
         response
-            .status(200)
+            .status(201)
             .send({
                 quantity: node.length,
                 node
@@ -520,8 +520,8 @@ module.exports.createBelongsToRelation = async (request, response) => {
     }
 }
 
-module.exports.getProductCategories = async (request, response) => {
-    console.log('Get Product Categories...');
+module.exports.getCategoriesAssignedToProduct = async (request, response) => {
+    console.log('Get Categories which product is assigned to...');
 
     const id = request.params.id;
     const session = driver.session(config);
@@ -533,7 +533,7 @@ module.exports.getProductCategories = async (request, response) => {
         const result = await session.readTransaction(tx => tx.run(query,params));
         const nodes = result.records.map(record => record.get(0).properties);
 
-        if (!nodes) throw new Error(`The server was not able to get Categories for which belongs Product: ${id}.`);
+        if (!nodes) throw new Error(`ERROR - The server was not able to get Categories for which belongs Product: ${id}.`);
 
         response
             .status(200)
@@ -567,7 +567,7 @@ module.exports.getProductsBelongToCategory = async (request, response) => {
         const result = await session.readTransaction(tx => tx.run(query,params));
         const nodes = result.records.map(record => record.get(0).properties);
 
-        if (!nodes) throw new Error(`The server was not able to get Products which belong to Product: ${id}.`);
+        if (!nodes) throw new Error(`ERROR - The server was not able to get Products which belong to Product: ${id}.`);
 
         response
             .status(200)
@@ -583,6 +583,356 @@ module.exports.getProductsBelongToCategory = async (request, response) => {
             .send({
                 error: error.message
             });
+    } finally {
+        await session.close();
+    }
+}
+
+//create contains relation
+module.exports.createContainsRelation = async (request, response) => {
+    console.log('Create Contains relation...');
+
+    const orderId = request.params.order;
+    const productId = request.params.product;
+    const session = driver.session(config);
+    const orderNodeLabel = 'Order';
+    const productNodeLabel = 'Product';
+
+    try {
+        const nodeDetails = { properties: request.body };
+
+        let id = nodeDetails.properties.odId;
+        if (!id) id = nodeDetails.properties.odId = Number.parseInt(uuid.v4(),16);
+        const unitPrice = nodeDetails.properties.unitPrice;
+        const quantity = nodeDetails.properties.quantity;
+        const discount = nodeDetails.properties.discount;
+
+        const bodyParsed = {
+            "odID": id,
+            "unitPrice" : Number.parseFloat(unitPrice),
+            "quantity" : Number.parseInt(quantity),
+            "discount" : Number.parseFloat(discount)
+        }
+
+        const containsSuppliesQuery = `MATCH (o:${orderNodeLabel}),(p:${productNodeLabel}) WHERE o.id = $order AND p.id = $product CREATE (o)-[r:CONTAINS]->(p) SET r+=$properties RETURN type(r)`;
+
+        const params =  {
+                            order: Number.parseInt(orderId),
+                            product: Number.parseInt(productId),
+                            properties: bodyParsed
+                        };
+
+        const result = await session.writeTransaction(tx => tx.run(containsSuppliesQuery,params));
+        const node = result.records[0];
+
+        if (!node) throw new Error(`ERROR - cannot create CONTAINS relationship between Order: ${orderId} and Product: ${productId}.`);
+
+        response
+            .status(201)
+            .send({
+                quantity: node.length,
+                node
+            })
+
+    } catch (error) {
+        //send response with status 500 if error took place
+        response
+            .status(500)
+            .send({
+                message: error.message
+            });
+
+    } finally {
+        await session.close();
+    }
+}
+
+module.exports.getProductsContainedInOrder = async (request, response) => {
+    console.log('Get Products contained in the Order...');
+
+    const id = request.params.id;
+    const session = driver.session(config);
+
+    try{
+        const query = `MATCH (order:Order)-[r:CONTAINS]->(product:Product) WHERE order.id=$id RETURN product`;
+        const params =  {id: Number.parseInt(id) };
+
+        const result = await session.readTransaction(tx => tx.run(query,params));
+        const nodes = result.records.map(record => record.get(0).properties);
+
+        if (!nodes) throw new Error(`ERROR - The server was not able to get Products contained in Order: ${id}.`);
+
+        response
+            .status(200)
+            .send({
+                quantity: nodes.length,
+                nodes
+            })
+    }
+
+    catch (error) {
+        response
+            .status(500)
+            .send({
+                error: error.message
+            });
+    } finally {
+        await session.close();
+    }
+}
+
+module.exports.getOrdersWhichContainProduct = async (request, response) => {
+    console.log('Get Orders which contain the Product...');
+
+    const id = request.params.id;
+    const session = driver.session(config);
+
+    try{
+        const query = `MATCH (order:Order)-[r:CONTAINS]->(product:Product) WHERE product.id=$id RETURN order`;
+        const params =  {id: Number.parseInt(id) };
+
+        const result = await session.readTransaction(tx => tx.run(query,params));
+        const nodes = result.records.map(record => record.get(0).properties);
+
+        if (!nodes) throw new Error(`ERROR - The server was not able to get Orders which contain Product: ${id}.`);
+
+        response
+            .status(200)
+            .send({
+                quantity: nodes.length,
+                nodes
+            })
+    }
+
+    catch (error) {
+        response
+            .status(500)
+            .send({
+                error: error.message
+            });
+    } finally {
+        await session.close();
+    }
+}
+
+
+module.exports.getAllContainsRelations = async (request, response) => {
+    console.log('Get All Contains Relations (between Orders and Product)...');
+
+    const session = driver.session(config);
+
+    try {
+        const query = `MATCH ()-[r:CONTAINS]->() RETURN r`;
+
+        const result = await session.readTransaction(tx => tx.run(query));
+        const nodes = result.records.map(record => record.get(0).properties);
+
+        response
+            .status(200)
+            .send({
+                quantity: nodes.length,
+                nodes
+            })
+
+    } catch (error) {
+        //send response with status 500 if error took place
+        response
+            .status(500)
+            .send({
+                message: error.message
+            });
+
+    } finally {
+        await session.close();
+    }
+}
+
+module.exports.getContainsRelationById = async (request, response) => {
+    console.log('Get Contains Relation by Id...');
+
+    const id = request.params.id;
+    const session = driver.session(config);
+
+    try {
+        const query = `MATCH ()-[r:CONTAINS]->() WHERE r.odID=$id RETURN r`;
+        const params =  {id: Number.parseInt(id)};
+        const result = await session.readTransaction(tx => tx.run(query, params));
+        const node = result.records[0];
+
+        if(!node) {
+            response
+                .status(404)
+                .send({
+                    message: `Not found CONTAINS relationship of ID: ${id}.`
+                })
+        }
+
+        response
+            .status(200)
+            .send(node.get(0).properties);
+
+    } catch (error) {
+        //send response with status 500 if error took place
+        response
+            .status(500)
+            .send({
+                message: error.message
+            });
+
+    } finally {
+        await session.close();
+    }
+}
+
+module.exports.getContainsRelationsByOrderProduct = async (request, response) => {
+    console.log('Get Contains Relations between specific Order and Product...');
+
+    const orderId = request.params.order;
+    const productId = request.params.product;
+    const session = driver.session(config);
+
+    try {
+        const query = `MATCH (o:Order)-[r:CONTAINS]->(p:Product) WHERE o.id=$order AND p.id=$product RETURN r`;
+        const params =  {order: Number.parseInt(orderId), product: Number.parseInt(productId)};
+        const result = await session.readTransaction(tx => tx.run(query,params));
+        const nodes = result.records.map(record => record.get(0).properties);
+
+        if(nodes.length<1) {
+            response
+                .status(404)
+                .send({
+                    quantity: nodes.length,
+                    message: `Not found CONTAINS relationship between Order: ${orderId} and Product: ${productId}.`
+                })
+        }
+
+        response
+            .status(200)
+            .send({
+                quantity: nodes.length,
+                nodes
+            })
+
+    } catch (error) {
+        //send response with status 500 if error took place
+        response
+            .status(500)
+            .send({
+                message: error.message
+            });
+
+    } finally {
+        await session.close();
+    }
+}
+
+module.exports.deleteContainsRelationsOrderProduct = async (request, response) => {
+    console.log('Delete Contains Relations by Order and Product Id...');
+
+    const orderId = request.params.order;
+    const productId = request.params.product;
+    const session = driver.session(config);
+
+        try {
+            const query = `MATCH (o:Order)-[r:CONTAINS]->(p:Product) WHERE o.id=$order AND p.id=$product DELETE r`;
+            const params =  {order: Number.parseInt(orderId), product: Number.parseInt(productId)};
+            await session.writeTransaction(tx => tx.run(query, params));
+
+            response
+                .status(200)
+                .send({
+                    message: `CONTAINS relationship between Order ${orderId} and Product ${productId} has been deleted.`
+                })
+
+        } catch (error) {
+            //send response with status 500 if error took place
+            response
+                .status(500)
+                .send({
+                    message: error.message
+                });
+
+        } finally {
+            await session.close();
+        }
+    }
+
+
+module.exports.deleteContainsRelationById = async (request, response) => {
+    console.log('Delete Contains Relation by Id...');
+
+    const id = request.params.id;
+    const session = driver.session(config);
+
+    try {
+        const query = `MATCH (o:Order)-[r:CONTAINS]->(p:Product) WHERE r.odID=$id DELETE r`;
+        const params =  {id: Number.parseInt(id)};
+        await session.writeTransaction(tx => tx.run(query, params));
+
+        response
+            .status(200)
+            .send({
+                id,
+                message: `CONTAINS ${id} relationship has been deleted.`
+            })
+
+    } catch (error) {
+        //send response with status 500 if error took place
+        response
+            .status(500)
+            .send({
+                message: error.message
+            });
+
+    } finally {
+        await session.close();
+    }
+}
+
+module.exports.updateContainsRelationById = async (request, response) => {
+    console.log('Update Contains Relation by Id...');
+
+    const id = request.params.id;
+    const session = driver.session(config);
+
+    try {
+        const nodeDetails = { properties: request.body };
+
+        const unitPrice = nodeDetails.properties.unitPrice;
+        const quantity = nodeDetails.properties.quantity;
+        const discount = nodeDetails.properties.discount;
+
+        const bodyParsed = {
+            "odID": Number.parseInt(id),
+            "unitPrice" : Number.parseFloat(unitPrice),
+            "quantity" : Number.parseInt(quantity),
+            "discount" : Number.parseFloat(discount)
+        }
+
+        const query = `MERGE (o:Order)-[r:CONTAINS{odID:$id}]->(p:Product) SET r+=$properties RETURN r`;
+
+        const params = {
+            id: Number.parseInt(id),
+            properties: bodyParsed
+        };
+
+        const result = await session.writeTransaction(tx => tx.run(query, params));
+        const node = result.records[0];
+
+        if (!node) throw new Error(`ERROR - The server was not able to update CONTAINS relationship of id ${id}.`);
+
+        response
+            .status(200)
+            .send(node.get(0).properties);
+
+    } catch (error) {
+        //send response with status 500 if error took place
+        response
+            .status(500)
+            .send({
+                message: error.message
+            });
+
     } finally {
         await session.close();
     }
