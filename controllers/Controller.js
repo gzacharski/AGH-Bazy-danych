@@ -299,7 +299,7 @@ module.exports.getCustomersWhoOrderedOrder = async (request, response) => {
         const result = await session.readTransaction(tx => tx.run(query,params));
         const nodes = result.records.map(record => record.get(0).properties);
 
-        if (!nodes) throw new Error(`The server was not able to get Customers who ordered the Order: ${id}.`);
+        if (!nodes) throw new Error(`ERROR -The server was not able to get Customers who ordered the Order: ${id}.`);
 
         response
             .status(200)
@@ -333,7 +333,7 @@ module.exports.getOrdersOrderedByCustomer = async (request, response) => {
         const result = await session.readTransaction(tx => tx.run(query,params));
         const nodes = result.records.map(record => record.get(0).properties);
 
-        if (!nodes) throw new Error(`The server was not able to get Order ordered by Customer: ${id}.`);
+        if (!nodes) throw new Error(`ERROR - The server was not able to get Order ordered by Customer: ${id}.`);
 
         response
             .status(200)
@@ -417,7 +417,7 @@ module.exports.getProductSuppliedBySupplier = async (request, response) => {
         const result = await session.readTransaction(tx => tx.run(query,params));
         const nodes = result.records.map(record => record.get(0).properties);
 
-        if (!nodes) throw new Error(`The server was not able to get Products supplies by Supplier: ${id}.`);
+        if (!nodes) throw new Error(`ERROR - The server was not able to get Products supplies by Supplier: ${id}.`);
 
     response
         .status(200)
@@ -451,7 +451,7 @@ module.exports.getSuppliersWhichSupplyProduct = async (request, response) => {
         const result = await session.readTransaction(tx => tx.run(query, params));
         const nodes = result.records.map(record => record.get(0).properties);
 
-        if (!nodes) throw new Error(`The server was not able to get Suppliers which supply Product: ${id}.`);
+        if (!nodes) throw new Error(`ERROR - The server was not able to get Suppliers which supply Product: ${id}.`);
 
         response
             .status(200)
@@ -533,7 +533,7 @@ module.exports.getCategoriesAssignedToProduct = async (request, response) => {
         const result = await session.readTransaction(tx => tx.run(query,params));
         const nodes = result.records.map(record => record.get(0).properties);
 
-        if (!nodes) throw new Error(`The server was not able to get Categories for which belongs Product: ${id}.`);
+        if (!nodes) throw new Error(`ERROR - The server was not able to get Categories for which belongs Product: ${id}.`);
 
         response
             .status(200)
@@ -567,7 +567,7 @@ module.exports.getProductsBelongToCategory = async (request, response) => {
         const result = await session.readTransaction(tx => tx.run(query,params));
         const nodes = result.records.map(record => record.get(0).properties);
 
-        if (!nodes) throw new Error(`The server was not able to get Products which belong to Product: ${id}.`);
+        if (!nodes) throw new Error(`ERROR - The server was not able to get Products which belong to Product: ${id}.`);
 
         response
             .status(200)
@@ -660,7 +660,7 @@ module.exports.getProductsContainedInOrder = async (request, response) => {
         const result = await session.readTransaction(tx => tx.run(query,params));
         const nodes = result.records.map(record => record.get(0).properties);
 
-        if (!nodes) throw new Error(`The server was not able to get Products contained in Order: ${id}.`);
+        if (!nodes) throw new Error(`ERROR - The server was not able to get Products contained in Order: ${id}.`);
 
         response
             .status(200)
@@ -694,7 +694,7 @@ module.exports.getOrdersWhichContainProduct = async (request, response) => {
         const result = await session.readTransaction(tx => tx.run(query,params));
         const nodes = result.records.map(record => record.get(0).properties);
 
-        if (!nodes) throw new Error(`The server was not able to get Orders which contain Product: ${id}.`);
+        if (!nodes) throw new Error(`ERROR - The server was not able to get Orders which contain Product: ${id}.`);
 
         response
             .status(200)
@@ -919,7 +919,7 @@ module.exports.updateContainsRelationById = async (request, response) => {
         const result = await session.writeTransaction(tx => tx.run(query, params));
         const node = result.records[0];
 
-        if (!node) throw new Error(`The server was not able to update CONTAINS relationship of id ${id}.`);
+        if (!node) throw new Error(`ERROR - The server was not able to update CONTAINS relationship of id ${id}.`);
 
         response
             .status(200)
