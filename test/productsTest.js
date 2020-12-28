@@ -153,7 +153,7 @@ describe("Get all Ordered By relationships", () => {
 
 describe("Get Ordered By Relationships by specific Order and Customer (existing relationship)", () => {
     //existing relationship for following parameters
-    let validOrderId = 31062;
+    let validOrderId = 30049;
     let validCustomerId = 'ALFKI';
     it("Should get Ordered By relationships for valid request (existing relationship)", done => {
         chai
