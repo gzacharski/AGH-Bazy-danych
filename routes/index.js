@@ -4,10 +4,11 @@ const router = express.Router();
 const { health, getAll, getById, create, deleteById, updateById, getAllOrderedByRelations, getOrderedByRelationsByOrderCustomer,
         createOrderedByRelation, getCustomersWhoOrderedOrder, getOrdersOrderedByCustomer, deleteOrderedByRelationsOrderCustomer,
         createSuppliesRelation, getAllSuppliesRelations, getSuppliesRelationsBySupplierProduct, getProductSuppliedBySupplier,
-        getSuppliersWhichSupplyProduct, deleteSuppliesRelationsSupplierProduct, createBelongsToRelation, getCategoriesAssignedToProduct, getProductsBelongToCategory,
-        getAllContainsRelations, getContainsRelationById, createContainsRelation, getProductsContainedInOrder,
-        getContainsRelationsByOrderProduct, getOrdersWhichContainProduct, deleteContainsRelationsOrderProduct,
-        deleteContainsRelationById, updateContainsRelationById } = require('../controllers/Controller');
+        getSuppliersWhichSupplyProduct, deleteSuppliesRelationsSupplierProduct, getAllBelongsToRelations, getBelongsToRelationsByProductCategory,
+        deleteBelongsToRelationsProductCategory, createBelongsToRelation, getCategoriesAssignedToProduct, getProductsBelongToCategory,
+        getAllContainsRelations, getContainsRelationById, createContainsRelation, getProductsContainedInOrder, getContainsRelationsByOrderProduct,
+        getOrdersWhichContainProduct, deleteContainsRelationsOrderProduct, deleteContainsRelationById,
+        updateContainsRelationById } = require('../controllers/Controller');
 const { select } = require('../middlewares/switchToNode');
 
 router.get('/health', health)
@@ -69,9 +70,12 @@ router.get('/api/suppliers/:id/products', select, getProductSuppliedBySupplier);
 router.get('/api/products/:id/suppliers', select, getSuppliersWhichSupplyProduct);
 router.delete('/api/suppliers/:supplier/products/:product', select, deleteSuppliesRelationsSupplierProduct);
 
+router.get('/api/products/categories/all', select, getAllBelongsToRelations);
+router.get('/api/products/:product/categories/:category', select, getBelongsToRelationsByProductCategory);
 router.post('/api/products/:product/categories/:category', select, createBelongsToRelation);
 router.get('/api/products/:id/categories', select, getCategoriesAssignedToProduct);
 router.get('/api/category/:id/products', select, getProductsBelongToCategory);
+router.delete('/api/products/:product/categories/:category', select, deleteBelongsToRelationsProductCategory);
 
 router.get('/api/orders/products/all', select, getAllContainsRelations);
 router.get('/api/orders/products/:id', select, getContainsRelationById);
