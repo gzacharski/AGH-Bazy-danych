@@ -1,11 +1,12 @@
 const express = require('express');
 const router = express.Router();
 
-const { health, getAll, getById, create, deleteById, updateById, createOrderedByRelation, getCustomersWhoOrderedOrder, getOrdersOrderedByCustomer,
-        createSuppliesRelation, getProductSuppliedBySupplier, getSuppliersWhichSupplyProduct, createBelongsToRelation, getCategoriesAssignedToProduct,
-        getProductsBelongToCategory, getAllContainsRelations, getContainsRelationById, createContainsRelation, getProductsContainedInOrder,
-        getContainsRelationsByOrderProduct, getOrdersWhichContainProduct, deleteContainsRelationsOrderProduct, deleteContainsRelationById,
-        updateContainsRelationById } = require('../controllers/Controller');
+const { health, getAll, getById, create, deleteById, updateById, getAllOrderedByRelations, getOrderedByRelationsByOrderCustomer,
+        createOrderedByRelation, getCustomersWhoOrderedOrder, getOrdersOrderedByCustomer, deleteOrderedByRelationsOrderCustomer,
+        createSuppliesRelation, getProductSuppliedBySupplier, getSuppliersWhichSupplyProduct,
+        createBelongsToRelation, getCategoriesAssignedToProduct, getProductsBelongToCategory, getAllContainsRelations, getContainsRelationById,
+        createContainsRelation, getProductsContainedInOrder, getContainsRelationsByOrderProduct, getOrdersWhichContainProduct,
+        deleteContainsRelationsOrderProduct, deleteContainsRelationById, updateContainsRelationById } = require('../controllers/Controller');
 const { select } = require('../middlewares/switchToNode');
 
 router.get('/health', health)
@@ -53,9 +54,12 @@ router.put('/api/categories/:id', select, updateById);
 router.delete('/api/categories/:id', select, deleteById);
 
 
+router.get('/api/orders/customers/all', select, getAllOrderedByRelations);
+router.get('/api/orders/:order/customers/:customer', select, getOrderedByRelationsByOrderCustomer);
 router.post('/api/orders/:order/customers/:customer', select, createOrderedByRelation);
 router.get('/api/orders/:id/customers', select, getCustomersWhoOrderedOrder);
 router.get('/api/customers/:id/orders', select, getOrdersOrderedByCustomer);
+router.delete('/api/orders/:order/customers/:customer', select, deleteOrderedByRelationsOrderCustomer);
 
 router.post('/api/suppliers/:supplier/products/:product', select, createSuppliesRelation);
 router.get('/api/suppliers/:id/products', select, getProductSuppliedBySupplier);

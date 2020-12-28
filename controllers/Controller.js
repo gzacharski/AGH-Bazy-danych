@@ -236,6 +236,127 @@ module.exports.deleteById = async (request, response) => {
     }
 }
 
+module.exports.getAllOrderedByRelations = async (request, response) => {
+    console.log('Get all Ordered By relations...');
+
+    const session = driver.session(config);
+
+    try {
+        const query = `MATCH ()-[r:ORDERED_BY]->() RETURN r`;
+
+        const result = await session.readTransaction(tx => tx.run(query));
+        const nodes = result.records.map(record => record.get(0));
+
+        response
+            .status(200)
+            .send({
+                quantity: nodes.length,
+                nodes
+            })
+
+    } catch (error) {
+        //send response with status 500 if error took place
+        response
+            .status(500)
+            .send({
+                message: error.message
+            });
+
+    } finally {
+        await session.close();
+    }
+
+}
+
+module.exports.getOrderedByRelationsByOrderCustomer = async (request, response) => {
+    console.log('Get Ordered By Relations between specific Order and Customer...');
+
+    const orderId = request.params.order;
+    const customerId = request.params.customer;
+    const session = driver.session(config);
+
+    try {
+        const query = `MATCH (o:Order)-[r:ORDERED_BY]->(c:Customer) WHERE o.id=$order AND c.id=$customer RETURN r`;
+        const params =  {order: Number.parseInt(orderId), customer: customerId};
+        const result = await session.readTransaction(tx => tx.run(query,params));
+        const nodes = result.records.map(record => record.get(0));
+
+        if(nodes.length<1) {
+            response
+                .status(404)
+                .send({
+                    //quantity: nodes.length,
+                    message: `Not found ORDERED BY relationship between Order: ${orderId} and Customer: ${customerId}.`
+                })
+        }
+
+        response
+            .status(200)
+            .send({
+                quantity: nodes.length,
+                nodes
+            })
+
+    } catch (error) {
+        //send response with status 500 if error took place
+        response
+            .status(500)
+            .send({
+                message: error.message
+            });
+
+    } finally {
+        await session.close();
+    }
+}
+
+module.exports.deleteOrderedByRelationsOrderCustomer = async (request, response) => {
+    console.log('Delete Ordered By Relations by Order and Customer Id...');
+
+    const orderId = request.params.order;
+    const customerId = request.params.customer;
+    const session = driver.session(config);
+
+    try {
+
+        const existingRelationshipQuery = `MATCH (o:Order)-[r:ORDERED_BY]->(c:Customer) WHERE o.id=$order AND c.id=$customer RETURN r`;
+        const existingRelationshipParams =  {order: Number.parseInt(orderId), customer: customerId};
+        const existingRelationshipResult = await session.readTransaction(tx => tx.run(existingRelationshipQuery, existingRelationshipParams));
+        const existingRelationshipNodes = existingRelationshipResult.records.map(record => record.get(0));
+
+        if(existingRelationshipNodes.length<1) {
+            response
+                .status(404)
+                .send({
+                    quantity: nodes.length,
+                    message: `Not found ORDERED BY relationship between Order: ${orderId} and Customer: ${customerId}.`
+                })
+        }
+
+        const query = `MATCH (o:Order)-[r:ORDERED_BY]->(c:Customer) WHERE o.id=$order AND c.id=$customer DELETE r`;
+        const params =  {order: Number.parseInt(orderId), customer: customerId};
+        await session.writeTransaction(tx => tx.run(query, params));
+
+        response
+            .status(200)
+            .send({
+                message: `ORDERED BY relationship between Order ${orderId} and Customer ${customerId} has been deleted.`
+            })
+
+    } catch (error) {
+        //send response with status 500 if error took place
+        response
+            .status(500)
+            .send({
+                message: error.message
+            });
+
+    } finally {
+        await session.close();
+    }
+}
+
+
 //create order relation
 module.exports.createOrderedByRelation = async (request, response) => {
     console.log('Create relation...');
@@ -834,6 +955,19 @@ module.exports.deleteContainsRelationsOrderProduct = async (request, response) =
     const session = driver.session(config);
 
         try {
+            const existingRelationshipQuery = `MATCH (o:Order)-[r:CONTAINS]->(p:Product) WHERE o.id=$order AND p.id=$product RETURN r`;
+            const existingRelationshipParams =  {order: Number.parseInt(orderId), product: Number.parseInt(productId)};
+            const existingRelationshipResult = await session.readTransaction(tx => tx.run(existingRelationshipQuery, existingRelationshipParams));
+            const existingRelationshipNode = existingRelationshipResult.records[0];
+
+            if(!existingRelationshipNode) {
+                response
+                    .status(404)
+                    .send({
+                        message: `Not found CONTAINS relationship between Order ${orderId} and Product ${productId}.`
+                    })
+            }
+
             const query = `MATCH (o:Order)-[r:CONTAINS]->(p:Product) WHERE o.id=$order AND p.id=$product DELETE r`;
             const params =  {order: Number.parseInt(orderId), product: Number.parseInt(productId)};
             await session.writeTransaction(tx => tx.run(query, params));
@@ -865,6 +999,19 @@ module.exports.deleteContainsRelationById = async (request, response) => {
     const session = driver.session(config);
 
     try {
+        const existingRelationshipQuery = `MATCH ()-[r:CONTAINS]->() WHERE r.odID=$id RETURN r`;
+        const existingRelationshipParams =  {id: Number.parseInt(id)};
+        const existingRelationshipResult = await session.readTransaction(tx => tx.run(existingRelationshipQuery, existingRelationshipParams));
+        const existingRelationshipNode = existingRelationshipResult.records[0];
+
+        if(!existingRelationshipNode) {
+            response
+                .status(404)
+                .send({
+                    message: `Not found CONTAINS relationship of ID: ${id}.`
+                })
+        }
+
         const query = `MATCH (o:Order)-[r:CONTAINS]->(p:Product) WHERE r.odID=$id DELETE r`;
         const params =  {id: Number.parseInt(id)};
         await session.writeTransaction(tx => tx.run(query, params));
@@ -896,6 +1043,19 @@ module.exports.updateContainsRelationById = async (request, response) => {
     const session = driver.session(config);
 
     try {
+        const existingRelationshipQuery = `MATCH ()-[r:CONTAINS]->() WHERE r.odID=$id RETURN r`;
+        const existingRelationshipParams =  {id: Number.parseInt(id)};
+        const existingRelationshipResult = await session.readTransaction(tx => tx.run(existingRelationshipQuery, existingRelationshipParams));
+        const existingRelationshipNode = existingRelationshipResult.records[0];
+
+        if(!existingRelationshipNode) {
+            response
+                .status(404)
+                .send({
+                    message: `Not found CONTAINS relationship of ID: ${id}.`
+                })
+        }
+
         const nodeDetails = { properties: request.body };
 
         const unitPrice = nodeDetails.properties.unitPrice;
