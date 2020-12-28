@@ -380,7 +380,7 @@ describe("Create Contains relationship", () => {
                 expect(res).to.have.status(201);
                 done();
             });
-    }).timeout(5000);
+    }).timeout(10000);
 });
 
 describe("Update Contains relationship", () => {
@@ -398,7 +398,7 @@ describe("Update Contains relationship", () => {
                 expect(res).to.have.status(200);
                 done();
             });
-    });
+    }).timeout(10000);
 });
 
 describe("Delete Contains relationship", () => {
