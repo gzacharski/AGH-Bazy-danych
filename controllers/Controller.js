@@ -475,6 +475,123 @@ module.exports.getOrdersOrderedByCustomer = async (request, response) => {
     }
 }
 
+module.exports.getAllSuppliesRelations = async (request, response) => {
+    console.log('Get All Supplies Relations (between Supplier and Product)...');
+
+    const session = driver.session(config);
+
+    try {
+        const query = `MATCH p=()-[r:SUPPLIES]->() RETURN p`;
+
+        const result = await session.readTransaction(tx => tx.run(query));
+        const nodes = result.records.map(record => record.get(0));
+
+        response
+            .status(200)
+            .send({
+                quantity: nodes.length,
+                nodes
+            })
+
+    } catch (error) {
+        //send response with status 500 if error took place
+        response
+            .status(500)
+            .send({
+                message: error.message
+            });
+
+    } finally {
+        await session.close();
+    }
+}
+
+module.exports.getSuppliesRelationsBySupplierProduct = async (request, response) => {
+    console.log('Get Supplies Relations between specific Supplier and Product...');
+
+    const supplierId = request.params.supplier;
+    const productId = request.params.product;
+    const session = driver.session(config);
+
+    try {
+        const query = `MATCH (s:Supplier)-[r:SUPPLIES]->(p:Product) WHERE s.id=$supplier AND p.id=$product RETURN r`;
+        const params =  {supplier: Number.parseInt(supplierId), product: Number.parseInt(productId)};
+        const result = await session.readTransaction(tx => tx.run(query,params));
+        const nodes = result.records.map(record => record.get(0));
+
+        if(nodes.length<1) {
+            response
+                .status(404)
+                .send({
+                    message: `Not found SUPPLIES relationship between Supplier: ${supplierId} and Product: ${productId}.`
+                })
+        }
+
+        response
+            .status(200)
+            .send({
+                quantity: nodes.length,
+                nodes
+            })
+
+    } catch (error) {
+        //send response with status 500 if error took place
+        response
+            .status(500)
+            .send({
+                message: error.message
+            });
+
+    } finally {
+        await session.close();
+    }
+}
+
+
+module.exports.deleteSuppliesRelationsSupplierProduct = async (request, response) => {
+    console.log('Delete Supplies Relations by Supplier and Product Id...');
+
+    const supplierId = request.params.supplier;
+    const productId = request.params.product;
+    const session = driver.session(config);
+
+    try {
+
+        const existingRelationshipQuery = `MATCH (s:Supplier)-[r:SUPPLIES]->(p:Product) WHERE s.id=$supplier AND p.id=$product RETURN r`;
+        const existingRelationshipParams =  {supplier: Number.parseInt(supplierId), product: Number.parseInt(productId)};
+        const existingRelationshipResult = await session.readTransaction(tx => tx.run(existingRelationshipQuery, existingRelationshipParams));
+        const existingRelationshipNodes = existingRelationshipResult.records.map(record => record.get(0));
+
+        if(existingRelationshipNodes.length<1) {
+            response
+                .status(404)
+                .send({
+                    message: `Not found SUPPLIES relationship between Supplier: ${supplierId} and Product: ${productId}.`
+                })
+        }
+
+        const query = `MATCH (s:Supplier)-[r:SUPPLIES]->(p:Product) WHERE s.id=$supplier AND p.id=$product DELETE r`;
+        const params =  {supplier: Number.parseInt(supplierId), product: Number.parseInt(productId)};
+        await session.writeTransaction(tx => tx.run(query, params));
+
+        response
+            .status(200)
+            .send({
+                message: `SUPPLIES relationship between Supplier ${supplierId} and Product ${productId} has been deleted.`
+            })
+
+    } catch (error) {
+        //send response with status 500 if error took place
+        response
+            .status(500)
+            .send({
+                message: error.message
+            });
+
+    } finally {
+        await session.close();
+    }
+}
 
 //create supplies relation
 module.exports.createSuppliesRelation = async (request, response) => {
@@ -922,7 +1039,6 @@ module.exports.getContainsRelationsByOrderProduct = async (request, response) =>
             response
                 .status(404)
                 .send({
-                    quantity: nodes.length,
                     message: `Not found CONTAINS relationship between Order: ${orderId} and Product: ${productId}.`
                 })
         }
