@@ -8,7 +8,7 @@ const { health, getAll, getById, create, deleteById, updateById, getAllOrderedBy
         deleteBelongsToRelationsProductCategory, createBelongsToRelation, getCategoriesAssignedToProduct, getProductsBelongToCategory,
         getAllContainsRelations, getContainsRelationById, createContainsRelation, getProductsContainedInOrder, getContainsRelationsByOrderProduct,
         getOrdersWhichContainProduct, deleteContainsRelationsOrderProduct, deleteContainsRelationById,
-        updateContainsRelationById } = require('../controllers/Controller');
+        updateContainsRelationById, createProductOrder } = require('../controllers/Controller');
 const { select } = require('../middlewares/switchToNode');
 
 router.get('/health', health)
@@ -86,5 +86,7 @@ router.get('/api/products/:id/orders', select, getOrdersWhichContainProduct);
 router.delete('/api/orders/:order/products/:product', select, deleteContainsRelationsOrderProduct);
 router.delete('/api/orders/products/:id', select, deleteContainsRelationById);
 router.put('/api/orders/products/:id', select, updateContainsRelationById);
+
+router.post('/api/customers/:customer/products/:product', select, createProductOrder);
 
 module.exports = router;
