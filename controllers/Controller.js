@@ -1455,7 +1455,7 @@ module.exports.createProductOrder = async (request, response) => {
         if (!orderedByNode) throw new Error(`ERROR - cannot create ORDERED BY relationship between Order: ${orderId} and Customer: ${customerId} `);
 
         response
-             .status(200)
+             .status(201)
              .send({
                  message: `New Product Order has been created. Order no: ${orderId}, Product no: ${productId}, Customer ${customerId}`,
                  orderBodyParsed,
