@@ -1332,3 +1332,147 @@ module.exports.updateContainsRelationById = async (request, response) => {
         await session.close();
     }
 }
+
+
+module.exports.createProductOrder = async (request, response) => {
+    console.log('Create product order...');
+
+    const customerId = request.params.customer;
+    const productId = request.params.product;
+    const nodeDetails = { properties: request.body };
+
+    const session = driver.session(config);
+
+    const nodeLabelCustomer = 'Customer';
+    const nodeLabelProduct = 'Product';
+
+    try {
+        //check if customer exists
+        if (!await nodeExists(customerId, nodeLabelCustomer)) {
+            response
+                .status(404)
+                .send({
+                    message: `There is no ${nodeLabelCustomer} with provided id: ${customerId}`
+                });
+        }
+
+        //check if product exists
+        if (!await nodeExists(productId, nodeLabelProduct)) {
+            response
+                .status(404)
+                .send({
+                    message: `There is no ${nodeLabelProduct} with provided id: ${productId}`
+                });
+        }
+        //create new order
+        let orderId = nodeDetails.properties.id;
+        if (!orderId) orderId = Number.parseInt(uuid.v4(), 16);
+        const orderDate = nodeDetails.properties.unitPrice;
+        const requiredDate = nodeDetails.properties.requiredDate;
+        const shippedDate = nodeDetails.properties.shippedDate;
+        const freight = nodeDetails.properties.freight;
+        const shipName = nodeDetails.properties.shipName;
+        const shipAddress = nodeDetails.properties.shipAddress;
+        const shipCity = nodeDetails.properties.shipCity;
+        const shipPostalCode = nodeDetails.properties.shipPostalCode;
+        const shipCountry = nodeDetails.properties.shipCountry;
+
+        const orderBodyParsed = {
+            "orderDate": orderDate,
+            "requiredDate": requiredDate,
+            "shippedDate": shippedDate,
+            "freight": Number.parseInt(freight),
+            "shipName": shipName,
+            "shipAddress": shipAddress,
+            "shipCity": shipCity,
+            "shipPostalCode": shipPostalCode,
+            "shipCountry": shipCountry
+        }
+
+        const nodeLabelOrder = 'Order';
+
+        let createOrderQuery = `CREATE (n:${nodeLabelOrder}) SET n+=$properties, n.id=${orderId} RETURN n`;
+
+        const orderParams = {
+            properties: orderBodyParsed
+        };
+
+        const orderResult = await session.writeTransaction(tx => tx.run(createOrderQuery, orderParams));
+        const orderNode = orderResult.records[0];
+
+        if (!orderNode) {
+             response
+                 .status(400)
+                 .send({
+                     message: `The server was not able to register a new ${nodeLabelOrder}.`
+                 });
+        }
+
+        //create contains relation
+        let orderDetailsId = nodeDetails.properties.odId;
+        if (!orderDetailsId) orderDetailsId = nodeDetails.properties.odId = Number.parseInt(uuid.v4(), 16);
+        const unitPrice = nodeDetails.properties.unitPrice;
+        const quantity = nodeDetails.properties.quantity;
+        const discount = nodeDetails.properties.discount;
+
+        const orderDetailsBodyParsed = {
+             "odID": orderDetailsId,
+             "unitPrice": Number.parseFloat(unitPrice),
+             "quantity": Number.parseInt(quantity),
+             "discount": Number.parseFloat(discount)
+        }
+
+        const containsSuppliesQuery = `MATCH (o:${nodeLabelOrder}),(p:${nodeLabelProduct}) WHERE o.id = $order AND p.id = $product CREATE (o)-[r:CONTAINS]->(p) SET r+=$properties RETURN type(r)`;
+
+        const orderDetailsParams = {
+             order: Number.parseInt(orderId),
+             product: Number.parseInt(productId),
+             properties: orderDetailsBodyParsed
+        };
+
+        const containsResult = await session.writeTransaction(tx => tx.run(containsSuppliesQuery, orderDetailsParams));
+        const containsNode = containsResult.records[0];
+
+        if (!containsNode) throw new Error(`ERROR - cannot create CONTAINS relationship between Order: ${orderId} and Product: ${productId}.`);
+
+        //create ordered by relation
+        const existingOrderCustomersQuery = `MATCH (o:${nodeLabelOrder})-[r:ORDERED_BY]-(c:${nodeLabelCustomer}) WHERE o.id = $id RETURN c`;
+        const existingOrderCustomersParams =  {id: Number.parseInt(orderId)};
+        const existingOrderCustomersResult = await session.writeTransaction(tx => tx.run(existingOrderCustomersQuery, existingOrderCustomersParams));
+        const customersCount = existingOrderCustomersResult.records.length;
+
+        if(customersCount != 0){
+            const existingCustomer = existingOrderCustomersResult.records[0].get(0).properties.id;
+            throw new Error(`ERROR - cannot create ORDERED BY relationship between Order: ${orderId} and Customer: ${customerId} Order: ${orderId} has already got Customer ${existingCustomer}.`);
+        }
+
+        const relationOrderQuery = `MATCH (o:${nodeLabelOrder}),(c:${nodeLabelCustomer}) WHERE o.id = $order AND c.id =$customer CREATE (o)-[r:ORDERED_BY]->(c) RETURN type(r)`;
+
+        const orderedByParams =  {order: Number.parseInt(orderId), customer: customerId};
+        const orderedByResult = await session.writeTransaction(tx => tx.run(relationOrderQuery, orderedByParams));
+        const orderedByNode = orderedByResult.records[0];
+
+        if (!orderedByNode) throw new Error(`ERROR - cannot create ORDERED BY relationship between Order: ${orderId} and Customer: ${customerId} `);
+
+        response
+             .status(201)
+             .send({
+                 message: `New Product Order has been created. Order no: ${orderId}, Product no: ${productId}, Customer ${customerId}`,
+                 orderBodyParsed,
+                 containsNode,
+                 orderedByNode,
+                 orderDetailsParams
+             })
+
+        } catch (error) {
+            //send response with status 500 if error took place
+            response
+                .status(500)
+                .send({
+                    message: error.message
+                });
+
+        } finally {
+            await session.close();
+    }
+}
