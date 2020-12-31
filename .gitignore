@@ -1,12 +1,25 @@
 # dependencies
 node_modules
+front-end/node_modules
+
+# testing
+front-end/coverage
 
 # build files
 build
+front-end/build
 
 # misc
 .DS_Store
 npm-debug.log
+
+front-end/.DS_Store
+front-end/.env.local
+front-end/.env.development.local
+front-end/.env.test.local
+front-end/.env.production.local
+
+front-end/npm-debug.log*
 
 # IntelliJ
 .idea
