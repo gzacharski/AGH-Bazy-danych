@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {SupplierTable} from '../components/SupplierTable';
+import SupplierTable from '../components/tables/SupplierTable';
 import axios from 'axios';
 
 class Suppliers extends Component{
@@ -17,7 +17,8 @@ class Suppliers extends Component{
         axios.get('http://localhost:3000/api/suppliers')
             .then(response=>{
                 console.log(response);
-                this.setState({suppliers: response.data})
+                this.setState({suppliers: response.data.nodes})
+                console.log(this.state.suppliers);
             })
             .catch(error => {
                 console.log(error);
@@ -29,8 +30,8 @@ class Suppliers extends Component{
 
         return(
             <div>
-                <h1>Suppliers</h1>
-                {/* <SupplierTable data={suppliers}/> */}
+                <span className="text-center"><h1>Suppliers</h1></span>
+                <SupplierTable data={suppliers}/>
             </div>
         );
     };
