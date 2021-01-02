@@ -21,15 +21,25 @@ Dokumentacja projektu jest dostępna w sekcji [Wiki](https://github.com/gzachars
    ```shell script
     docker-compose up -d
     ```
-1. Zainstalowanie bibliotek
+1. Zainstalowanie bibliotek dla back-endu:
     ```shell script
     npm install
     ```
-1. Wystartowanie aplikacji:
+1. Wystartowanie aplikacji back-endu:
     ```shell script
     npm start
     ```
-   
+
+1. Zainstalowanie bibliotek dla front-endu:
+    ```shell script
+    cd front-end
+    npm install
+    ```
+1. Wystartowanie aplikacji back-endu:
+    ```shell script
+    npm start
+    ```
+
 ## Testowanie
 
 1. Uruchomienie testów
