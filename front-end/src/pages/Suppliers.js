@@ -17,7 +17,7 @@ class Suppliers extends Component{
         axios.get('http://localhost:3000/api/suppliers')
             .then(response=>{
                 console.log(response);
-                this.setState({suppliers: response.data.nodes})
+                this.setState({suppliers: response.data})
             })
             .catch(error => {
                 console.log(error);
@@ -29,14 +29,7 @@ class Suppliers extends Component{
 
         return(
             <div>
-                SupplierTable
                 <SupplierTable data={suppliers}/>
-                {/* {
-                    suppliers.length ? suppliers.map(
-                        supplier => <div key={supplier.id}>{supplier.companyName}</div>
-                    ):null
-                }
-                {errorMsg ? <div>{errorMsg}</div>:null} */}
             </div>
         );
     };

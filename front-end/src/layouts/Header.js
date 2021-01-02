@@ -1,10 +1,18 @@
 import React from 'react';
+import * as FaIcons from "react-icons/fa";
+import { Link } from 'react-router-dom';
+import './navbar/Navbar.css';
 
-const Header = () => {
+export default function Header(props){
 
     return(
-        <header className="navbar navbar-light bg-light text-dark text-center">
+        <header className="navbar">
              <div className="container-fluid">
+                <div className='navbar'>
+                    <Link to='#' className='menu-bars'>
+                        <FaIcons.FaBars onClick={props.showSidebar} />
+                    </Link>
+                </div> 
                 <a className="navbar-brand">Baza Northwind</a>
                 <form className="d-flex">
                     <input className="form-control me-2" type="search" placeholder="Szukaj" aria-label="Szukaj"/>
@@ -14,5 +22,3 @@ const Header = () => {
         </header>
     );
 }
-
-export default Header;

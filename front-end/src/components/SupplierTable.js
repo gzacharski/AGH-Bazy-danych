@@ -1,21 +1,11 @@
 import React, {useMemo} from 'react';
 import {useTable} from 'react-table';
+import {COLUMNS} from './columns';
 
 export const SupplierTable = (props) => {
 
-    const columns = useMemo(()=>[
-        {Header: 'Id', accessor: 'id'},
-        {Header: 'Country', accessor: 'country'},
-        {Header: 'Address', accessor: 'address'},
-        {Header: 'Contact title', accessor: 'contactTitle'},
-        {Header: 'City', accessor: 'city'},
-        {Header: 'Phone', accessor: 'phone'},
-        {Header: 'Contact name', accessor: 'contactName'},
-        {Header: 'Postal code', accessor: 'postalCode'},
-        {Header: 'Company name', accessor: 'companyName'},
-    ],[]);
-
-    const data =useMemo(()=>props.data,[]);
+    const columns=useMemo(()=>COLUMNS,[]);
+    const data =useMemo(()=>props.data.nodes,[]);
 
     const {
         getTableProps,
@@ -29,13 +19,13 @@ export const SupplierTable = (props) => {
     })
 
     return(
-        <table {...getTableProps()}>
-            <thead>
+        <table {...getTableProps()} className="table table-striped table-hover">
+            <thead> 
                 {headerGroups.map(headerGroup =>(
                     <tr {...headerGroup.getHeaderGroupProps()}>
                         {
                             headerGroup.headers.map(colum =>(
-                                <th {...colum.getHeaderProps()}>{colum.render('Header')}</th>
+                                <th {...colum.getHeaderProps()} className="text-center align-middle">{colum.render('Header')}</th>
                             ))
                         }
                     </tr>
@@ -48,9 +38,11 @@ export const SupplierTable = (props) => {
                         return(
                             <tr {...row.getRowProps()}>
                                 {row.cells.map(cell=>{
-                                    <td {...cell.getCellProps()}>
-                                        {cell.render('Cell')}
-                                    </td>
+                                    return(
+                                        <td {...cell.getCellProps()}>
+                                            {cell.render('Cell')}
+                                        </td>
+                                    )
                                 })}
                             </tr>
                         )
