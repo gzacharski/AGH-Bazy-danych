@@ -35,7 +35,7 @@ Dokumentacja projektu jest dostępna w sekcji [Wiki](https://github.com/gzachars
     cd front-end
     npm install
     ```
-1. Wystartowanie aplikacji back-endu:
+1. Wystartowanie aplikacji front-endu:
     ```shell script
     npm start
     ```
