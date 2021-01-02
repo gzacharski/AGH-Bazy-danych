@@ -1,11 +1,46 @@
-import React from 'react'
+import React, {Component} from 'react'
+import Table from '../components/Table';
+import axios from 'axios';
 
-function Products() {
-    return (
-        <div className="products">
-            <h1>Products</h1>
-        </div>
-    )
+class Products extends Component{
+
+    state={
+        products: [],
+        errorMsg: '',
+        columns: [
+            { Header: 'Id', accessor: 'id.low' },
+            { Header: 'Name', accessor: 'name' },
+            { Header: 'Quantity per unit', accessor: 'quantityPerUnit' },
+            { Header: 'Unit price', accessor: 'unitPrice' },
+            { Header: 'Units in stock', accessor: 'unitsInStock.low' },
+            { Header: 'Reorder level', accessor: 'reorderLevel.low' },
+            { Header: 'Discontinued', accessor: 'discontinued.low' },
+            { Header: 'Units on order', accessor: 'unitsOnOrder.low' }
+        ]
+    }
+
+    componentDidMount(){
+        axios.get('http://localhost:3000/api/products')
+            .then(response=>{
+                console.log(response);
+                this.setState({products: response.data.nodes})
+                console.log(this.state.products);
+            })
+            .catch(error => {
+                console.log(error);
+            })
+    }
+
+    render(){
+        const {products, errorMsg,columns} =this.state;
+
+        return(
+            <div>
+                <span className="text-center"><h1>Products</h1></span>
+                <Table data={products} columns={columns}/>
+            </div>
+        );
+    };
 }
 
 export default Products;

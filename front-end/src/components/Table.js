@@ -2,22 +2,7 @@ import React from 'react';
 import { useTable } from 'react-table';
 import './Table.css';
 
-const columns = [
-    { Header: 'Id', accessor: 'id.low' },
-    { Header: 'Country', accessor: 'country' },
-    { Header: 'Address', accessor: 'address' },
-    { Header: 'Contact title', accessor: 'contactTitle' },
-    { Header: 'City', accessor: 'city' },
-    { Header: 'Phone', accessor: 'phone' },
-    { Header: 'Contact name', accessor: 'contactName' },
-    { Header: 'Postal code', accessor: 'postalCode' },
-    { Header: 'Company name', accessor: 'companyName' },
-];
-
-export default function SupplierTable(props) {
-
-    // const columns = useMemo(() => columns, []);
-    // const data = useMemo(() => props.data, []);
+export default function Table(props) {
 
     const {
         getTableProps,
@@ -26,7 +11,7 @@ export default function SupplierTable(props) {
         rows,
         prepareRow
     } = useTable({
-        columns,
+        columns: props.columns,
         data: props.data
     })
 
