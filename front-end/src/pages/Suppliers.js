@@ -29,7 +29,8 @@ class Suppliers extends Component{
 
         return(
             <div>
-                <SupplierTable data={suppliers}/>
+                <h1>Suppliers</h1>
+                {/* <SupplierTable data={suppliers}/> */}
             </div>
         );
     };

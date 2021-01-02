@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import {BrowserRouter as Router} from 'react-router-dom';
 import "bootstrap/dist/css/bootstrap.min.css";
 import './styles/App.css';
-import Header from './layouts/Header';
+import Header from './layouts/header/Header';
 import Navbar from './layouts/navbar/Navbar';
 import Page from './layouts/Page';
 import Footer from "./layouts/Footer";
