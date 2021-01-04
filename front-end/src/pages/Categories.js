@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Table from '../components/Table';
+import Table from '../components/table/Table';
 import axios from 'axios';
 
 class Categories extends Component {
@@ -8,7 +8,7 @@ class Categories extends Component {
         categories: [],
         errorMsg: '',
         columns : [
-            { Header: 'Id', accessor: 'id.low' },
+            // { Header: 'Id', accessor: 'id.low'},
             { Header: 'Name', accessor: 'name' },
             { Header: 'Description', accessor: 'description' }
         ]
@@ -31,8 +31,7 @@ class Categories extends Component {
 
         return (
             <div>
-                <span className="text-center"><h1>Categories</h1></span>
-                <Table data={categories} columns={columns} />
+                <Table title="Categories" data={categories} columns={columns} />
             </div>
         );
     };

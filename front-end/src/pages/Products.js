@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import Table from '../components/Table';
+import Table from '../components/table/Table';
 import axios from 'axios';
 
 class Products extends Component{
@@ -36,8 +36,7 @@ class Products extends Component{
 
         return(
             <div>
-                <span className="text-center"><h1>Products</h1></span>
-                <Table data={products} columns={columns}/>
+                <Table title="Products" data={products} columns={columns}/>
             </div>
         );
     };
