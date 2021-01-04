@@ -8,7 +8,7 @@ class Categories extends Component {
         categories: [],
         errorMsg: '',
         columns : [
-            { Header: 'Id', accessor: 'id.low' },
+            // { Header: 'Id', accessor: 'id.low'},
             { Header: 'Name', accessor: 'name' },
             { Header: 'Description', accessor: 'description' }
         ]

@@ -1,12 +1,17 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { useTable, usePagination, useSortBy, useGlobalFilter } from 'react-table';
 import './Table.css';
 import TablePagination from './TablePagination';
 import TableFooter from './TableFooter';
 import TableHeader from './TableHeader';
 import {TableFilter} from './TableFilter';
+import TableConfig from './TableConfig';
 import AddButton from '../AddButton';
-import { ImSortAlphaAsc, ImSortAlphaDesc } from 'react-icons/im'
+import { ImSortAlphaAsc, ImSortAlphaDesc } from 'react-icons/im';
+import Tooltip from '@material-ui/core/Tooltip';
+import { BsInfoCircle,BsPencil, BsTrash, BsGear } from 'react-icons/bs';
+import IconButton from '@material-ui/core/IconButton';
+
 
 export default function Table(props) {
 
@@ -25,7 +30,7 @@ export default function Table(props) {
         setPageSize,
         state,
         prepareRow,
-        setGlobalFilter
+        setGlobalFilter,
     } = useTable({
         columns: props.columns,
         data: props.data
@@ -41,8 +46,9 @@ export default function Table(props) {
         <>  
             <TableHeader title={props.title}/>
             <div className="d-flex justify-content-between align-items-center">
-                <AddButton/>
                 <TableFilter filter={globalFilter} setFilter={setGlobalFilter}/>
+                <AddButton/>
+                <TableConfig/>
             </div>
             <TablePagination
                 pageIndex={pageIndex}
@@ -74,6 +80,25 @@ export default function Table(props) {
                                     </th>
                                 ))
                             }
+                            {   
+                                <>
+                                    <th className="text-center align-middle">
+                                        <div className="d-flex align-items-center">
+                                            Details
+                                        </div>
+                                    </th>
+                                    <th className="text-center align-middle">
+                                        <div className="d-flex align-items-center">
+                                            Edit
+                                        </div>
+                                    </th>
+                                    <th className="text-center align-middle">
+                                        <div className="d-flex align-items-center">
+                                            Delete
+                                        </div>
+                                    </th>
+                                </>
+                            }
                         </tr>
                     ))}
                 </thead>
@@ -91,6 +116,31 @@ export default function Table(props) {
                                         </td>
                                     )
                                 })}
+                                {
+                                    <>  
+                                        <td>
+                                            <Tooltip title="More">
+                                                <IconButton aria-label="More">
+                                                    <BsInfoCircle/>
+                                                </IconButton>
+                                            </Tooltip>
+                                        </td>
+                                        <td>
+                                            <Tooltip title="Edit">
+                                                <IconButton aria-label="Edit">
+                                                    <BsPencil/>
+                                                </IconButton>
+                                            </Tooltip>
+                                        </td>
+                                        <td>
+                                            <Tooltip title="Remove">
+                                                <IconButton aria-label="Remove">
+                                                    <BsTrash/>
+                                                </IconButton>
+                                            </Tooltip>
+                                        </td>
+                                    </>
+                                }
                             </tr>
                         )
                     })}

@@ -2,6 +2,7 @@ import React from 'react';
 import * as FaIcons from "react-icons/fa";
 import { Link } from 'react-router-dom';
 import '../navbar/Navbar.css';
+import {BiSearch} from 'react-icons/bi'
 
 export default function Header(props){
 
@@ -15,7 +16,7 @@ export default function Header(props){
                 </div> 
                 <form className="d-flex">
                     <input className="form-control me-2" type="search" placeholder="Search in database" aria-label="Szukaj"/>
-                    <button className="btn btn-primary" type="submit">Search</button>
+                    <button className="btn btn-primary" type="submit"><BiSearch/></button>
                 </form>
         </header>
     );
