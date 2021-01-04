@@ -31,8 +31,7 @@ class Categories extends Component {
 
         return (
             <div>
-                <span className="text-center"><h1>Categories</h1></span>
-                <Table data={categories} columns={columns} />
+                <Table title="Categories" data={categories} columns={columns} />
             </div>
         );
     };

@@ -1,8 +1,10 @@
 import React from 'react';
-import { useTable, usePagination, useSortBy } from 'react-table';
+import { useTable, usePagination, useSortBy, useGlobalFilter } from 'react-table';
 import './Table.css';
 import TablePagination from './TablePagination';
 import TableFooter from './TableFooter';
+import TableHeader from './TableHeader';
+import {TableFilter} from './TableFilter';
 import { ImSortAlphaAsc, ImSortAlphaDesc } from 'react-icons/im'
 
 export default function Table(props) {
@@ -21,19 +23,23 @@ export default function Table(props) {
         pageCount,
         setPageSize,
         state,
-        prepareRow
+        prepareRow,
+        setGlobalFilter
     } = useTable({
         columns: props.columns,
         data: props.data
-    },
+    },  
+        useGlobalFilter,
         useSortBy,
         usePagination
     )
 
-    const { pageIndex, pageSize } = state;
+    const { pageIndex, pageSize,globalFilter } = state;
 
     return (
-        <>
+        <>  
+            <TableHeader title={props.title}/>
+            <TableFilter filter={globalFilter} setFilter={setGlobalFilter}/>
             <TablePagination
                 pageIndex={pageIndex}
                 gotoPage={gotoPage}

@@ -38,8 +38,7 @@ class Customers extends Component{
 
         return(
             <div>
-                <span className="text-center"><h1>Customers</h1></span>
-                <Table data={customers} columns={columns}/>
+                <Table title="Customers" data={customers} columns={columns}/>
             </div>
         );
     };

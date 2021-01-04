@@ -31,8 +31,7 @@ class Shippers extends Component {
 
         return (
             <div>
-                <span className="text-center"><h1>Shippers</h1></span>
-                <Table data={shippers} columns={columns} />
+                <Table title="Shippers" data={shippers} columns={columns} />
             </div>
         );
     };

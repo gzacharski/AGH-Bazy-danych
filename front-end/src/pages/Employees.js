@@ -43,8 +43,7 @@ class Employees extends Component {
 
         return (
             <div>
-                <span className="text-center"><h1>Employees</h1></span>
-                <Table data={employees} columns={columns} />
+                <Table title="Employees" data={employees} columns={columns} />
             </div>
         );
     };
