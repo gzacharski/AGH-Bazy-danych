@@ -4,6 +4,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 import TextField from '@material-ui/core/TextField';
+import Divider from '@material-ui/core/Divider';
 
 const initCustomer={
     name: '',
@@ -34,6 +35,7 @@ export default function AddDialog(props) {
             open={open}
         >
             <DialogTitle>Add new customer</DialogTitle>
+            <Divider/>
             <DialogContent>
                 <TextField
                     autoFocus

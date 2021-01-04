@@ -31,6 +31,7 @@ export default function Table(props) {
         state,
         prepareRow,
         setGlobalFilter,
+        allColumns,
     } = useTable({
         columns: props.columns,
         data: props.data
@@ -46,9 +47,14 @@ export default function Table(props) {
         <>  
             <TableHeader title={props.title}/>
             <div className="d-flex justify-content-between align-items-center">
-                <TableFilter filter={globalFilter} setFilter={setGlobalFilter}/>
+                <TableFilter 
+                    filter={globalFilter} 
+                    setFilter={setGlobalFilter}
+                />
                 <AddButton/>
-                <TableConfig/>
+                <TableConfig 
+                    allColumns={allColumns}
+                />
             </div>
             <TablePagination
                 pageIndex={pageIndex}
