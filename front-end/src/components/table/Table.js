@@ -1,8 +1,9 @@
 import React from 'react';
-import { useTable, usePagination } from 'react-table';
+import { useTable, usePagination, useSortBy } from 'react-table';
 import './Table.css';
 import TablePagination from './TablePagination';
 import TableFooter from './TableFooter';
+import { ImSortAlphaAsc, ImSortAlphaDesc } from 'react-icons/im'
 
 export default function Table(props) {
 
@@ -24,14 +25,17 @@ export default function Table(props) {
     } = useTable({
         columns: props.columns,
         data: props.data
-    }, usePagination)
+    },
+        useSortBy,
+        usePagination
+    )
 
     const { pageIndex, pageSize } = state;
 
     return (
         <>
-            <TablePagination 
-                pageIndex={pageIndex} 
+            <TablePagination
+                pageIndex={pageIndex}
                 gotoPage={gotoPage}
                 canNextPage={canNextPage}
                 canPreviousPage={canPreviousPage}
@@ -46,9 +50,17 @@ export default function Table(props) {
                     {headerGroups.map(headerGroup => (
                         <tr {...headerGroup.getHeaderGroupProps()}>
                             {
-                                headerGroup.headers.map(colum => (
-                                    <th {...colum.getHeaderProps()} className="text-center align-middle">
-                                        {colum.render('Header')}
+                                headerGroup.headers.map(column => (
+                                    <th {...column.getHeaderProps(column.getSortByToggleProps())}
+                                        className="text-center align-middle">
+                                        <div className="d-flex align-items-center">
+                                            <span>
+                                                {column.render('Header')}
+                                            </span>
+                                            <span>
+                                                {column.isSorted ? (column.isSortedDesc ? <ImSortAlphaDesc /> : <ImSortAlphaAsc />) : ''}
+                                            </span>
+                                        </div>
                                     </th>
                                 ))
                             }
@@ -74,10 +86,10 @@ export default function Table(props) {
                     })}
                 </tbody>
             </table>
-           <TableFooter
+            <TableFooter
                 pageIndex={pageIndex}
                 pageOptions={pageOptions}
-           />
+            />
         </>
     );
 }
