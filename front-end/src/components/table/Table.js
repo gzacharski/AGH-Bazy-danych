@@ -5,6 +5,7 @@ import TablePagination from './TablePagination';
 import TableFooter from './TableFooter';
 import TableHeader from './TableHeader';
 import {TableFilter} from './TableFilter';
+import AddButton from '../AddButton';
 import { ImSortAlphaAsc, ImSortAlphaDesc } from 'react-icons/im'
 
 export default function Table(props) {
@@ -38,8 +39,9 @@ export default function Table(props) {
 
     return (
         <>  
+            <TableHeader title={props.title}/>
             <div className="d-flex justify-content-between align-items-center">
-                <TableHeader title={props.title}/>
+                <AddButton/>
                 <TableFilter filter={globalFilter} setFilter={setGlobalFilter}/>
             </div>
             <TablePagination

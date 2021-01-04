@@ -34,10 +34,11 @@ export default function TablePagination(props) {
                 </button>
             </div>
             <div className="d-flex align-items-center">
+                <span>Rows per page:</span>
                 <select
                     value={pageSize}
                     onChange={e => { setPageSize(Number(e.target.value)) }}
-                    className="form-select"
+                    className="form-select ml-3"
                 >
                     {
                         [5, 10, 25, 50].map(pageSize => (
@@ -47,7 +48,6 @@ export default function TablePagination(props) {
                         ))
                     }
                 </select>
-                <span>rows per page</span>
             </div>
             <div>
                 <button

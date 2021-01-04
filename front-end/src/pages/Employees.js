@@ -20,7 +20,7 @@ class Employees extends Component {
             { Header: 'Hire date', accessor: 'hireDate' },
             { Header: 'Address', accessor: 'address' },
             { Header: 'Home phone', accessor: 'homePhone' },
-            // { Header: 'Notes', accessor: 'notes' },
+            { Header: 'Notes', accessor: 'notes' },
             { Header: 'Extension', accessor: 'extension.low' },
             { Header: 'Region', accessor: 'region' },
         ]
