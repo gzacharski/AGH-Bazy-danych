@@ -1,7 +1,8 @@
 import React from 'react';
 import { useTable, usePagination } from 'react-table';
-import { GrPrevious, GrNext } from 'react-icons/gr'
 import './Table.css';
+import TablePagination from './TablePagination';
+import TableFooter from './TableFooter';
 
 export default function Table(props) {
 
@@ -25,26 +26,21 @@ export default function Table(props) {
         data: props.data
     }, usePagination)
 
-    const {pageIndex, pageSize}=state;
+    const { pageIndex, pageSize } = state;
 
     return (
         <>
-            <div className="d-flex justify-content-between">
-                <button
-                    onClick={() => previousPage()}
-                    disabled={!canPreviousPage}
-                    className="btn btn-light"
-                >
-                    <GrPrevious />
-                </button>
-                <button
-                    onClick={() => nextPage()}
-                    disabled={!canNextPage}
-                    className="btn btn-light"
-                >
-                    <GrNext />
-                </button>
-            </div>
+            <TablePagination 
+                pageIndex={pageIndex} 
+                gotoPage={gotoPage}
+                canNextPage={canNextPage}
+                canPreviousPage={canPreviousPage}
+                setPageSize={setPageSize}
+                pageCount={pageCount}
+                pageSize={pageSize}
+                nextPage={nextPage}
+                previousPage={previousPage}
+            />
             <table {...getTableProps()} className="table table-striped table-hover">
                 <thead>
                     {headerGroups.map(headerGroup => (
@@ -78,14 +74,10 @@ export default function Table(props) {
                     })}
                 </tbody>
             </table>
-            <div className="d-flex justify-content-center">
-                <span>
-                    Page{' '}
-                    <strong>
-                        {pageIndex + 1} of {pageOptions.length}
-                    </strong>
-                </span>
-            </div>
+           <TableFooter
+                pageIndex={pageIndex}
+                pageOptions={pageOptions}
+           />
         </>
     );
 }
