@@ -38,8 +38,10 @@ export default function Table(props) {
 
     return (
         <>  
-            <TableHeader title={props.title}/>
-            <TableFilter filter={globalFilter} setFilter={setGlobalFilter}/>
+            <div className="d-flex justify-content-between align-items-center">
+                <TableHeader title={props.title}/>
+                <TableFilter filter={globalFilter} setFilter={setGlobalFilter}/>
+            </div>
             <TablePagination
                 pageIndex={pageIndex}
                 gotoPage={gotoPage}

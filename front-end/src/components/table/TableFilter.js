@@ -11,7 +11,7 @@ export const TableFilter = ({filter, setFilter}) =>{
     },350);
 
     return (
-        <div class="input-group mb-3">
+        <div class="input-group">
             <span class="input-group-text"><BiSearch/></span>
             <input 
                 type="text"
