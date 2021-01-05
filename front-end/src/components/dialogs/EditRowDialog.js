@@ -3,12 +3,24 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle,
-    Divider
+    Divider,
+    TextField
 } from "@material-ui/core";
+import { makeStyles } from '@material-ui/core/styles';
 import React from "react";
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+        '& .MuiTextField-root': {
+            margin: theme.spacing(1),
+            width: '25ch',
+        },
+    },
+}));
 
 export default function EditRowDialog(props) {
 
+    const classes = useStyles();
     const { row, onClose, open } = props;
 
     return (
@@ -16,7 +28,17 @@ export default function EditRowDialog(props) {
             <DialogTitle>Edit</DialogTitle>
             <Divider />
             <DialogContent>
-                "todo -> Edit data"
+                <form className={classes.root}>
+                    {row.cells.map(cell => {
+                        return (
+                            <TextField
+                                label={cell.column.Header}
+                                variant="outlined"
+                                defaultValue={cell.value}
+                            />
+                        );
+                    })}
+                </form>
             </DialogContent>
             <DialogActions>
                 <button className="btn btn-light" onClick={onClose}>

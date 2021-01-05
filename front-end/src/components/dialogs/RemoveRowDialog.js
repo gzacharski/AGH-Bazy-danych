@@ -12,17 +12,18 @@ export default function RemoveRowDialog(props) {
 
     return (
         <Dialog onClose={onClose} open={open}>
-            <DialogTitle>remove</DialogTitle>
+            <DialogTitle>Remove</DialogTitle>
             <Divider />
             <DialogContent>
-                "todo -> Remove data"
+                <h5>Are you sure you want to remove the row from database?</h5>
+                The row will be deleted immediately. You can't undo this action.
             </DialogContent>
             <DialogActions>
                 <button className="btn btn-light" onClick={onClose}>
                     Cancel
                 </button>
                 <button className="btn btn-light" onClick={onClose}>
-                    Ok
+                    Remove
                 </button>
             </DialogActions>
         </Dialog>

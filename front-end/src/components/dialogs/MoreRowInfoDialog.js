@@ -1,13 +1,27 @@
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Divider from '@material-ui/core/Divider';
-import React from 'react';
+import {
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    Divider,
+    TextField
+} from "@material-ui/core";
+import { makeStyles } from '@material-ui/core/styles';
+import React from "react";
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+        '& .MuiTextField-root': {
+            margin: theme.spacing(1),
+            width: '25ch',
+        },
+    },
+}));
 
 export default function MoreInfoDialog(props) {
 
-    const { row, onClose, open } = props;
+    const classes = useStyles();
+    const { row, onClose, open, titles } = props;
 
     return (
         <Dialog
@@ -17,22 +31,21 @@ export default function MoreInfoDialog(props) {
             <DialogTitle>More info</DialogTitle>
             <Divider />
             <DialogContent>
-                <table>
-                    <thead></thead>
-                    <tbody>
-                        <tr {...row.getRowProps()}>
-                            {row.cells.map(cell => {
-                                return (
-                                    <td {...cell.getCellProps()}>
-                                        <span className="cell">
-                                            {cell.render('Cell')}
-                                        </span>
-                                    </td>
-                                )
-                            })}
-                        </tr>
-                    </tbody>
-                </table>
+                <form className={classes.root}>
+                    {row.cells.map(cell => {
+                        return (
+                            <TextField
+                                label={cell.column.Header}
+                                InputProps={{
+                                    readOnly: true,
+                                }}
+                                disabled
+                                variant="outlined"
+                                defaultValue={cell.value}
+                            />
+                        );
+                    })}
+                </form>
             </DialogContent>
             <DialogActions>
                 <button className="btn btn-light" onClick={onClose}>

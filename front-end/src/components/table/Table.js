@@ -1,9 +1,15 @@
 import './Table.css';
 import AddButton from '../buttons/AddButton';
-import { ImSortAlphaAsc, ImSortAlphaDesc } from 'react-icons/im';
+import { ImSortAlphaAsc, ImSortAlphaDesc } from "react-icons/im";
 import React from 'react';
 import RowActions from './RowActions';
-import { useTable, usePagination, useSortBy, useGlobalFilter, useExpanded} from 'react-table';
+import {
+  useTable,
+  usePagination,
+  useSortBy,
+  useGlobalFilter,
+  useExpanded,
+} from "react-table";
 import TableConfig from './TableConfig';
 import {TableFilter} from './TableFilter';
 import TableFooter from './TableFooter';
@@ -107,7 +113,7 @@ export default function Table(props) {
                                             </td>
                                         )
                                     })}
-                                    <RowActions data={row}/>
+                                    <RowActions data={row} headers={headerGroups}/>
                                 </tr>
                             </>
                         )
