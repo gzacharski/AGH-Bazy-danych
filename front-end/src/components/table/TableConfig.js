@@ -1,8 +1,6 @@
+import ConfigButton from '../buttons/ConfigButton';
+import ConfigDialog from '../dialogs/ConfigDialog';
 import React, {useState} from 'react';
-import { BsGear } from 'react-icons/bs';
-import ConfigDialog from '../ConfigDialog';
-import Tooltip from '@material-ui/core/Tooltip';
-import IconButton from '@material-ui/core/IconButton';
 
 export default function TableConfig(props) {
 
@@ -18,12 +16,10 @@ export default function TableConfig(props) {
     }
 
     return (
-        <>
-            <Tooltip title="Add">
-                <IconButton aria-label="Add">
-                    <BsGear onClick={handleOpen} />
-                </IconButton>
-            </Tooltip>
+        <>  
+            <ConfigButton
+                handleOpen={handleOpen}
+            />
             <ConfigDialog
                 allColumns={allColumns}
                 open={open}

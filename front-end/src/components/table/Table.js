@@ -1,17 +1,20 @@
-import React, {useState} from 'react';
-import { useTable, usePagination, useSortBy, useGlobalFilter } from 'react-table';
 import './Table.css';
-import TablePagination from './TablePagination';
+import AddButton from '../buttons/AddButton';
+import { ImSortAlphaAsc, ImSortAlphaDesc } from "react-icons/im";
+import React from 'react';
+import RowActions from './RowActions';
+import {
+  useTable,
+  usePagination,
+  useSortBy,
+  useGlobalFilter,
+  useExpanded,
+} from "react-table";
+import TableConfig from './TableConfig';
+import {TableFilter} from './TableFilter';
 import TableFooter from './TableFooter';
 import TableHeader from './TableHeader';
-import {TableFilter} from './TableFilter';
-import TableConfig from './TableConfig';
-import AddButton from '../AddButton';
-import { ImSortAlphaAsc, ImSortAlphaDesc } from 'react-icons/im';
-import Tooltip from '@material-ui/core/Tooltip';
-import { BsInfoCircle,BsPencil, BsTrash, BsGear } from 'react-icons/bs';
-import IconButton from '@material-ui/core/IconButton';
-
+import TablePagination from './TablePagination';
 
 export default function Table(props) {
 
@@ -38,10 +41,11 @@ export default function Table(props) {
     },  
         useGlobalFilter,
         useSortBy,
+        useExpanded,
         usePagination
     )
 
-    const { pageIndex, pageSize,globalFilter } = state;
+    const { pageIndex, pageSize,globalFilter, expanded } = state;
 
     return (
         <>  
@@ -87,23 +91,9 @@ export default function Table(props) {
                                 ))
                             }
                             {   
-                                <>
-                                    <th className="text-center align-middle">
-                                        <div className="d-flex align-items-center">
-                                            Details
-                                        </div>
-                                    </th>
-                                    <th className="text-center align-middle">
-                                        <div className="d-flex align-items-center">
-                                            Edit
-                                        </div>
-                                    </th>
-                                    <th className="text-center align-middle">
-                                        <div className="d-flex align-items-center">
-                                            Delete
-                                        </div>
-                                    </th>
-                                </>
+                                <th className="text-center align-middle">
+                                    Actions
+                                </th>
                             }
                         </tr>
                     ))}
@@ -112,42 +102,20 @@ export default function Table(props) {
                     {page.map(row => {
                         prepareRow(row);
                         return (
-                            <tr {...row.getRowProps()}>
-                                {row.cells.map(cell => {
-                                    return (
-                                        <td {...cell.getCellProps()}>
-                                            <span className="cell">
-                                                {cell.render('Cell')}
-                                            </span>
-                                        </td>
-                                    )
-                                })}
-                                {
-                                    <>  
-                                        <td>
-                                            <Tooltip title="More">
-                                                <IconButton aria-label="More">
-                                                    <BsInfoCircle/>
-                                                </IconButton>
-                                            </Tooltip>
-                                        </td>
-                                        <td>
-                                            <Tooltip title="Edit">
-                                                <IconButton aria-label="Edit">
-                                                    <BsPencil/>
-                                                </IconButton>
-                                            </Tooltip>
-                                        </td>
-                                        <td>
-                                            <Tooltip title="Remove">
-                                                <IconButton aria-label="Remove">
-                                                    <BsTrash/>
-                                                </IconButton>
-                                            </Tooltip>
-                                        </td>
-                                    </>
-                                }
-                            </tr>
+                            <>
+                                <tr {...row.getRowProps()}>
+                                    {row.cells.map(cell => {
+                                        return (
+                                            <td {...cell.getCellProps()}>
+                                                <span className="cell">
+                                                    {cell.render('Cell')}
+                                                </span>
+                                            </td>
+                                        )
+                                    })}
+                                    <RowActions data={row} headers={headerGroups}/>
+                                </tr>
+                            </>
                         )
                     })}
                 </tbody>
