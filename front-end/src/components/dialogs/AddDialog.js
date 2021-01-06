@@ -207,7 +207,7 @@ export default function AddDialog(props) {
                         />
                     </DialogContent>
                     <DialogActions>
-                        <button className="btn btn-light">
+                        <button className="btn btn-light" onClick={onClose}>
                             Cancel
                         </button>
                         <button className="btn btn-light" onClick={addCustomer}>
