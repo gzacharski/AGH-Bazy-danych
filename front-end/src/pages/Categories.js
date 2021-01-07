@@ -27,7 +27,7 @@ class Categories extends Component {
     }
 
     render() {
-        const { categories, errorMsg, columns} = this.state;
+        const { categories, columns} = this.state;
 
         return (
             <div>

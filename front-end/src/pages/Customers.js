@@ -33,7 +33,7 @@ class Customers extends Component{
     }
 
     render(){
-        const {customers, errorMsg,columns} =this.state;
+        const {customers, columns} =this.state;
 
         return(
             <div>

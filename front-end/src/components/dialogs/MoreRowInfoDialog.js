@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
 export default function MoreInfoDialog(props) {
 
     const classes = useStyles();
-    const { row, onClose, open, titles } = props;
+    const { row, onClose, open} = props;
 
     return (
         <Dialog
