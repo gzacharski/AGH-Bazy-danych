@@ -33,7 +33,7 @@ class Suppliers extends Component {
     }
 
     render() {
-        const { suppliers, errorMsg, columns} = this.state;
+        const { suppliers, columns} = this.state;
 
         return (
             <div>

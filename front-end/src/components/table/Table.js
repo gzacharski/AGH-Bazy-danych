@@ -45,7 +45,7 @@ export default function Table(props) {
         usePagination
     )
 
-    const { pageIndex, pageSize,globalFilter, expanded } = state;
+    const { pageIndex, pageSize, globalFilter} = state;
 
     return (
         <>  

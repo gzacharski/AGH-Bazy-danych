@@ -9,16 +9,16 @@ import Footer from "./layouts/Footer";
 
 export default function App (){
 
-  const [sidebar,setSideBar]=useState(false);
+    const [sidebar,setSideBar]=useState(false);
 
-  const showSidebar= () => setSideBar(!sidebar);
+    const showSidebar= () => setSideBar(!sidebar);
 
-  return (
-      <Router>
-        <Header sidebar={sidebar} showSidebar={showSidebar}/>
-        <Navbar sidebar={sidebar} showSidebar={showSidebar}/>
-        <Page/>
-        <Footer/>
-      </Router>
-  );
+    return (
+        <Router>
+            <Header sidebar={sidebar} showSidebar={showSidebar}/>
+            <Navbar sidebar={sidebar} showSidebar={showSidebar}/>
+            <Page/>
+            <Footer/>
+        </Router>
+    );
 }

@@ -9,10 +9,10 @@ export default function ConfigButton(props) {
 
     return (
         <Tooltip 
-            title="Add"
+            title="Config"
         >
             <IconButton
-                aria-label="Add"
+                aria-label="Config"
                 onClick={handleOpen}
             >
                 <BsGear />

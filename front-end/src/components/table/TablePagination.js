@@ -1,5 +1,5 @@
 import React from 'react';
-import { MdFirstPage,MdLastPage, MdKeyboardArrowLeft, MdKeyboardArrowRight, pageCount} from 'react-icons/md';
+import { MdFirstPage,MdLastPage, MdKeyboardArrowLeft, MdKeyboardArrowRight} from 'react-icons/md';
 
 export default function TablePagination(props) {
 
@@ -20,10 +20,10 @@ export default function TablePagination(props) {
             <div>
                 <button
                     onClick={() => gotoPage(0)}
-                    className={pageIndex != 0 ? "btn btn-light mr-2" : "btn"}
-                    disabled={pageIndex == 0 ? true : false}
+                    className={pageIndex !== 0 ? "btn btn-light mr-2" : "btn"}
+                    disabled={pageIndex === 0}
                 >
-                    {pageIndex != 0 ? <MdFirstPage /> : null}
+                    {pageIndex !== 0 ? <MdFirstPage /> : null}
                 </button>
                 <button
                     onClick={() => previousPage()}
@@ -59,10 +59,10 @@ export default function TablePagination(props) {
                 </button>
                 <button
                     onClick={() => gotoPage(pageCount - 1)}
-                    className={pageIndex != (pageCount - 1) ? "btn btn-light" : "btn"}
-                    disabled={pageIndex == (pageCount - 1) ? true : false}
+                    className={pageIndex !== (pageCount - 1) ? "btn btn-light" : "btn"}
+                    disabled={pageIndex === (pageCount - 1)}
                 >
-                    {pageIndex != (pageCount - 1) ? <MdLastPage /> : null}
+                    {pageIndex !== (pageCount - 1) ? <MdLastPage /> : null}
                 </button>
             </div>
         </div>

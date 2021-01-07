@@ -51,7 +51,7 @@ export default function RowActions(props) {
                 onClose={handleCloseMoreInfo} 
                 open={openMoreInfo}
             />
-            <EditButton 
+            <EditButton
                 handleOpen={handleOpenEdit}
             />
             <EditRowDialog

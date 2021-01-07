@@ -10,6 +10,11 @@ import React from "react";
 export default function RemoveRowDialog(props) {
     const { row, onClose, open } = props;
 
+    const onRemove = () => {
+        onClose();
+        console.log(row.original.id.low);
+    }
+
     return (
         <Dialog onClose={onClose} open={open}>
             <DialogTitle>Remove</DialogTitle>
@@ -22,7 +27,7 @@ export default function RemoveRowDialog(props) {
                 <button className="btn btn-light" onClick={onClose}>
                     Cancel
                 </button>
-                <button className="btn btn-light" onClick={onClose}>
+                <button className="btn btn-light" onClick={onRemove}>
                     Remove
                 </button>
             </DialogActions>
