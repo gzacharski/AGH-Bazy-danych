@@ -46,7 +46,6 @@ export default function Table(props) {
     )
 
     const { pageIndex, pageSize, globalFilter} = state;
-    const {editEnabled, removeEnabled} = props;
 
     return (
         <>  
@@ -114,10 +113,7 @@ export default function Table(props) {
                                             </td>
                                         )
                                     })}
-                                    <RowActions data={row}
-                                                headers={headerGroups}
-                                                editEnabled={editEnabled}
-                                                removeEnabled={removeEnabled}/>
+                                    <RowActions data={row} headers={headerGroups}/>
                                 </tr>
                             </>
                         )

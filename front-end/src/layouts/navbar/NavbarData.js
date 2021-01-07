@@ -37,23 +37,5 @@ export const NavbarData=[
         path : '/customers',
         icon : <IoIcons.IoMdPeople/>,
         cName: 'nav-text'
-    },
-    {
-        title: 'Shippers',
-        path : '/shippers',
-        icon : <IoIcons.IoMdBus/>,
-        cName: 'nav-text'
-    },
-    {
-        title: 'Regions',
-        path : '/regions',
-        icon : <IoIcons.IoMdMap/>,
-        cName: 'nav-text'
-    },
-    {
-        title: 'Employees',
-        path : '/employees',
-        icon : <IoIcons.IoMdPeople/>,
-        cName: 'nav-text'
     }
 ]

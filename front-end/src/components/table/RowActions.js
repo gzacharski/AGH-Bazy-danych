@@ -8,7 +8,7 @@ import RemoveRowDialog from '../dialogs/RemoveRowDialog';
 
 export default function RowActions(props) {
 
-    const {data, headers, editEnabled, removeEnabled}=props;
+    const {data, headers}=props;
 
     const [openMoreInfo, setOpenMoreInfo] = useState(false);
 
@@ -51,24 +51,18 @@ export default function RowActions(props) {
                 onClose={handleCloseMoreInfo} 
                 open={openMoreInfo}
             />
-            {
-                editEnabled &&
-                <EditButton
-                    handleOpen={handleOpenEdit}
-                />
-            }
+            <EditButton
+                handleOpen={handleOpenEdit}
+            />
             <EditRowDialog
                 row={data}
                 titles={headers}
                 onClose={handleCloseEdit} 
                 open={openEdit}
             />
-            {
-                removeEnabled &&
-                <RemoveButton
-                    handleOpen={handleOpenRemove}
-                />
-            }
+            <RemoveButton
+                handleOpen={handleOpenRemove}
+            />
             <RemoveRowDialog
                 row={data}
                 titles={headers}
