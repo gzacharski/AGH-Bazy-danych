@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import {useAsyncDebounce} from 'react-table';
-import {BiSearch} from 'react-icons/bi'
 
 export const TableFilter = ({filter, setFilter}) =>{
 
@@ -11,7 +10,7 @@ export const TableFilter = ({filter, setFilter}) =>{
     },350);
 
     return (
-        <div class="input-group">
+        <div className="input-group">
             <input 
                 type="text"
                 className="form-control"

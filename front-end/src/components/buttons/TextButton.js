@@ -1,15 +1,16 @@
 import React from "react";
 import Button from "@material-ui/core/Button";
 
-function LoginButton(props) {
+function TextButton(props) {
+    const {onClick, text} = props;
     return (
-        <Button onClick={props.onClick}
+        <Button onClick={onClick}
                 variant="contained"
                 color="primary"
                 type="button">
-            Login
+            {text}
         </Button>
     );
 }
 
-export default LoginButton;
+export default TextButton;

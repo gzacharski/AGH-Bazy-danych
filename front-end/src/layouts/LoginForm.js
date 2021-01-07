@@ -1,10 +1,10 @@
 import React, {useState} from "react";
-import LoginButton from '../components/buttons/LoginButton';
+import TextButton from '../components/buttons/TextButton';
 import axios from "axios";
 import './LoginForm.css';
 
 export default function LoginForm(props) {
-    const {setCustomerId, setLoggedIn} = props
+    const {setCustomerId, setLoggedIn, setAdmin} = props
     const [error, setError] = useState("")
     const [loginDetails, setLoginDetails] = useState({
         login: "",
@@ -23,11 +23,17 @@ export default function LoginForm(props) {
     }
 
     function afterLogin(loginDetails) {
+        //TODO remove hardcoded credentials
+        if (loginDetails.login === "admin" && loginDetails.password === "test") {
+            setLoggedIn(true);
+            setAdmin(true);
+            return;
+        }
         customerExists(loginDetails.login)
             .then((customerExists) => {
-                //TODO remove hardcoded password
                 if (customerExists && loginDetails.password === "test") {
                     setLoggedIn(true);
+                    setAdmin(false);
                     setCustomerId(loginDetails.login);
                     setError("");
                 } else {
@@ -62,7 +68,7 @@ export default function LoginForm(props) {
                 <br/>
                 <input name="password" onChange={handleChange} value={loginDetails.password} type="password" placeholder="Password" />
                 <br/>
-                <LoginButton onClick={onLogin}/>
+                <TextButton onClick={onLogin} text="Login"/>
                 <div className="error">{error}</div>
             </form>
         </div>

@@ -8,12 +8,14 @@ import Page from './layouts/Page';
 import Footer from "./layouts/Footer";
 import LoginForm from "./layouts/LoginForm";
 import CustomerContext from "./layouts/CustomerContext.js";
+import AdminContext from "./layouts/AdminContext";
 
 export default function App (){
 
     const [sidebar,setSideBar]=useState(false);
     const [loggedIn,setLoggedIn]=useState(false);
     const [customerId,setCustomerId]=useState("");
+    const [isAdmin,setAdmin]=useState("");
 
     const showSidebar= () => setSideBar(!sidebar);
 
@@ -22,15 +24,17 @@ export default function App (){
             {
                 loggedIn ?
                 <div>
-                    <Header sidebar={sidebar} showSidebar={showSidebar}/>
+                    <Header sidebar={sidebar} showSidebar={showSidebar} logout={() => setLoggedIn(false)}/>
                     <Navbar sidebar={sidebar} showSidebar={showSidebar}/>
                     <CustomerContext.Provider value={customerId}>
-                        <Page/>
+                        <AdminContext.Provider value={isAdmin}>
+                            <Page/>
+                        </AdminContext.Provider>
                     </CustomerContext.Provider>
                     <Footer/>
                 </div>
                 :
-                <LoginForm setCustomerId={setCustomerId} setLoggedIn={setLoggedIn}/>
+                <LoginForm setCustomerId={setCustomerId} setLoggedIn={setLoggedIn} setAdmin={setAdmin}/>
             }
         </Router>
     );

@@ -8,7 +8,6 @@ class Customers extends Component{
         customers: [],
         errorMsg: '',
         columns: [
-            //{ Header: 'Id', accessor: 'id' },
             { Header: 'Name', accessor: 'name' },
             { Header: 'Title', accessor: 'title' },
             { Header: 'Company', accessor: 'company' },
