@@ -6,19 +6,32 @@ import Header from './layouts/header/Header';
 import Navbar from './layouts/navbar/Navbar';
 import Page from './layouts/Page';
 import Footer from "./layouts/Footer";
+import LoginForm from "./layouts/LoginForm";
+import CustomerContext from "./layouts/CustomerContext.js";
 
 export default function App (){
 
-  const [sidebar,setSideBar]=useState(false);
+    const [sidebar,setSideBar]=useState(false);
+    const [loggedIn,setLoggedIn]=useState(false);
+    const [customerId,setCustomerId]=useState("");
 
-  const showSidebar= () => setSideBar(!sidebar);
+    const showSidebar= () => setSideBar(!sidebar);
 
-  return (
-      <Router>
-        <Header sidebar={sidebar} showSidebar={showSidebar}/>
-        <Navbar sidebar={sidebar} showSidebar={showSidebar}/>
-        <Page/>
-        <Footer/>
-      </Router>
-  );
+    return (
+        <Router>
+            {
+                loggedIn ?
+                <div>
+                    <Header sidebar={sidebar} showSidebar={showSidebar}/>
+                    <Navbar sidebar={sidebar} showSidebar={showSidebar}/>
+                    <CustomerContext.Provider value={customerId}>
+                        <Page/>
+                    </CustomerContext.Provider>
+                    <Footer/>
+                </div>
+                :
+                <LoginForm setCustomerId={setCustomerId} setLoggedIn={setLoggedIn}/>
+            }
+        </Router>
+    );
 }

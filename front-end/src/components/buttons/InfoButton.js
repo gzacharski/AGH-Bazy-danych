@@ -9,10 +9,10 @@ export default function InfoButton(props) {
 
     return (
         <Tooltip
-            title="Edit"
+            title="Info"
         >
             <IconButton
-                aria-label="Edit"
+                aria-label="Info"
                 onClick={handleOpen}
             >
                 <BsInfoCircle/>

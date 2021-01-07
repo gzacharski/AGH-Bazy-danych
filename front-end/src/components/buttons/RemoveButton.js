@@ -9,10 +9,10 @@ export default function InfoButton(props) {
 
     return (
         <Tooltip
-            title="Edit"
+            title="Remove"
         >
             <IconButton
-                aria-label="Edit"
+                aria-label="Remove"
                 onClick={handleOpen}
             >
                 <BsTrash />

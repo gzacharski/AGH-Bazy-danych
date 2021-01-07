@@ -45,7 +45,8 @@ export default function Table(props) {
         usePagination
     )
 
-    const { pageIndex, pageSize,globalFilter, expanded } = state;
+    const { pageIndex, pageSize, globalFilter} = state;
+    const {editEnabled, removeEnabled} = props;
 
     return (
         <>  
@@ -113,7 +114,10 @@ export default function Table(props) {
                                             </td>
                                         )
                                     })}
-                                    <RowActions data={row} headers={headerGroups}/>
+                                    <RowActions data={row}
+                                                headers={headerGroups}
+                                                editEnabled={editEnabled}
+                                                removeEnabled={removeEnabled}/>
                                 </tr>
                             </>
                         )
