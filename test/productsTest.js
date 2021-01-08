@@ -569,3 +569,33 @@ describe("Get all Orders of Customer", () => {
             });
     });
 });
+
+describe("Create new Product Order", () => {
+    const validCustomerId = 'ALFKI';
+    const validProductId = 1;
+    it("Should create new Product Order when valid request", done => {
+        chai
+            .request(app)
+            .post("/api/orders")
+            .send({
+                "customerId": validCustomerId,
+                "productId": validProductId,
+                "orderDate": "2020-01-01",
+                "requiredDate" : "2020-06-01",
+                "shippedDate" : "2020-01-05",
+                "freight" : 1,
+                "shipName" : "Grdgtr Gdx Ivgjov",
+                "shipAddress" : "Evydnh St. 56",
+                "shipCity" : "Waviyoyim",
+                "shipPostalCode" : "9154-92838",
+                "shipCountry" : "Sweden",
+                "unitPrice" : 20.00,
+                "quantity" : 1,
+                "discount" : 5.5
+            })
+            .end((err, res) => {
+                expect(res).to.have.status(201);
+                done();
+            });
+    }).timeout(15000);
+});

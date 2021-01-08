@@ -1647,3 +1647,82 @@ module.exports.getOrderCrudCustomer = async (request, response) => {
         await session.close();
     }
 }
+
+
+module.exports.createOrderCrud = async (request, response) => {
+    console.log('Create Order CRUD...');
+
+    const session = driver.session(config);
+
+    try {
+        let query, nodeDetails = { properties: request.body };
+
+        query = `MATCH (customer:Customer), (product:Product) WHERE customer.id=$customerId AND product.id=$productId CREATE (customer)<-[obr:ORDERED_BY]-(order:Order)-[cr:CONTAINS]->(product) SET order+=$orderProperties, order.id=$orderId, cr+=$orderDetailsProperties RETURN customer, order, cr, product`
+
+        const customerId = nodeDetails.properties.customerId;
+        const productId = nodeDetails.properties.productId;
+
+        const orderId = Number.parseInt(uuid.v4(),16);
+        const orderDate = nodeDetails.properties.unitPrice;
+        const requiredDate = nodeDetails.properties.requiredDate;
+        const shippedDate = nodeDetails.properties.shippedDate;
+        const freight = nodeDetails.properties.freight;
+        const shipName = nodeDetails.properties.shipName;
+        const shipAddress = nodeDetails.properties.shipAddress;
+        const shipCity = nodeDetails.properties.shipCity;
+        const shipPostalCode = nodeDetails.properties.shipPostalCode;
+        const shipCountry = nodeDetails.properties.shipCountry;
+
+        const orderBodyParsed = {
+            "orderDate": orderDate,
+            "requiredDate": requiredDate,
+            "shippedDate": shippedDate,
+            "freight": Number.parseInt(freight),
+            "shipName": shipName,
+            "shipAddress": shipAddress,
+            "shipCity": shipCity,
+            "shipPostalCode": shipPostalCode,
+            "shipCountry": shipCountry
+        }
+
+        const orderDetailsId = Number.parseInt(uuid.v4(),16);
+        const unitPrice = nodeDetails.properties.unitPrice;
+        const quantity = nodeDetails.properties.quantity;
+        const discount = nodeDetails.properties.discount;
+
+        const orderDetailsBodyParsed = {
+            "odID": orderDetailsId,
+            "unitPrice": Number.parseFloat(unitPrice),
+            "quantity": Number.parseInt(quantity),
+            "discount": Number.parseFloat(discount)
+        }
+
+        const orderParams = {
+            customerId: customerId,
+            productId: productId,
+            orderId: orderId,
+            orderProperties: orderBodyParsed,
+            orderDetailsProperties: orderDetailsBodyParsed
+        };
+
+        if (await nodeExists(orderId, 'Order')) throw new Error(`There is an existing Order with provided id: ${orderId}`);
+
+        const result = await session.writeTransaction(tx => tx.run(query, orderParams));
+        const nodes = result.records;
+
+        if (!nodes) throw new Error(`The server was not able to register a new Order.`);
+
+        response
+            .status(201)
+            .send(nodes);
+
+    } catch (error) {
+        response
+            .status(500)
+            .send({
+                error: error.message
+            });
+    } finally {
+        await session.close();
+    }
+}
