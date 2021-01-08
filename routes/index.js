@@ -9,7 +9,7 @@ const { health, getAll, getById, create, deleteById, updateById, getAllOrderedBy
         getAllContainsRelations, getContainsRelationById, createContainsRelation, getProductsContainedInOrder, getContainsRelationsByOrderProduct,
         getOrdersWhichContainProduct, deleteContainsRelationsOrderProduct, deleteContainsRelationById,
         updateContainsRelationById, createProductOrder , getCustomersServedBySupplier, getCustomersServedBySupplierOneQuery,
-        getOrderCrud, getOrderCrudCustomer, createOrderCrud, deleteOrderCrudById } = require('../controllers/Controller');
+        getOrderCrud, getOrderCrudCustomer, createOrderCrud, deleteOrderCrudById, getAllProductsPurchasedByCustomer } = require('../controllers/Controller');
 const { select } = require('../middlewares/switchToNode');
 
 router.get('/health', health)
@@ -56,7 +56,6 @@ router.post('/api/categories', select, create)
 router.put('/api/categories/:id', select, updateById);
 router.delete('/api/categories/:id', select, deleteById);
 
-
 router.get('/api/orders/customers/all', select, getAllOrderedByRelations);
 router.get('/api/orders/:order/customers/:customer', select, getOrderedByRelationsByOrderCustomer);
 router.post('/api/orders/:order/customers/:customer', select, createOrderedByRelation);
@@ -97,5 +96,9 @@ router.get('/api/orders', select, getOrderCrud);
 router.get('/api/orders/customers/:id', select, getOrderCrudCustomer);
 router.post('/api/orders', select, createOrderCrud);
 router.delete('/api/orders/:id', select, deleteOrderCrudById);
+
+//For specific customer get list of all products purchased in specified range of dates
+//np. api/products/customers/ALFKI/orders?from="2007-01-01"&to="2007-01-31"
+router.get('/api/products/customers/:customerID/orders',getAllProductsPurchasedByCustomer);
 
 module.exports = router;

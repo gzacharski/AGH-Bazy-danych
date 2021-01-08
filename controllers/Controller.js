@@ -1754,3 +1754,42 @@ module.exports.deleteOrderCrudById = async (request, response) => {
         await session.close();
     }
 }
+
+module.exports.getAllProductsPurchasedByCustomer=async (request, response)=>{
+
+    console.log("For specific customer get list of all products purchased in specified range of dates");
+
+    const customerID=request.params.customerID;
+    const fromDate=request.query.from;
+    const toDate=request.query.to;
+
+    const session=driver.session(config);
+    
+    try{
+        const query=
+            `Match (c:Customer)-[:ORDERED_BY]-(o:Order)-[:CONTAINS]-(p:Product)
+            WHERE c.id=$customerID and date(o.orderDate)>date(${fromDate}) and date(o.orderDate)<date(${toDate})
+            return p`;
+        const params={customerID};
+
+        const result=await session.readTransaction(tx => tx.run(query, params));
+        const products = result.records.map(record => record.get(0));
+
+        if (!products) throw new Error(`The server was not able to get a list of products for specified customer.`);
+
+        response
+            .status(200)
+            .send({
+                products,
+            });
+
+    }catch(error){
+        response
+        .status(500)
+        .send({
+            error: error.message
+        });
+    }finally{
+        await session.close();
+    }
+}
