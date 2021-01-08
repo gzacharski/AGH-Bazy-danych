@@ -186,7 +186,7 @@ describe("Create Ordered By relationship", () => {
     //Order has already got Customer
     let validOrderId = 31177;
     let validCustomerId = 'ALFKI';
-    it("Should create Contains relationship when valid request", done => {
+    it("Should not create Contains relationship when invalid request (Order has already got Customer)", done => {
         chai
             .request(app)
             .post("/api/orders/"+validOrderId+"/customers"+validCustomerId)
@@ -551,6 +551,20 @@ describe("Get Customer served by Supplier", () => {
             .end((err, res) => {
                 expect(res).to.have.status(200);
                 expect(res.text).contains("unique")
+                done();
+            });
+    });
+});
+
+describe("Get all Orders of Customer", () => {
+    const validCustomerId = 'ALFKI';
+    it("Should Get all Orders of Customer when valid request", done => {
+        chai
+            .request(app)
+            .get("/api/orders/customers/"+validCustomerId)
+            .end((err, res) => {
+                expect(res).to.have.status(200);
+                expect(res.text).contains("nodes")
                 done();
             });
     });

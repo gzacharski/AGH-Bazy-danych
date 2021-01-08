@@ -1582,3 +1582,68 @@ module.exports.getCustomersServedBySupplierOneQuery = async (request, response) 
         await session.close();
     }
 }
+
+module.exports.getOrderCrud = async (request, response) => {
+    console.log('Get all Orders CRUD...');
+
+    const session = driver.session(config);
+
+    try{
+        const query = `MATCH (customer:Customer)<-[obr:ORDERED_BY]-(order:Order)-[cr:CONTAINS]->(product:Product) RETURN customer, order, cr, product`;
+
+        const result = await session.readTransaction(tx => tx.run(query));
+        const nodes = result.records;
+
+        if (!nodes) throw new Error(`ERROR - The server was not able to get Orders with related Customers and Products (and other details).`);
+
+        response
+            .status(200)
+            .send({
+                quantity: nodes.length,
+                nodes
+            })
+    }
+
+    catch (error) {
+        response
+            .status(500)
+            .send({
+                error: error.message
+            });
+    } finally {
+        await session.close();
+    }
+}
+
+module.exports.getOrderCrudCustomer = async (request, response) => {
+    console.log('Get all Orders of Customer CRUD...');
+
+    const id = request.params.id;
+    const session = driver.session(config);
+
+    try{
+        const query = `MATCH (customer:Customer)<-[obr:ORDERED_BY]-(order:Order)-[cr:CONTAINS]->(product:Product) WHERE customer.id=$id RETURN order, cr, product`;
+        const params =  {id: id };
+        const result = await session.readTransaction(tx => tx.run(query,params));
+        const nodes = result.records;
+
+        if (!nodes) throw new Error(`ERROR - The server was not able to get Orders and related Products (and other details) for specific Customer of id ${id}.`);
+
+        response
+            .status(200)
+            .send({
+                quantity: nodes.length,
+                nodes
+            })
+    }
+
+    catch (error) {
+        response
+            .status(500)
+            .send({
+                error: error.message
+            });
+    } finally {
+        await session.close();
+    }
+}
