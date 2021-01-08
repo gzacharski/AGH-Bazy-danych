@@ -8,7 +8,8 @@ const { health, getAll, getById, create, deleteById, updateById, getAllOrderedBy
         deleteBelongsToRelationsProductCategory, createBelongsToRelation, getCategoriesAssignedToProduct, getProductsBelongToCategory,
         getAllContainsRelations, getContainsRelationById, createContainsRelation, getProductsContainedInOrder, getContainsRelationsByOrderProduct,
         getOrdersWhichContainProduct, deleteContainsRelationsOrderProduct, deleteContainsRelationById,
-        updateContainsRelationById, createProductOrder , getCustomersServedBySupplier, getCustomersServedBySupplierOneQuery} = require('../controllers/Controller');
+        updateContainsRelationById, createProductOrder , getCustomersServedBySupplier, getCustomersServedBySupplierOneQuery,
+        getOrderCrud, getOrderCrudCustomer, createOrderCrud, deleteOrderCrudById } = require('../controllers/Controller');
 const { select } = require('../middlewares/switchToNode');
 
 router.get('/health', health)
@@ -37,11 +38,11 @@ router.post('/api/shippers', select, create)
 router.put('/api/shippers/:id', select, updateById);
 router.delete('/api/shippers/:id', select, deleteById);
 
-router.get('/api/orders', select, getAll);
+router.get('/api/orders/old', select, getAll);
 router.get('/api/orders/:id', select, getById);
-router.post('/api/orders', select, create)
+router.post('/api/orders/old', select, create)
 router.put('/api/orders/:id', select, updateById);
-router.delete('/api/orders/:id', select, deleteById);
+router.delete('/api/orders/:id/old', select, deleteById);
 
 router.get('/api/employees', select, getAll);
 router.get('/api/employees/:id', select, getById);
@@ -91,5 +92,10 @@ router.post('/api/customers/:customer/products/:product', select, createProductO
 
 router.get('/api/suppliers/:id/customers/:from/:to/manyqueries', select, getCustomersServedBySupplier);
 router.get('/api/suppliers/:id/customers/:from/:to/onequery', select, getCustomersServedBySupplierOneQuery);
+
+router.get('/api/orders', select, getOrderCrud);
+router.get('/api/orders/customers/:id', select, getOrderCrudCustomer);
+router.post('/api/orders', select, createOrderCrud);
+router.delete('/api/orders/:id', select, deleteOrderCrudById);
 
 module.exports = router;
