@@ -1726,3 +1726,31 @@ module.exports.createOrderCrud = async (request, response) => {
         await session.close();
     }
 }
+
+module.exports.deleteOrderCrudById = async (request, response) => {
+    console.log('Delete Order by Id CRUD...');
+
+    const id = request.params.id;
+    const session = driver.session(config);
+
+    try {
+        const query = `MATCH (customer:Customer)<-[obr:ORDERED_BY]-(order:Order)-[cr:CONTAINS]->(product:Product) WHERE order.id=$id DETACH DELETE obr, order, cr`;
+        const params =  {id: Number.parseInt(id)};
+        await session.writeTransaction(tx => tx.run(query, params));
+
+        response
+            .status(200)
+            .send({
+                id,
+                message: `Order ${id} has been deleted.`
+            });
+    } catch (error) {
+        response
+            .status(500)
+            .send({
+                error: error.message
+            });
+    } finally {
+        await session.close();
+    }
+}
