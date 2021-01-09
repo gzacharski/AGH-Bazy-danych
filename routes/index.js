@@ -1,4 +1,6 @@
 const express = require('express');
+const {getStatsForCategory} = require("../controllers/Controller");
+const {getStatsForProduct} = require("../controllers/Controller");
 const router = express.Router();
 
 const { health, getAll, getById, create, deleteById, updateById, getAllOrderedByRelations, getOrderedByRelationsByOrderCustomer,
@@ -100,5 +102,8 @@ router.delete('/api/orders/:id', select, deleteOrderCrudById);
 //For specific customer get list of all products purchased in specified range of dates
 //np. api/products/customers/ALFKI/orders?from="2007-01-01"&to="2007-01-31"
 router.get('/api/products/customers/:customerID/orders',getAllProductsPurchasedByCustomer);
+
+router.get('/api/products/:id/stats', select, getStatsForProduct)
+router.get('/api/categories/:id/stats', select, getStatsForCategory)
 
 module.exports = router;
