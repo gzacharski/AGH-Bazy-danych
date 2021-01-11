@@ -18,6 +18,8 @@ import TablePagination from './TablePagination';
 
 export default function Table(props) {
 
+    const {data, columns,title,crudActions}=props;
+
     const {
         getTableProps,
         getTableBodyProps,
@@ -36,8 +38,8 @@ export default function Table(props) {
         setGlobalFilter,
         allColumns,
     } = useTable({
-        columns: props.columns,
-        data: props.data
+        columns,
+        data
     },  
         useGlobalFilter,
         useSortBy,
@@ -49,7 +51,7 @@ export default function Table(props) {
 
     return (
         <>  
-            <TableHeader title={props.title}/>
+            <TableHeader title={title}/>
             <div className="d-flex justify-content-between align-items-center">
                 <TableFilter 
                     filter={globalFilter} 
@@ -113,7 +115,7 @@ export default function Table(props) {
                                             </td>
                                         )
                                     })}
-                                    <RowActions data={row} headers={headerGroups}/>
+                                    <RowActions data={row} headers={headerGroups} crudActions={crudActions}/>
                                 </tr>
                             </>
                         )

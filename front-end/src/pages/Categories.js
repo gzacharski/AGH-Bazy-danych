@@ -7,8 +7,8 @@ class Categories extends Component {
     state = {
         categories: [],
         errorMsg: '',
-        columns : [
-            // { Header: 'Id', accessor: 'id.low'},
+        columns: [
+            { Header: 'Id', accessor: 'id.low' },
             { Header: 'Name', accessor: 'name' },
             { Header: 'Description', accessor: 'description' }
         ]
@@ -26,40 +26,70 @@ class Categories extends Component {
             })
     }
 
-    createCategory =(category)=>{
+    createCategory = (category) => {
         console.log("Creating new Category...");
         console.log(category);
     }
 
-    readCategory =(category) =>{
+    readCategory = (category) => {
         console.log("Read specified Category...");
         console.log(category);
     }
 
-    updateCategory =(category)=>{
-        console.log("Update specified Category...");
-        console.log(category);
+    updateCategory = (updatedCategory) => {
+
+        const theCategory = {
+            id: {
+                low: updatedCategory.cells[0].value,
+                high: 0
+            },
+            name: updatedCategory.cells[1].value,
+            description: updatedCategory.cells[2].value
+        }
+
+        const updatedCategories = this.state.categories.map(category => {
+            if (category.id.low === theCategory.id.low) {
+                return theCategory;
+            } else {
+                return category;
+            }
+        })
+
+        this.setState({
+            categories: updatedCategories
+        });
+
+        axios.put(`http://localhost:3000/api/categories/${theCategory.id.low}`, {
+            name: theCategory.name,
+            description: theCategory.description
+        })
+            .then(response => {
+                console.log(response);
+            })
+            .catch(error => {
+                console.log(error);
+            })
     }
 
-    deleteCategory =(category)=>{
+    deleteCategory = (category) => {
         console.log("Delete specified Category...");
         console.log(category);
     }
 
     render() {
-        const { categories, columns} = this.state;
+        const { categories, columns } = this.state;
 
         return (
             <div>
-                <Table 
-                    title="Categories" 
-                    data={categories} 
-                    columns={columns} 
+                <Table
+                    title="Categories"
+                    data={categories}
+                    columns={columns}
                     crudActions={{
-                        create : this.createCategory,
-                        read : this.readCategory,
-                        update : this.updateCategory,
-                        remove : this.deleteCategory
+                        create: this.createCategory,
+                        read: this.readCategory,
+                        update: this.updateCategory,
+                        remove: this.deleteCategory
                     }}
                 />
             </div>

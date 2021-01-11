@@ -30,15 +30,15 @@ class Suppliers extends Component {
             })
     }
 
-    componentDidUpdate(){
-        axios.get('http://localhost:3000/api/suppliers')
-            .then(response => {
-                this.setState({ suppliers: response.data.nodes })
-            })
-            .catch(error => {
-                console.log(error);
-            })
-    }
+    // componentDidUpdate(){
+    //     axios.get('http://localhost:3000/api/suppliers')
+    //         .then(response => {
+    //             this.setState({ suppliers: response.data.nodes })
+    //         })
+    //         .catch(error => {
+    //             console.log(error);
+    //         })
+    // }
 
     createSupplier =(supplier)=>{
         console.log("Creating new supplier...");
