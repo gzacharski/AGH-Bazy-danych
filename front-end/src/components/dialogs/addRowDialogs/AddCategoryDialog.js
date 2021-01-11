@@ -44,7 +44,7 @@ const initCustomer = {
     fax: ''
 }
 
-export default function AddDialog(props) {
+export default function AddCategoryDialog(props) {
 
     const classes = useStyles();
 

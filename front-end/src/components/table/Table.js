@@ -57,7 +57,7 @@ export default function Table(props) {
                     filter={globalFilter} 
                     setFilter={setGlobalFilter}
                 />
-                <AddButton/>
+                <AddButton title={title} add={crudActions.create}/>
                 <TableConfig 
                     allColumns={allColumns}
                 />
