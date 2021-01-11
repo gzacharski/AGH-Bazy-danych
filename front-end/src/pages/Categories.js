@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Table from '../components/table/Table';
 import axios from 'axios';
+import {url} from '../config/config';
 
 class Categories extends Component {
 
@@ -15,7 +16,7 @@ class Categories extends Component {
     }
 
     componentDidMount() {
-        axios.get('http://localhost:3000/api/categories')
+        axios.get(`${url}/api/categories`)
             .then(response => {
                 console.log(response);
                 this.setState({ categories: response.data.nodes })
@@ -59,7 +60,7 @@ class Categories extends Component {
             categories: updatedCategories
         });
 
-        axios.put(`http://localhost:3000/api/categories/${theCategory.id.low}`, {
+        axios.put(`${url}/api/categories/${theCategory.id.low}`, {
             name: theCategory.name,
             description: theCategory.description
         })
@@ -83,7 +84,7 @@ class Categories extends Component {
             categories: updatedCategories
         });
 
-        axios.delete(`http://localhost:3000/api/categories/${id}`)
+        axios.delete(`${url}/api/categories/${id}`)
             .then(response => {
                 console.log(response);
             })
