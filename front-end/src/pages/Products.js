@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import Table from '../components/table/Table';
 import axios from 'axios';
 
@@ -19,7 +19,7 @@ export default function Products() {
 
     function loadProducts() {
         axios.get('http://localhost:3000/api/products')
-            .then(response=>{
+            .then(response => {
                 console.log(response);
                 setProducts(response.data.nodes);
                 console.log("Products loaded: ");
@@ -30,9 +30,39 @@ export default function Products() {
             })
     }
 
+    const createProduct = (product) => {
+        console.log("Creating new Product...");
+        console.log(product);
+    }
+
+    const readProduct = (product) => {
+        console.log("Read specified Product...");
+        console.log(product);
+    }
+
+    const updateProduct = (product) => {
+        console.log("Update specified Product...");
+        console.log(product);
+    }
+
+    const deleteProduct = (product) => {
+        console.log("Delete specified Product...");
+        console.log(product);
+    }
+
     return (
         <div>
-            <Table title="Products" data={products} columns={columns}/>
+            <Table
+                title="Products"
+                data={products}
+                columns={columns}
+                crudActions={{
+                    create: createProduct,
+                    read: readProduct,
+                    update: updateProduct,
+                    remove: deleteProduct
+                }}
+            />
         </div>
     );
 }

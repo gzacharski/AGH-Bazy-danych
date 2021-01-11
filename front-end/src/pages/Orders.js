@@ -21,7 +21,7 @@ export default function Orders() {
     useEffect(loadOrders, []);
 
     function loadOrders() {
-        axios.get('http://localhost:3000/api/orders')
+        axios.get('http://localhost:3000/api/orders/old')
             .then(response => {
                 console.log(response);
                 setOrders(response.data.nodes);
@@ -33,9 +33,39 @@ export default function Orders() {
             })
     }
 
+    const createOrder =(Order)=>{
+        console.log("Creating new Order...");
+        console.log(Order);
+    }
+
+    const readOrder =(Order) =>{
+        console.log("Read specified Order...");
+        console.log(Order);
+    }
+
+    const updateOrder =(Order)=>{
+        console.log("Update specified Order...");
+        console.log(Order);
+    }
+
+    const deleteOrder =(Order)=>{
+        console.log("Delete specified Order...");
+        console.log(Order);
+    }
+
     return (
         <div>
-            <Table title="Orders" data={orders} columns={columns} />
+            <Table 
+                title="Orders" 
+                data={orders} 
+                columns={columns}
+                crudActions={{
+                    create: createOrder,
+                    read: readOrder,
+                    update: updateOrder,
+                    remove: deleteOrder
+                }} 
+            />
         </div>
     );
 }

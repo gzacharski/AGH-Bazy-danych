@@ -32,12 +32,42 @@ class Customers extends Component{
             })
     }
 
+    createCustomer =(customer)=>{
+        console.log("Creating new Customer...");
+        console.log(customer);
+    }
+
+    readCustomer =(customer) =>{
+        console.log("Read specified Customer...");
+        console.log(customer);
+    }
+
+    updateCustomer =(customer)=>{
+        console.log("Update specified Customer...");
+        console.log(customer);
+    }
+
+    deleteCustomer =(customer)=>{
+        console.log("Delete specified Customer...");
+        console.log(customer);
+    }
+
     render(){
         const {customers, columns} =this.state;
 
         return(
             <div>
-                <Table title="Customers" data={customers} columns={columns}/>
+                <Table 
+                    title="Customers" 
+                    data={customers} 
+                    columns={columns}
+                    crudActions={{
+                        create : this.createCustomer,
+                        read : this.readCustomer,
+                        update : this.updateCustomer,
+                        remove : this.deleteCustomer,
+                    }}
+                />
             </div>
         );
     };

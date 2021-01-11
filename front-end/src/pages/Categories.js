@@ -26,12 +26,42 @@ class Categories extends Component {
             })
     }
 
+    createCategory =(category)=>{
+        console.log("Creating new Category...");
+        console.log(category);
+    }
+
+    readCategory =(category) =>{
+        console.log("Read specified Category...");
+        console.log(category);
+    }
+
+    updateCategory =(category)=>{
+        console.log("Update specified Category...");
+        console.log(category);
+    }
+
+    deleteCategory =(category)=>{
+        console.log("Delete specified Category...");
+        console.log(category);
+    }
+
     render() {
         const { categories, columns} = this.state;
 
         return (
             <div>
-                <Table title="Categories" data={categories} columns={columns} />
+                <Table 
+                    title="Categories" 
+                    data={categories} 
+                    columns={columns} 
+                    crudActions={{
+                        create : this.createCategory,
+                        read : this.readCategory,
+                        update : this.updateCategory,
+                        remove : this.deleteCategory
+                    }}
+                />
             </div>
         );
     };
