@@ -14,6 +14,7 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import MuiAlert from '@material-ui/lab/Alert';
 import React, { useState } from 'react';
+import {url} from '../../../config/config';
 
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -32,25 +33,18 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const initCustomer = {
-    name: '',
-    title: '',
-    company: '',
-    city: '',
-    address: '',
-    country: '',
-    phone: '',
-    postalCode: '',
-    fax: ''
+const initCategory={
+    name : '',
+    description: ''
 }
 
 export default function AddCategoryDialog(props) {
 
     const classes = useStyles();
 
-    const { onClose, open } = props;
+    const { onClose, open,create } = props;
 
-    const [customer, setCustomer] = useState(initCustomer);
+    const [category, setCategory]=useState(initCategory);
     const [openBackdrop, setOpenBackdrop] = useState(false);
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [responseSuccess,setResponseSuccess]=useState(false);
@@ -63,7 +57,7 @@ export default function AddCategoryDialog(props) {
     };
 
     const handleChange = property => ({ target: { value } }) => {
-        setCustomer({ ...customer, [property]: value })
+        setCategory({ ...category, [property]: value })
     }
 
     const handleClickSnackbar = () => {
@@ -74,21 +68,21 @@ export default function AddCategoryDialog(props) {
         if (reason === 'clickaway') {
             return;
         }
-
         setOpenSnackbar(false);
     };
 
-    const addCustomer = () => {
+    const addCategory = () => {
         setResponseSuccess(false);
         handleToggleBackdrop();
         onClose();
         axios
-            .post('http://localhost:3000/api/customers', customer)
+            .post(`${url}/api/categories`, category)
             .then(response => {
                 setResponseSuccess(true);
+                setCategory(initCategory);
                 handleCloseBackdrop();
                 handleClickSnackbar();
-                console.log(response);
+                create(response.data);
             })
             .catch(error => {
                 setResponseSuccess(false);
@@ -111,106 +105,36 @@ export default function AddCategoryDialog(props) {
                     onClose={onClose}
                     open={open}
                 >
-                    <DialogTitle>Add new customer</DialogTitle>
+                    <DialogTitle>Add new category</DialogTitle>
                     <Divider />
                     <DialogContent>
                         <TextField
                             autoFocus
                             fullWidth
-                            id="customer-name"
-                            label="Name and surname"
+                            id="category-name"
+                            label="Name"
                             margin="dense"
                             required
                             type="text"
-                            value={customer.name}
+                            value={category.name}
                             onChange={handleChange('name')}
                         />
                         <TextField
                             fullWidth
-                            id="customer-title"
-                            label="Title"
+                            id="category-description"
+                            label="Description"
                             margin="dense"
                             required
                             type="text"
-                            value={customer.title}
-                            onChange={handleChange('title')}
-                        />
-                        <TextField
-                            fullWidth
-                            id="customer-company"
-                            label="Company"
-                            margin="dense"
-                            required
-                            type="text"
-                            value={customer.company}
-                            onChange={handleChange('company')}
-                        />
-                        <TextField
-                            fullWidth
-                            id="customer-city"
-                            label="City"
-                            margin="dense"
-                            required
-                            type="text"
-                            value={customer.city}
-                            onChange={handleChange('city')}
-                        />
-                        <TextField
-                            fullWidth
-                            id="customer-address"
-                            label="Address"
-                            margin="dense"
-                            required
-                            type="text"
-                            value={customer.address}
-                            onChange={handleChange('address')}
-                        />
-                        <TextField
-                            fullWidth
-                            id="customer-country"
-                            label="Country"
-                            margin="dense"
-                            required
-                            type="text"
-                            value={customer.country}
-                            onChange={handleChange('country')}
-                        />
-                        <TextField
-                            fullWidth
-                            id="customer-phone"
-                            label="Phone"
-                            margin="dense"
-                            required
-                            type="text"
-                            value={customer.phone}
-                            onChange={handleChange('phone')}
-                        />
-                        <TextField
-                            fullWidth
-                            id="customer-postalCode"
-                            label="Postal code"
-                            margin="dense"
-                            required
-                            type="text"
-                            value={customer.postalCode}
-                            onChange={handleChange('postalCode')}
-                        />
-                        <TextField
-                            fullWidth
-                            id="customer-fax"
-                            label="Fax"
-                            margin="dense"
-                            required
-                            type="text"
-                            value={customer.fax}
-                            onChange={handleChange('fax')}
+                            value={category.description}
+                            onChange={handleChange('description')}
                         />
                     </DialogContent>
                     <DialogActions>
                         <button className="btn btn-light" onClick={onClose}>
                             Cancel
                         </button>
-                        <button className="btn btn-light" onClick={addCustomer}>
+                        <button className="btn btn-light" onClick={addCategory}>
                             Add
                         </button>
                     </DialogActions>

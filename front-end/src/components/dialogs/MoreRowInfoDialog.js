@@ -35,6 +35,7 @@ export default function MoreInfoDialog(props) {
                     {row.cells.map(cell => {
                         return (
                             <TextField
+                                fullWidth
                                 label={cell.column.Header}
                                 InputProps={{
                                     readOnly: true,

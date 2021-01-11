@@ -59,6 +59,7 @@ export default function EditRowDialog(props) {
                     {row.cells.map(cell => {
                         return (
                             <TextField
+                                fullWidth
                                 label={cell.column.Header}
                                 variant="outlined"
                                 name={cell.column.Header}

@@ -29,7 +29,9 @@ class Categories extends Component {
 
     createCategory = (category) => {
         console.log("Creating new Category...");
-        console.log(category);
+        this.setState(prevState=>({
+            categories :[...prevState.categories,category]
+        }))
     }
 
     readCategory = (category) => {

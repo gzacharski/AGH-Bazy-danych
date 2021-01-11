@@ -114,6 +114,9 @@ module.exports.getById = async (request, response) => {
 module.exports.create = async (request, response) => {
     console.log('Create ...');
 
+    // wait 0,5 s to show animation
+    await new Promise(resolve => setTimeout(resolve, 500)); 
+
     const node_label = request.get('node_label');
     const session = driver.session(config);
 
