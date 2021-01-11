@@ -70,7 +70,7 @@ export default function RowActions(props) {
                 titles={headers}
                 onClose={handleCloseRemove} 
                 open={openRemove}
-                action={remove}
+                deleteRow={remove}
             />
         </td>
     )

@@ -71,9 +71,25 @@ class Categories extends Component {
             })
     }
 
-    deleteCategory = (category) => {
-        console.log("Delete specified Category...");
-        console.log(category);
+    deleteCategory = (removedCategory) => {
+        
+        console.log(removedCategory);
+
+        const id=removedCategory.cells[0].value;
+
+        const updatedCategories=this.state.categories.filter(category=>category.id.low!==id);
+
+        this.setState({
+            categories: updatedCategories
+        });
+
+        axios.delete(`http://localhost:3000/api/categories/${id}`)
+            .then(response => {
+                console.log(response);
+            })
+            .catch(error => {
+                console.log(error);
+            })
     }
 
     render() {
