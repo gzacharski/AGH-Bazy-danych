@@ -117,7 +117,9 @@ class Categories extends Component {
 
         const id = removedCategory.cells[0].value;
 
-        const updatedCategories = this.state.categories.filter(category => category.id.low !== id);
+        const updatedCategories = this.state.categories.filter(
+            category => category.id.low !== id
+        );
 
         let hasBeenRemoved = {
             success: false,
