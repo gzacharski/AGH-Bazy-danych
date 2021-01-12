@@ -1,5 +1,9 @@
 import './Table.css';
 import AddButton from '../buttons/AddButton';
+import { 
+    CircularProgress,
+    Container
+} from "@material-ui/core";
 import { ImSortAlphaAsc, ImSortAlphaDesc } from "react-icons/im";
 import React from 'react';
 import RowActions from './RowActions';
@@ -100,28 +104,43 @@ export default function Table(props) {
                         </tr>
                     ))}
                 </thead>
-                <tbody {...getTableBodyProps()}>
-                    {page.map(row => {
-                        prepareRow(row);
-                        return (
-                            <>
-                                <tr {...row.getRowProps()}>
-                                    {row.cells.map(cell => {
-                                        return (
-                                            <td {...cell.getCellProps()}>
-                                                <span className="cell">
-                                                    {cell.render('Cell')}
-                                                </span>
-                                            </td>
-                                        )
-                                    })}
-                                    <RowActions data={row} headers={headerGroups} crudActions={crudActions}/>
-                                </tr>
-                            </>
-                        )
-                    })}
-                </tbody>
+                {
+                    data.length!==0
+                    ?
+                    <tbody {...getTableBodyProps()}>
+                        {page.map(row => {
+                            prepareRow(row);
+                            return (
+                                <>
+                                    <tr {...row.getRowProps()}>
+                                        {row.cells.map(cell => {
+                                            return (
+                                                <td {...cell.getCellProps()}>
+                                                    <span className="cell">
+                                                        {cell.render('Cell')}
+                                                    </span>
+                                                </td>
+                                            )
+                                        })}
+                                        <RowActions data={row} headers={headerGroups} crudActions={crudActions}/>
+                                    </tr>
+                                </>
+                            )
+                        })}
+                    </tbody>
+                    :
+                    null
+                }
             </table>
+            {
+                data.length===0
+                ?
+                <Container maxWidth="sm">
+                    <CircularProgress color="primary"/>
+                </Container>
+                :
+                null
+            }
             <TableFooter
                 pageIndex={pageIndex}
                 pageOptions={pageOptions}
