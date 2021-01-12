@@ -51,7 +51,9 @@ class Suppliers extends Component {
 
     createSupplier =(supplier)=>{
         console.log("Creating new supplier...");
-        console.log(supplier);
+        this.setState(prevState=>({
+            suppliers: [...prevState.suppliers,supplier]
+        }))
     }
 
     readSupplier =(supplier) =>{
