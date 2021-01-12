@@ -1,5 +1,4 @@
 import axios from 'axios';
-
 import {
     Backdrop,
     CircularProgress,
@@ -14,6 +13,7 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import MuiAlert from '@material-ui/lab/Alert';
 import React, { useState } from 'react';
+import { url } from '../../../config/config'
 
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -48,7 +48,7 @@ export default function AddCustomerDialog(props) {
 
     const classes = useStyles();
 
-    const { onClose, open } = props;
+    const { onClose, open, create} = props;
 
     const [customer, setCustomer] = useState(initCustomer);
     const [openBackdrop, setOpenBackdrop] = useState(false);
@@ -74,7 +74,6 @@ export default function AddCustomerDialog(props) {
         if (reason === 'clickaway') {
             return;
         }
-
         setOpenSnackbar(false);
     };
 
@@ -83,11 +82,13 @@ export default function AddCustomerDialog(props) {
         handleToggleBackdrop();
         onClose();
         axios
-            .post('http://localhost:3000/api/customers', customer)
+            .post(`${url}/api/customers`, customer)
             .then(response => {
                 setResponseSuccess(true);
+                setCustomer(initCustomer);
                 handleCloseBackdrop();
                 handleClickSnackbar();
+                create(response.data);
                 console.log(response);
             })
             .catch(error => {
@@ -217,15 +218,15 @@ export default function AddCustomerDialog(props) {
                 </Dialog>
             }
             <Snackbar open={openSnackbar} autoHideDuration={3000} onClose={handleCloseSnackbar}>
-                {responseSuccess ?
-                    <Alert onClose={handleCloseSnackbar} severity="success">
-                        New row has been added to database.
-                    </Alert>
-                    :
-                    <Alert onClose={handleCloseSnackbar} severity="error">
-                        Couldn't add the row to database.
-                    </Alert>
-                }
+                <Alert onClose={handleCloseSnackbar} severity={responseSuccess?"success":"error"}>
+                    {   
+                        responseSuccess 
+                        ? 
+                        <span>New row has been added to database.</span>
+                        : 
+                        <span>Couldn't add the row to database.</span>
+                    }
+                </Alert>
             </Snackbar>
         </>
     )

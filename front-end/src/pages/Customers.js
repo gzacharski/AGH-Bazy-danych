@@ -53,7 +53,9 @@ class Customers extends Component {
 
     createCustomer = (customer) => {
         console.log("Creating new Customer...");
-        console.log(customer);
+        this.setState(prevState=>({
+            customers: [...prevState.customers,customer]
+        }))
     }
 
     readCustomer = (customer) => {
