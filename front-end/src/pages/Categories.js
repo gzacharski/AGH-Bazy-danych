@@ -1,9 +1,9 @@
 import axios from 'axios';
 import MuiAlert from '@material-ui/lab/Alert';
 import React, { Component } from 'react';
-import {Snackbar} from '@material-ui/core';
+import { Snackbar } from '@material-ui/core';
 import Table from '../components/table/Table';
-import {url} from '../config/config';
+import { url } from '../config/config';
 
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -20,7 +20,7 @@ class Categories extends Component {
             { Header: 'Description', accessor: 'description' }
         ],
         openSnackbar: false,
-        response : {
+        response: {
             success: false,
             message: ''
         }
@@ -40,13 +40,13 @@ class Categories extends Component {
         if (reason === 'clickaway') {
             return;
         }
-        this.setState({openSnackbar: false})
+        this.setState({ openSnackbar: false })
     };
 
     createCategory = (category) => {
         console.log("Creating new Category...");
-        this.setState(prevState=>({
-            categories :[...prevState.categories,category]
+        this.setState(prevState => ({
+            categories: [...prevState.categories, category]
         }))
     }
 
@@ -66,13 +66,9 @@ class Categories extends Component {
             description: updatedCategory.cells[2].value
         }
 
-        const updatedCategories = this.state.categories.map(category => {
-            if (category.id.low === theCategory.id.low) {
-                return theCategory;
-            } else {
-                return category;
-            }
-        })
+        const updatedCategories = this.state.categories.map(
+            category => (category.id.low === theCategory.id.low ? theCategory : category)
+        )
 
         await axios.put(`${url}/api/categories/${theCategory.id.low}`, {
             name: theCategory.name,
@@ -81,20 +77,20 @@ class Categories extends Component {
             .then(response => {
                 console.log(response);
 
-                if(response.status===200){
+                if (response.status === 200) {
                     this.setState({
                         categories: updatedCategories,
                         response: {
-                            success:true,
+                            success: true,
                             message: 'Category has been updated.'
                         },
                         openSnackbar: true
                     });
 
-                }else{
+                } else {
                     this.setState({
                         response: {
-                            success:false,
+                            success: false,
                             message: 'Category could not been updated.'
                         },
                         openSnackbar: true
@@ -105,7 +101,7 @@ class Categories extends Component {
                 console.log(error);
                 this.setState({
                     response: {
-                        success:false,
+                        success: false,
                         message: 'Error :( Category could not been updated.'
                     },
                     openSnackbar: true
@@ -116,26 +112,26 @@ class Categories extends Component {
     }
 
     deleteCategory = async (removedCategory) => {
-        
+
         console.log(removedCategory);
 
-        const id=removedCategory.cells[0].value;
+        const id = removedCategory.cells[0].value;
 
-        const updatedCategories=this.state.categories.filter(category=>category.id.low!==id);
+        const updatedCategories = this.state.categories.filter(category => category.id.low !== id);
 
-        let hasBeenRemoved={
-            success:false,
-            message:''
+        let hasBeenRemoved = {
+            success: false,
+            message: ''
         };
 
         await axios.delete(`${url}/api/categories/${id}`)
             .then(response => {
                 console.log(response);
 
-                if(response.status===200){
+                if (response.status === 200) {
 
-                    hasBeenRemoved.success=true;
-                    hasBeenRemoved.message=response.data.message;
+                    hasBeenRemoved.success = true;
+                    hasBeenRemoved.message = response.data.message;
 
                     this.setState({
                         categories: updatedCategories,
@@ -152,7 +148,7 @@ class Categories extends Component {
     }
 
     render() {
-        const { categories, columns,openSnackbar,response } = this.state;
+        const { categories, columns, openSnackbar, response } = this.state;
 
         return (
             <>
@@ -170,8 +166,8 @@ class Categories extends Component {
                     />
                 </div>
                 <Snackbar open={openSnackbar} autoHideDuration={3000} onClose={this.handleCloseSnackbar}>
-                    <Alert 
-                        onClose={this.handleCloseSnackbar} 
+                    <Alert
+                        onClose={this.handleCloseSnackbar}
                         severity={response.success ? "success" : "error"}
                     >
                         {response.message}
