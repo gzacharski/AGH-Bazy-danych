@@ -13,6 +13,7 @@ const { health, getAll, getById, create, deleteById, updateById, getAllOrderedBy
         updateContainsRelationById, createProductOrder , getCustomersServedBySupplier, getCustomersServedBySupplierOneQuery,
         getOrderCrud, getOrderCrudCustomer, createOrderCrud, deleteOrderCrudById, getAllProductsPurchasedByCustomer } = require('../controllers/Controller');
 const { select } = require('../middlewares/switchToNode');
+const {delay}=require('../middlewares/delayRequest');
 
 router.get('/health', health)
 
@@ -52,11 +53,11 @@ router.post('/api/employees', select, create)
 router.put('/api/employees/:id', select, updateById);
 router.delete('/api/employees/:id', select, deleteById);
 
-router.get('/api/categories', select, getAll);
-router.get('/api/categories/:id', select, getById);
-router.post('/api/categories', select, create)
-router.put('/api/categories/:id', select, updateById);
-router.delete('/api/categories/:id', select, deleteById);
+router.get('/api/categories', delay, select, getAll);
+router.get('/api/categories/:id',delay, select, getById);
+router.post('/api/categories', delay,select, create);
+router.put('/api/categories/:id', delay, select, updateById);
+router.delete('/api/categories/:id',delay, select, deleteById);
 
 router.get('/api/orders/customers/all', select, getAllOrderedByRelations);
 router.get('/api/orders/:order/customers/:customer', select, getOrderedByRelationsByOrderCustomer);
