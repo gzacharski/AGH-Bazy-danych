@@ -17,11 +17,11 @@ const {delay}=require('../middlewares/delayRequest');
 
 router.get('/health', health)
 
-router.get('/api/customers', select, getAll);
-router.get('/api/customers/:id', select, getById);
-router.post('/api/customers', select, create);
-router.put('/api/customers/:id', select, updateById);
-router.delete('/api/customers/:id', select, deleteById);
+router.get('/api/customers',delay, select, getAll);
+router.get('/api/customers/:id', delay, select, getById);
+router.post('/api/customers',delay, select, create);
+router.put('/api/customers/:id',delay, select, updateById);
+router.delete('/api/customers/:id',delay, select, deleteById);
 
 router.get('/api/suppliers', select, getAll);
 router.get('/api/suppliers/:id', select, getById);
