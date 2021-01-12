@@ -23,11 +23,11 @@ router.post('/api/customers',delay, select, create);
 router.put('/api/customers/:id',delay, select, updateById);
 router.delete('/api/customers/:id',delay, select, deleteById);
 
-router.get('/api/suppliers', select, getAll);
-router.get('/api/suppliers/:id', select, getById);
-router.post('/api/suppliers', select, create)
-router.put('/api/suppliers/:id', select, updateById);
-router.delete('/api/suppliers/:id', select, deleteById);
+router.get('/api/suppliers',delay, select, getAll);
+router.get('/api/suppliers/:id', delay, select, getById);
+router.post('/api/suppliers',delay, select, create)
+router.put('/api/suppliers/:id', delay, select, updateById);
+router.delete('/api/suppliers/:id',delay, select, deleteById);
 
 router.get('/api/products', select, getAll);
 router.get('/api/products/:id', select, getById);
