@@ -2,17 +2,25 @@ import axios from 'axios';
 import {
     Backdrop,
     CircularProgress,
+    Chip,
     Dialog,
     DialogActions,
     DialogContent,
     DialogTitle,
     Divider,
+    FormControl,
+    Input,
+    InputLabel,
+    MenuItem,
     Snackbar,
-    TextField
+    Select,
+    TextField,
+    Slide,
+    Tooltip
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import MuiAlert from '@material-ui/lab/Alert';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { url } from '../../../config/config';
 
 function Alert(props) {
@@ -30,7 +38,26 @@ const useStyles = makeStyles((theme) => ({
             marginTop: theme.spacing(2),
         },
     },
+    chips: {
+        display: 'flex',
+        flexWrap: 'wrap',
+    },
+    chip: {
+        margin: 2,
+    },
 }));
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+
+const MenuProps = {
+    PaperProps: {
+        style: {
+            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+            width: 250,
+        },
+    },
+};
 
 const initProduct = {
     name: '',
@@ -49,9 +76,41 @@ export default function AddProductDialog(props) {
     const { onClose, open, create } = props;
 
     const [product, setProduct] = useState(initProduct);
+    const [supplier, setSupplier] = useState('');
+    const [suppliers, setSuppliers] = useState(null);
+    const [categories, setCategories] = useState(null);
+    const [selectedCategories, setSelectedCategories] = useState([]);
     const [openBackdrop, setOpenBackdrop] = useState(false);
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [responseSuccess, setResponseSuccess] = useState(false);
+
+    useEffect(loadSuppliers, []);
+
+    function loadSuppliers() {
+        axios.get(`${url}/api/suppliers`)
+            .then(response => {
+                console.log("Loading suplliers...");
+                console.log(response);
+                setSuppliers(response.data.nodes);
+            })
+            .catch(error => {
+                console.log(error);
+            })
+    }
+
+    useEffect(loadCategories, []);
+
+    function loadCategories() {
+        axios.get(`${url}/api/categories`)
+            .then(response => {
+                console.log("Loading categories...");
+                console.log(response);
+                setCategories(response.data.nodes);
+            })
+            .catch(error => {
+                console.log(error);
+            })
+    }
 
     const handleCloseBackdrop = () => {
         setOpenBackdrop(false);
@@ -75,27 +134,128 @@ export default function AddProductDialog(props) {
         setOpenSnackbar(false);
     };
 
+    const handleSupplierChange = (event) => {
+        setSupplier(event.target.value);
+    };
+
     const addProduct = () => {
+        console.log("Adding product...");
+        console.log(product);
+        console.log(supplier);
+        console.log(selectedCategories);
+
         setResponseSuccess(false);
         handleToggleBackdrop();
         onClose();
         axios
-            .post(`${url}/api/products`, product)
+            .post(`${url}/api/test`, {
+                product,
+                supplier,
+                categories: selectedCategories
+            })
             .then(response => {
-                setResponseSuccess(true);
-                setCustomer(initProduct);
-                handleCloseBackdrop();
-                handleClickSnackbar();
-                create(response.data);
                 console.log(response);
+
+                setProduct(initProduct);
+                setSupplier(null);
+                setSelectedCategories([]);
+
+                if (response.status == 200) {
+                    setResponseSuccess(true);
+                    handleCloseBackdrop();
+                    handleClickSnackbar();
+                    create(response.data.product);
+                } else {
+                    setResponseSuccess(false);
+                    handleCloseBackdrop();
+                    handleClickSnackbar();
+                }
             })
             .catch(error => {
+
                 setResponseSuccess(false);
+                setProduct(initProduct);
+                setSupplier(null);
+                setSelectedCategories([]);
+
                 handleCloseBackdrop();
                 handleClickSnackbar();
+
                 console.log(error);
             })
     }
+
+    const handleCancel = () => {
+        onClose();
+        setProduct(initProduct);
+        setSupplier(null);
+        setSelectedCategories([]);
+    }
+
+    const convertSuppliersToSelectItems = () => {
+
+        const supplierSelectItems = suppliers.map(supplier => (
+            <MenuItem key={supplier.id.low} value={supplier}>
+                {supplier.companyName}
+            </MenuItem>
+        ));
+
+        return (
+            <FormControl fullWidth>
+                <InputLabel id="supplier-select-label">Supplier</InputLabel>
+                <Select
+                    labelId="supplier-select-label"
+                    id="supplier-select"
+                    value={supplier}
+                    onChange={handleSupplierChange}
+                >
+                    {supplierSelectItems}
+                </Select>
+            </FormControl>
+        );
+    }
+
+    const handleSelectedCategoriesChange = (event) => {
+        console.log(event.target.value);
+        setSelectedCategories(event.target.value);
+    }
+
+    const convertCategoriesToMultipleSelect = () => {
+
+        const categoriesToShow = categories.map(category => (
+            <MenuItem
+                key={category.id.low}
+                value={category}
+            >
+                {category.name}
+            </MenuItem>
+        ));
+
+        return (
+            <FormControl fullWidth>
+                <InputLabel id="multiple-category-label">Category</InputLabel>
+                <Select
+                    labelId="multiple-category-label"
+                    id="category-label"
+                    value={selectedCategories}
+                    onChange={handleSelectedCategoriesChange}
+                    multiple
+                    input={<Input id="select-multiple-chip" />}
+                    renderValue={selected => (
+                        <div className={classes.chips}>
+                            {selected.map(value => (
+                                <Chip key={value.id.low} label={value.name} className={classes.chip} />
+                            ))}
+                        </div>
+                    )}
+                    MenuProps={MenuProps}
+                >
+                    {categoriesToShow}
+                </Select>
+            </FormControl>
+        );
+    }
+
 
     return (
         <>
@@ -189,9 +349,11 @@ export default function AddProductDialog(props) {
                                 shrink: true,
                             }}
                         />
+                        {suppliers !== null ? convertSuppliersToSelectItems() : null}
+                        {categories !== null ? convertCategoriesToMultipleSelect() : null}
                     </DialogContent>
                     <DialogActions>
-                        <button className="btn btn-light" onClick={onClose}>
+                        <button className="btn btn-light" onClick={handleCancel}>
                             Cancel
                         </button>
                         <button className="btn btn-light" onClick={addProduct}>

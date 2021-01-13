@@ -32,7 +32,9 @@ export default function Products() {
 
     const createProduct = (product) => {
         console.log("Creating new Product...");
+        console.log("Appending new Product to Table...");
         console.log(product);
+        setProducts([...products,product]);
     }
 
     const readProduct = (product) => {
