@@ -1,12 +1,12 @@
 {
 	"info": {
-		"_postman_id": "f700e280-6963-4293-8c2b-b5d37e937315",
+		"_postman_id": "157076a3-9634-424c-97ed-9920d244bbfd",
 		"name": "Bazy danych Neo4j",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "CRUD",
+			"name": "Simple CRUD",
 			"item": [
 				{
 					"name": "Employee",
@@ -17,7 +17,6 @@
 								{
 									"listen": "prerequest",
 									"script": {
-										"id": "5bc38c03-1ed5-4870-9a67-ad35eb33d742",
 										"exec": [
 											""
 										],
@@ -27,7 +26,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "3f2b6dd4-8894-4abd-9bb7-1a33313630cc",
 										"exec": [
 											"pm.test(\"Response status should be 200.\", ()=>{\r",
 											"    pm.expect(pm.response.code).to.be.equal(200);\r",
@@ -80,7 +78,6 @@
 								{
 									"listen": "prerequest",
 									"script": {
-										"id": "09e030d6-391b-4fbd-a24f-dc0219f17da4",
 										"exec": [
 											"const requestBody=JSON.parse(pm.request.body.raw);\r",
 											"pm.collectionVariables.set(\"employee_body\",requestBody);"
@@ -91,7 +88,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "e9073040-35c9-4f15-8e84-48110f6e58e3",
 										"exec": [
 											"const { isEqual } = require('lodash');\r",
 											"\r",
@@ -157,7 +153,6 @@
 								{
 									"listen": "prerequest",
 									"script": {
-										"id": "78adf061-2b61-4c66-8bb1-85a0aff2d3ab",
 										"exec": [
 											""
 										],
@@ -167,7 +162,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "db9a0cef-59ba-48d5-a49e-d28c8f2f6c56",
 										"exec": [
 											"pm.test(\"Response status should be 500.\", () => {\r",
 											"    pm.expect(pm.response.code).to.be.oneOf([500]);\r",
@@ -221,7 +215,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "2915cbd4-2b0c-4fb5-86d5-8eca68739ac1",
 										"exec": [
 											"pm.test(\"Response status should be 200.\", ()=>{\r",
 											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
@@ -261,7 +254,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "8f65b0c6-a066-4f4d-8bce-4c0b4ab6ae6f",
 										"exec": [
 											"const { isEqual } = require('lodash');\r",
 											"\r",
@@ -288,7 +280,6 @@
 								{
 									"listen": "prerequest",
 									"script": {
-										"id": "a48cf3e0-354a-4956-a6db-8b7e390ed0a1",
 										"exec": [
 											"const requestBody=JSON.parse(pm.request.body.raw);\r",
 											"let body=pm.collectionVariables.get(\"employee_body\");\r",
@@ -333,7 +324,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "51150568-bc64-4998-bcd4-5723a55b0993",
 										"exec": [
 											"pm.test(\"Response status should be 200.\", ()=>{\r",
 											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
@@ -385,7 +375,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "2da7c54f-3706-48fb-9f39-a50b9d3f5989",
 										"exec": [
 											"pm.test(\"Response status should be 404.\", ()=>{\r",
 											"    pm.expect(pm.response.code).to.be.oneOf([404]);\r",
@@ -432,7 +421,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "cbe9a7d2-951e-4aad-a50e-414dd4fc1701",
 										"exec": [
 											"pm.test(\"Response should have status 404.\", ()=>{\r",
 											"    pm.expect(pm.response.code).to.be.oneOf([404]);\r",
@@ -477,9 +465,7 @@
 							},
 							"response": []
 						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
+					]
 				},
 				{
 					"name": "Category",
@@ -490,7 +476,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "97e21e78-af71-485e-8c62-a20359f00caf",
 										"exec": [
 											"pm.test(\"Response status should be 200.\", ()=>{\r",
 											"    pm.expect(pm.response.code).to.be.equal(200);\r",
@@ -542,7 +527,6 @@
 								{
 									"listen": "prerequest",
 									"script": {
-										"id": "bd77dfd9-ef79-4ea8-a41c-927d9f9168fe",
 										"exec": [
 											"const requestBody=JSON.parse(pm.request.body.raw);\r",
 											"pm.collectionVariables.set(\"category_body\",requestBody);"
@@ -553,7 +537,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "73a7b40f-e25a-4211-be87-f97e4dc431a0",
 										"exec": [
 											"const { isEqual } = require('lodash');\r",
 											"\r",
@@ -620,7 +603,6 @@
 								{
 									"listen": "prerequest",
 									"script": {
-										"id": "401aa77e-652b-4a1d-aadf-9ed3eb72d5e1",
 										"exec": [
 											""
 										],
@@ -630,7 +612,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "8993b190-3a57-4f52-94ee-12c01ab41dc9",
 										"exec": [
 											"pm.test(\"Response status should be 500.\", () => {\r",
 											"    pm.expect(pm.response.code).to.be.oneOf([500]);\r",
@@ -683,7 +664,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "50fc2d82-1e93-4fd5-86dc-248c928e7ab2",
 										"exec": [
 											"pm.test(\"Response status should be 200.\", ()=>{\r",
 											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
@@ -723,7 +703,6 @@
 								{
 									"listen": "prerequest",
 									"script": {
-										"id": "c663e540-eebd-451c-b5d8-cb4041c856c3",
 										"exec": [
 											"const requestBody=JSON.parse(pm.request.body.raw);\r",
 											"let body=pm.collectionVariables.get(\"category_body\");\r",
@@ -736,7 +715,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "28b412b4-f9f9-40e6-80f9-a6201d5d7300",
 										"exec": [
 											"const { isEqual } = require('lodash');\r",
 											"\r",
@@ -795,7 +773,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "30ac1283-5a52-4894-aa53-99ea7f4a0190",
 										"exec": [
 											"pm.test(\"Response status should be 200.\", ()=>{\r",
 											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
@@ -846,7 +823,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "e33cc75a-f279-42e1-b585-9e9b21722cf0",
 										"exec": [
 											"pm.test(\"Response status should be 404.\", ()=>{\r",
 											"    pm.expect(pm.response.code).to.be.oneOf([404]);\r",
@@ -893,7 +869,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "5c1e1897-4681-4495-a38f-a1820e27e165",
 										"exec": [
 											"pm.test(\"Response should have status 404.\", ()=>{\r",
 											"    pm.expect(pm.response.code).to.be.oneOf([404]);\r",
@@ -937,9 +912,7 @@
 							},
 							"response": []
 						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
+					]
 				},
 				{
 					"name": "Customer",
@@ -950,7 +923,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "88780576-e4e6-4865-9e2a-133c6bc88773",
 										"exec": [
 											"pm.test(\"Response status should be 200.\", ()=>{\r",
 											"    pm.expect(pm.response.code).to.be.equal(200);\r",
@@ -1002,7 +974,6 @@
 								{
 									"listen": "prerequest",
 									"script": {
-										"id": "a718c00f-ffa1-4b80-aa11-66f31005e73d",
 										"exec": [
 											"const requestBody=JSON.parse(pm.request.body.raw);\r",
 											"pm.collectionVariables.set(\"customer_body\",requestBody);"
@@ -1013,7 +984,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "48ca9167-43c0-4c91-a717-8ba7ca5b2d6c",
 										"exec": [
 											"const { isEqual } = require('lodash');\r",
 											"\r",
@@ -1078,7 +1048,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "1c764c52-79a6-4f33-a3ff-125a3ec83bd0",
 										"exec": [
 											"pm.test(\"Response status should be 500.\", () => {\r",
 											"    pm.expect(pm.response.code).to.be.oneOf([500]);\r",
@@ -1131,7 +1100,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "50ed4e94-a469-4772-b323-38859afea0b1",
 										"exec": [
 											"pm.test(\"Response status should be 200.\", ()=>{\r",
 											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
@@ -1171,7 +1139,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "85ebaad3-d9c0-4b02-a055-1f49ddbdb7e2",
 										"exec": [
 											"const { isEqual } = require('lodash');\r",
 											"\r",
@@ -1198,7 +1165,6 @@
 								{
 									"listen": "prerequest",
 									"script": {
-										"id": "ce22310c-2a11-4bb3-9168-62c25dd4d759",
 										"exec": [
 											"const requestBody=JSON.parse(pm.request.body.raw);\r",
 											"let body=pm.collectionVariables.get(\"customer_body\");\r",
@@ -1243,7 +1209,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "3234fbc8-54a8-495d-94ee-ccbc62b71698",
 										"exec": [
 											"pm.test(\"Response should have status 200\", ()=>{\r",
 											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
@@ -1294,7 +1259,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "bd458b7c-9b61-4e4e-8471-0280338c3795",
 										"exec": [
 											"pm.test(\"Response status should be 404.\", ()=>{\r",
 											"    pm.expect(pm.response.code).to.be.oneOf([404]);\r",
@@ -1341,7 +1305,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "6c7e7b40-f127-4a1e-89dd-e1f40b88535c",
 										"exec": [
 											"pm.test(\"Response should have status 404.\", ()=>{\r",
 											"    pm.expect(pm.response.code).to.be.oneOf([404]);\r",
@@ -1385,9 +1348,7 @@
 							},
 							"response": []
 						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
+					]
 				},
 				{
 					"name": "Order",
@@ -1398,7 +1359,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "89185c6a-dbc3-4413-9ff0-7fd33ea6dbd2",
 										"exec": [
 											"pm.test(\"Response status should be 200.\", ()=>{\r",
 											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
@@ -1417,7 +1377,7 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "http://localhost:3000/api/orders",
+									"raw": "http://localhost:3000/api/orders/old",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -1425,15 +1385,14 @@
 									"port": "3000",
 									"path": [
 										"api",
-										"orders"
+										"orders",
+										"old"
 									]
 								}
 							},
 							"response": []
 						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
+					]
 				},
 				{
 					"name": "Product",
@@ -1444,7 +1403,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "7614b5f7-5da6-4e2f-8262-03d656aebb18",
 										"exec": [
 											"pm.test(\"Response status should be 200.\", ()=>{\r",
 											"    pm.expect(pm.response.code).to.be.equal(200);\r",
@@ -1496,7 +1454,6 @@
 								{
 									"listen": "prerequest",
 									"script": {
-										"id": "d7481e8d-96f7-4f75-b563-926ed4764a3e",
 										"exec": [
 											"const requestBody=JSON.parse(pm.request.body.raw);\r",
 											"pm.collectionVariables.set(\"product_body\",requestBody);"
@@ -1507,7 +1464,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "bc1aa3f5-3b52-4f7b-a1fb-2f2aba1d1f45",
 										"exec": [
 											"const { isEqual } = require('lodash');\r",
 											"\r",
@@ -1572,7 +1528,6 @@
 								{
 									"listen": "prerequest",
 									"script": {
-										"id": "daf80373-a772-40f7-a928-51658ad1275a",
 										"exec": [
 											""
 										],
@@ -1582,7 +1537,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "a2fe11ea-3da6-4127-ab4a-a6b1f98c9cf5",
 										"exec": [
 											"pm.test(\"Response status should be 500.\", () => {\r",
 											"    pm.expect(pm.response.code).to.be.oneOf([500]);\r",
@@ -1635,7 +1589,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "ebe100c8-1fc1-4d6d-9dec-db32ea9d9f28",
 										"exec": [
 											"pm.test(\"Response status should be 200.\", ()=>{\r",
 											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
@@ -1686,7 +1639,6 @@
 								{
 									"listen": "prerequest",
 									"script": {
-										"id": "a934da74-e793-433d-8316-a26b99232a3f",
 										"exec": [
 											"const requestBody=JSON.parse(pm.request.body.raw);\r",
 											"let body=pm.collectionVariables.get(\"product_body\");\r",
@@ -1699,7 +1651,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "a6872faa-90ce-4a86-b38a-c4586ba3da01",
 										"exec": [
 											"pm.test(\"Response status should be 200.\", ()=>{\r",
 											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
@@ -1758,7 +1709,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "25f4804b-7271-42d8-8725-a9d18b5998c3",
 										"exec": [
 											"pm.test(\"Response should have status 200\", ()=>{\r",
 											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
@@ -1809,7 +1759,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "3a5479e9-8a3e-401b-aab3-93a350081b79",
 										"exec": [
 											"pm.test(\"Response status should be 404.\", ()=>{\r",
 											"    pm.expect(pm.response.code).to.be.oneOf([404]);\r",
@@ -1856,7 +1805,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "6e610881-b094-4457-bf43-7db014eadcb0",
 										"exec": [
 											"pm.test(\"Response should have status 404.\", ()=>{\r",
 											"    pm.expect(pm.response.code).to.be.oneOf([404]);\r",
@@ -1900,9 +1848,7 @@
 							},
 							"response": []
 						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
+					]
 				},
 				{
 					"name": "Shipper",
@@ -1913,7 +1859,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "a7d5aead-aeee-4e6d-9115-38a80cb0d502",
 										"exec": [
 											"pm.test(\"Response status should be 200.\", ()=>{\r",
 											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
@@ -1952,7 +1897,6 @@
 								{
 									"listen": "prerequest",
 									"script": {
-										"id": "7cd4ed43-1b96-436c-973c-381b17daf518",
 										"exec": [
 											"const requestBody=JSON.parse(pm.request.body.raw);\r",
 											"pm.collectionVariables.set(\"shipper_body\",requestBody);"
@@ -1963,7 +1907,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "b318bd08-c149-4228-a6d3-563bf024f127",
 										"exec": [
 											"pm.test(\"Response status should be 200 or 201.\", () => {\r",
 											"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
@@ -2028,7 +1971,6 @@
 								{
 									"listen": "prerequest",
 									"script": {
-										"id": "a39933d6-8976-4013-9299-62271225f255",
 										"exec": [
 											""
 										],
@@ -2038,7 +1980,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "bc3608a7-7f68-4596-9296-a808ba91f7be",
 										"exec": [
 											"pm.test(\"Response status should be 500.\", () => {\r",
 											"    pm.expect(pm.response.code).to.be.oneOf([500]);\r",
@@ -2091,7 +2032,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "cfc895f4-2354-467c-8f91-7de1ac6d8cdd",
 										"exec": [
 											"pm.test(\"Response status should be 200.\", ()=>{\r",
 											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
@@ -2142,7 +2082,6 @@
 								{
 									"listen": "prerequest",
 									"script": {
-										"id": "5fd850a6-8b63-4de7-add0-6ae9caa30116",
 										"exec": [
 											"const requestBody=JSON.parse(pm.request.body.raw);\r",
 											"let body=pm.collectionVariables.get(\"shipper_body\");\r",
@@ -2155,7 +2094,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "aed8ca9f-d5c9-4454-8bfd-bc464954c65e",
 										"exec": [
 											"pm.test(\"Response status should be 200.\", ()=>{\r",
 											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
@@ -2214,7 +2152,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "02470e49-9a43-4731-98b9-2d09f1b6f6b6",
 										"exec": [
 											"pm.test(\"Response should have status 200\", ()=>{\r",
 											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
@@ -2265,7 +2202,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "8f5b244d-ccd7-4832-96c9-80a4436e20c1",
 										"exec": [
 											"pm.test(\"Response status should be 404.\", ()=>{\r",
 											"    pm.expect(pm.response.code).to.be.oneOf([404]);\r",
@@ -2312,7 +2248,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "5faae66d-2345-4182-9150-ce10f90c815e",
 										"exec": [
 											"pm.test(\"Response should have status 404.\", ()=>{\r",
 											"    pm.expect(pm.response.code).to.be.oneOf([404]);\r",
@@ -2356,9 +2291,7 @@
 							},
 							"response": []
 						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
+					]
 				},
 				{
 					"name": "Supplier",
@@ -2369,7 +2302,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "3e924783-e6c3-4c3e-9d5d-0274899ff78f",
 										"exec": [
 											"pm.test(\"Response status should be 200.\", ()=>{\r",
 											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
@@ -2408,7 +2340,6 @@
 								{
 									"listen": "prerequest",
 									"script": {
-										"id": "f936b005-f989-4e6b-a2d5-d1b437f39f33",
 										"exec": [
 											"const requestBody=JSON.parse(pm.request.body.raw);\r",
 											"pm.collectionVariables.set(\"supplier_body\",requestBody);"
@@ -2419,7 +2350,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "1e367d5a-e901-4738-801a-8c24ef10601d",
 										"exec": [
 											"pm.test(\"Response status should be 200 or 201.\", () => {\r",
 											"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
@@ -2484,7 +2414,6 @@
 								{
 									"listen": "prerequest",
 									"script": {
-										"id": "bd98cee2-66df-4483-848f-7c976e0185c3",
 										"exec": [
 											""
 										],
@@ -2494,7 +2423,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "467ba7b7-93e4-4535-8892-d6c8a950ba46",
 										"exec": [
 											"pm.test(\"Response status should be 500.\", () => {\r",
 											"    pm.expect(pm.response.code).to.be.oneOf([500]);\r",
@@ -2547,7 +2475,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "f2873ee9-0c8a-457a-919b-4ffb54a759e0",
 										"exec": [
 											"pm.test(\"Response status should be 200.\", ()=>{\r",
 											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
@@ -2598,7 +2525,6 @@
 								{
 									"listen": "prerequest",
 									"script": {
-										"id": "d9319699-911f-42b1-8c4c-f8dafd04d8fc",
 										"exec": [
 											"const requestBody=JSON.parse(pm.request.body.raw);\r",
 											"let body=pm.collectionVariables.get(\"supplier_body\");\r",
@@ -2611,7 +2537,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "dc1afb7c-f1c0-4ffc-92e9-c8aa28770b4d",
 										"exec": [
 											"pm.test(\"Response status should be 200.\", ()=>{\r",
 											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
@@ -2670,7 +2595,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "1b6f9b2f-b314-48f2-b3fc-a48e50200980",
 										"exec": [
 											"pm.test(\"Response should have status 200\", ()=>{\r",
 											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
@@ -2721,7 +2645,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "3befe478-feb5-42c1-b464-c55719ed82db",
 										"exec": [
 											"pm.test(\"Response status should be 404.\", ()=>{\r",
 											"    pm.expect(pm.response.code).to.be.oneOf([404]);\r",
@@ -2768,7 +2691,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "1d33a6b7-fd38-4149-bf98-2ac818a02c91",
 										"exec": [
 											"pm.test(\"Response should have status 404.\", ()=>{\r",
 											"    pm.expect(pm.response.code).to.be.oneOf([404]);\r",
@@ -2812,20 +2734,619 @@
 							},
 							"response": []
 						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
+					]
+				},
+				{
+					"name": "Relationship",
+					"item": [
+						{
+							"name": "Get Products supplied by Supplier",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response status should be 200.\", ()=>{\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+											"});\r",
+											"\r",
+											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/suppliers/:id/products",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"suppliers",
+										":id",
+										"products"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "3"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Supplies which supply Product",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response status should be 200.\", ()=>{\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+											"});\r",
+											"\r",
+											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/products/:id/suppliers",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"products",
+										":id",
+										"suppliers"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "3"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Supplies relation",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response status should be 500. Relation between product already exists\", ()=>{\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([500]);\r",
+											"});\r",
+											"\r",
+											"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+											"pm.test(`Response time should be less than ${resTime} ms.`, () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.lessThan(resTime);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/suppliers/:supplier/products/:product",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"suppliers",
+										":supplier",
+										"products",
+										":product"
+									],
+									"variable": [
+										{
+											"key": "supplier",
+											"value": "3"
+										},
+										{
+											"key": "product",
+											"value": "3"
+										}
+									]
+								},
+								"description": "Create relation between Supplier and Product"
+							},
+							"response": []
+						},
+						{
+							"name": "Get all Contains relationships",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response status should be 200.\", ()=>{\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/orders/products/all",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"orders",
+										"products",
+										"all"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Contains relationship by ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": ""
+								}
+							},
+							"response": []
+						}
+					]
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
+		},
+		{
+			"name": "Order CRUD",
+			"item": [
+				{
+					"name": "All Customer's Orders",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status should be 200.\", ()=>{\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/orders",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status should be 200.\", ()=>{\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+									"});\r",
+									"\r",
+									"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+									"pm.test(`Response time should be less than ${4*resTime} ms.`, () => {\r",
+									"    pm.expect(pm.response.responseTime).to.be.lessThan(4*resTime);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"customerId\": \"ALFKI\",\r\n    \"productId\": 1,\r\n    \"orderDate\": \"2020-01-01\",\r\n    \"requiredDate\" : \"2020-06-01\",\r\n    \"shippedDate\" : \"2020-01-05\",\r\n    \"freight\" : 1,\r\n    \"shipName\" : \"Grdgtr Gdx Ivgjov\",\r\n    \"shipAddress\" : \"Evydnh St. 57\",\r\n    \"shipCity\" : \"Waviyoyim\",\r\n    \"shipPostalCode\" : \"9154-92838\",\r\n    \"shipCountry\" : \"Sweden\",\r\n    \"unitPrice\" : 21.79,\r\n    \"quantity\" : 1,\r\n    \"discount\" : 4.5\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/orders",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Contains Relationship between Order and Product",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/orders/:order/products/:product",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"orders",
+								":order",
+								"products",
+								":product"
+							],
+							"variable": [
+								{
+									"key": "order",
+									"value": "2972501051"
+								},
+								{
+									"key": "product",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Contains Relationship",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"unitPrice\" : 14.89,\r\n    \"quantity\" : \"16\",\r\n    \"discount\" : \"12.5\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/orders/:order/products/:product",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"orders",
+								":order",
+								"products",
+								":product"
+							],
+							"variable": [
+								{
+									"key": "order",
+									"value": "2972501051"
+								},
+								{
+									"key": "product",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Order by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/orders/:id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"orders",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "2972501051"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Statistics",
+			"item": [
+				{
+					"name": "Customers served by Supplier (many simple queries)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status should be 200.\", ()=>{\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+									"});\r",
+									"\r",
+									"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+									"pm.test(`Response time should be less than ${4*resTime} ms.`, () => {\r",
+									"    pm.expect(pm.response.responseTime).to.be.lessThan(4*resTime);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/suppliers/:id/customers/:from/:to/manyqueries",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"suppliers",
+								":id",
+								"customers",
+								":from",
+								":to",
+								"manyqueries"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								},
+								{
+									"key": "from",
+									"value": "1999-12-01"
+								},
+								{
+									"key": "to",
+									"value": "2001-02-12"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Customers served by Supplier (one complex query)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status should be 200.\", ()=>{\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+									"});\r",
+									"\r",
+									"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+									"pm.test(`Response time should be less than ${4*resTime} ms.`, () => {\r",
+									"    pm.expect(pm.response.responseTime).to.be.lessThan(4*resTime);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/suppliers/:id/customers/:from/:to/onequery",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"suppliers",
+								":id",
+								"customers",
+								":from",
+								":to",
+								"onequery"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								},
+								{
+									"key": "from",
+									"value": "1999-12-01"
+								},
+								{
+									"key": "to",
+									"value": "2001-02-12"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Stats for Product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status should be 200.\", ()=>{\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+									"});\r",
+									"\r",
+									"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+									"pm.test(`Response time should be less than ${4*resTime} ms.`, () => {\r",
+									"    pm.expect(pm.response.responseTime).to.be.lessThan(4*resTime);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/products/:id/stats",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"products",
+								":id",
+								"stats"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Stats for Category",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status should be 200.\", ()=>{\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+									"});\r",
+									"\r",
+									"const resTime=Number.parseInt(pm.environment.get(\"responseTime\"));\r",
+									"pm.test(`Response time should be less than ${4*resTime} ms.`, () => {\r",
+									"    pm.expect(pm.response.responseTime).to.be.lessThan(4*resTime);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/categories/:id/stats",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"categories",
+								":id",
+								"stats"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"variable": [
 		{
-			"id": "89e8b46c-7c5d-47d7-a8d1-9660b5d42710",
 			"key": "order_body",
 			"value": ""
 		}
-	],
-	"protocolProfileBehavior": {}
+	]
 }
