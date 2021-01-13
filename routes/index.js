@@ -1,5 +1,4 @@
 const express = require('express');
-const {getStatsForCategory, getStatsForProduct} = require("../controllers/Controller");
 const router = express.Router();
 
 const { getAll, getById, create, deleteById, updateById } = require("../controllers/SimpleNodeCrud");
@@ -12,10 +11,11 @@ const { getAllBelongsToRelations, getBelongsToRelationsByProductCategory, delete
 const {  getAllContainsRelations, getContainsRelationById, createContainsRelation, getProductsContainedInOrder, getContainsRelationsByOrderProduct,
         getOrdersWhichContainProduct, deleteContainsRelationsOrderProduct, deleteContainsRelationById,
         updateContainsRelationById } = require("../controllers/ContainsRelations");
+const { createProductOrder, getOrderCrud, getOrderCrudCustomer, createOrderCrud, deleteOrderCrudById } = require("../controllers/OrderCrud");
+const { getCustomersServedBySupplier, getCustomersServedBySupplierOneQuery, getAllProductsPurchasedByCustomer,
+        getStatsForCategory, getStatsForProduct } = require("../controllers/Statistics");
+const { health } = require('../controllers/Controller');
 
-const { health,
-        createProductOrder , getCustomersServedBySupplier, getCustomersServedBySupplierOneQuery,
-        getOrderCrud, getOrderCrudCustomer, createOrderCrud, deleteOrderCrudById, getAllProductsPurchasedByCustomer } = require('../controllers/Controller');
 const { select } = require('../middlewares/switchToNode');
 const {delay}=require('../middlewares/delayRequest');
 
