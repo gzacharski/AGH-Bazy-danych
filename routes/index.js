@@ -1,16 +1,20 @@
 const express = require('express');
-const {getStatsForCategory} = require("../controllers/Controller");
-const {getStatsForProduct} = require("../controllers/Controller");
+const {getStatsForCategory, getStatsForProduct} = require("../controllers/Controller");
 const router = express.Router();
 
-const { health, getAll, getById, create, deleteById, updateById, getAllOrderedByRelations, getOrderedByRelationsByOrderCustomer,
-        createOrderedByRelation, getCustomersWhoOrderedOrder, getOrdersOrderedByCustomer, deleteOrderedByRelationsOrderCustomer,
-        createSuppliesRelation, getAllSuppliesRelations, getSuppliesRelationsBySupplierProduct, getProductSuppliedBySupplier,
-        getSuppliersWhichSupplyProduct, deleteSuppliesRelationsSupplierProduct, getAllBelongsToRelations, getBelongsToRelationsByProductCategory,
-        deleteBelongsToRelationsProductCategory, createBelongsToRelation, getCategoriesAssignedToProduct, getProductsBelongToCategory,
-        getAllContainsRelations, getContainsRelationById, createContainsRelation, getProductsContainedInOrder, getContainsRelationsByOrderProduct,
+const { getAll, getById, create, deleteById, updateById } = require("../controllers/SimpleNodeCrud");
+const { getAllOrderedByRelations, getOrderedByRelationsByOrderCustomer, createOrderedByRelation,
+        getCustomersWhoOrderedOrder, getOrdersOrderedByCustomer, deleteOrderedByRelationsOrderCustomer} = require("../controllers/OrderedByRelations");
+const { createSuppliesRelation, getAllSuppliesRelations, getSuppliesRelationsBySupplierProduct, getProductSuppliedBySupplier,
+        getSuppliersWhichSupplyProduct, deleteSuppliesRelationsSupplierProduct } = require("../controllers/SuppliesRelations");
+const { getAllBelongsToRelations, getBelongsToRelationsByProductCategory, deleteBelongsToRelationsProductCategory,
+        createBelongsToRelation, getCategoriesAssignedToProduct, getProductsBelongToCategory } = require("../controllers/BelongsToRelations");
+const {  getAllContainsRelations, getContainsRelationById, createContainsRelation, getProductsContainedInOrder, getContainsRelationsByOrderProduct,
         getOrdersWhichContainProduct, deleteContainsRelationsOrderProduct, deleteContainsRelationById,
-        updateContainsRelationById, createProductOrder , getCustomersServedBySupplier, getCustomersServedBySupplierOneQuery,
+        updateContainsRelationById } = require("../controllers/ContainsRelations");
+
+const { health,
+        createProductOrder , getCustomersServedBySupplier, getCustomersServedBySupplierOneQuery,
         getOrderCrud, getOrderCrudCustomer, createOrderCrud, deleteOrderCrudById, getAllProductsPurchasedByCustomer } = require('../controllers/Controller');
 const { select } = require('../middlewares/switchToNode');
 const {delay}=require('../middlewares/delayRequest');
