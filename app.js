@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser');
 const cors = require("cors");
 
 const routes=require('./routes/index');
+const stats=require('./routes/statistics');
 
 const app=express();
 
@@ -14,5 +15,6 @@ app.use(cookieParser());
 app.use('*',cors());
 
 app.use('/',routes);
+app.use('/stats/',stats);
 
 module.exports=app;
