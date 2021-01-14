@@ -2,6 +2,14 @@ const driver = require('../config/dbconfig').driver;
 const config = require('../config/dbconfig').config;
 const uuid = require('uuid');
 
+function todayDate() {
+    const today = new Date();
+    const dd = String(today.getDate()).padStart(2, '0');
+    const mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    const yyyy = today.getFullYear();
+    return yyyy + '-' + mm + '-' + dd;
+}
+
 const nodeExists = async (id, label) => {
 
     const session = driver.session(config);
@@ -243,13 +251,12 @@ module.exports.createOrderCrud = async (request, response) => {
     try {
         let query, nodeDetails = { properties: request.body };
 
-        query = `MATCH (customer:Customer), (product:Product) WHERE customer.id=$customerId AND product.id=$productId CREATE (customer)<-[obr:ORDERED_BY]-(order:Order)-[cr:CONTAINS]->(product) SET order+=$orderProperties, order.id=$orderId, cr+=$orderDetailsProperties RETURN customer, order, cr, product`
+        query = `MATCH (customer:Customer), (product:Product) WHERE customer.id=$customerId AND product.id=$productId AND NOT(product.discontinued=1) AND product.unitsInStock>=$orderDetailsProperties.quantity CREATE (customer)<-[obr:ORDERED_BY]-(order:Order)-[cr:CONTAINS]->(product) SET order+=$orderProperties, order.freight=toInteger($orderProperties.freight), order.id=toInteger($orderId) , cr+=$orderDetailsProperties, product.unitsInStock=product.unitsInStock-1 RETURN customer, order, cr, product`
 
         const customerId = nodeDetails.properties.customerId;
         const productId = nodeDetails.properties.productId;
-
         const orderId = Number.parseInt(uuid.v4(),16);
-        const orderDate = nodeDetails.properties.unitPrice;
+        const orderDate = todayDate();//nodeDetails.properties.orderDate;
         const requiredDate = nodeDetails.properties.requiredDate;
         const shippedDate = nodeDetails.properties.shippedDate;
         const freight = nodeDetails.properties.freight;
@@ -291,12 +298,20 @@ module.exports.createOrderCrud = async (request, response) => {
             orderDetailsProperties: orderDetailsBodyParsed
         };
 
+        if(orderDate.isEmpty) {
+            response
+                .status(400)
+                .send({
+                    message: `Empty Order Date.`
+                })
+        }
+
         if (await nodeExists(orderId, 'Order')) throw new Error(`There is an existing Order with provided id: ${orderId}`);
 
         const result = await session.writeTransaction(tx => tx.run(query, orderParams));
         const nodes = result.records;
 
-        if (!nodes) throw new Error(`The server was not able to register a new Order.`);
+        if (nodes.length<1) throw new Error(`The server was not able to register a new Order.`);
 
         response
             .status(201)
