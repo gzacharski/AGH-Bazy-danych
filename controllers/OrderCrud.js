@@ -251,12 +251,18 @@ module.exports.createOrderCrud = async (request, response) => {
     try {
         let query, nodeDetails = { properties: request.body };
 
-        query = `MATCH (customer:Customer), (product:Product) WHERE customer.id=$customerId AND product.id=$productId AND NOT(product.discontinued=1) AND product.unitsInStock>=$orderDetailsProperties.quantity CREATE (customer)<-[obr:ORDERED_BY]-(order:Order)-[cr:CONTAINS]->(product) SET order+=$orderProperties, order.freight=toInteger($orderProperties.freight), order.id=toInteger($orderId) , cr+=$orderDetailsProperties, product.unitsInStock=product.unitsInStock-1 RETURN customer, order, cr, product`
+        query =
+            `MATCH (customer:Customer), (product:Product) 
+            WHERE customer.id=$customerId AND product.id=$productId AND NOT(product.discontinued=1) AND product.unitsInStock>=$orderDetailsProperties.quantity 
+            CREATE (customer)<-[obr:ORDERED_BY]-(order:Order)-[cr:CONTAINS]->(product) 
+            SET order+=$orderProperties, order.freight=toInteger($orderProperties.freight), order.id=toInteger($orderId) , cr+=$orderDetailsProperties, product.unitsInStock=product.unitsInStock-1 
+            RETURN customer, order, cr, product`
 
         const customerId = nodeDetails.properties.customerId;
         const productId = nodeDetails.properties.productId;
+
         const orderId = Number.parseInt(uuid.v4(),16);
-        const orderDate = todayDate();//nodeDetails.properties.orderDate;
+        const orderDate = todayDate();
         const requiredDate = nodeDetails.properties.requiredDate;
         const shippedDate = nodeDetails.properties.shippedDate;
         const freight = nodeDetails.properties.freight;
@@ -297,14 +303,6 @@ module.exports.createOrderCrud = async (request, response) => {
             orderProperties: orderBodyParsed,
             orderDetailsProperties: orderDetailsBodyParsed
         };
-
-        if(orderDate.isEmpty) {
-            response
-                .status(400)
-                .send({
-                    message: `Empty Order Date.`
-                })
-        }
 
         if (await nodeExists(orderId, 'Order')) throw new Error(`There is an existing Order with provided id: ${orderId}`);
 
