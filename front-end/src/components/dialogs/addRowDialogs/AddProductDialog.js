@@ -160,7 +160,7 @@ export default function AddProductDialog(props) {
                 setSupplier(null);
                 setSelectedCategories([]);
 
-                if (response.status == 200) {
+                if (response.status == 201) {
                     setResponseSuccess(true);
                     handleCloseBackdrop();
                     handleClickSnackbar();
@@ -290,7 +290,7 @@ export default function AddProductDialog(props) {
                             label="Quantity per unit"
                             margin="dense"
                             required
-                            type="number"
+                            type="text"
                             defaultValue={product.quantityPerUnit}
                             onChange={handleChange('quantityPerUnit')}
                             InputLabelProps={{
@@ -367,9 +367,9 @@ export default function AddProductDialog(props) {
                     {
                         responseSuccess
                             ?
-                            <span>New row has been added to database.</span>
+                            <span>New product has been added to database.</span>
                             :
-                            <span>Couldn't add the row to database.</span>
+                            <span>Couldn't add the product to database.</span>
                     }
                 </Alert>
             </Snackbar>
