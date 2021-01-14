@@ -1,5 +1,5 @@
-const driver = require('../config/dbconfig').driver;
-const config = require('../config/dbconfig').config;
+const driver = require('../../config/dbconfig').driver;
+const config = require('../../config/dbconfig').config;
 const uuid = require('uuid');
 
 //create contains relation

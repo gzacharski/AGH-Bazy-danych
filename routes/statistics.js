@@ -9,7 +9,7 @@ const {
     getStatsForProduct,
 } = require("../controllers/Statistics");
 const { select } = require('../middlewares/switchToNode');
-const {test}=require('../controllers/Test');
+const {test}=require('../controllers/TestRequestResponse');
 
 router.post('/test',test);
 
