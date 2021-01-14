@@ -7,7 +7,7 @@ const {
   create,
   deleteById,
   updateById,
-} = require("../controllers/SimpleNodeCrud");
+} = require("../controllers/nodes/SimpleCrud");
 const {
   getAllOrderedByRelations,
   getOrderedByRelationsByOrderCustomer,
@@ -15,7 +15,7 @@ const {
   getCustomersWhoOrderedOrder,
   getOrdersOrderedByCustomer,
   deleteOrderedByRelationsOrderCustomer,
-} = require("../controllers/OrderedByRelations");
+} = require("../controllers/relations/OrderedBy");
 const {
   createSuppliesRelation,
   deleteSuppliesRelationsSupplierProduct,
@@ -23,7 +23,7 @@ const {
   getSuppliesRelationsBySupplierProduct,
   getProductSuppliedBySupplier,
   getSuppliersWhichSupplyProduct,
-} = require("../controllers/SuppliesRelations");
+} = require("../controllers/relations/Supplies");
 const {
   createBelongsToRelation,
   getAllBelongsToRelations,
@@ -31,7 +31,7 @@ const {
   deleteBelongsToRelationsProductCategory,
   getCategoriesAssignedToProduct,
   getProductsBelongToCategory,
-} = require("../controllers/BelongsToRelations");
+} = require("../controllers/relations/BelongsTo");
 const {
   getAllContainsRelations,
   getContainsRelationById,
@@ -42,21 +42,21 @@ const {
   deleteContainsRelationsOrderProduct,
   deleteContainsRelationById,
   updateContainsRelationById,
-} = require("../controllers/ContainsRelations");
+} = require("../controllers/relations/Contains");
 const {
   createProductOrder,
   getOrderCrud,
   getOrderCrudCustomer,
   createOrderCrud,
   deleteOrderCrudById,
-} = require("../controllers/OrderCrud");
+} = require("../controllers/nodes/Order");
 
 const { health } = require("../controllers/Controller");
 
 const { select } = require('../middlewares/switchToNode');
 const {delay}=require('../middlewares/delayRequest');
-const {test}=require('../controllers/Test');
-const {createProduct}=require('../controllers/Product');
+const {test}=require('../controllers/TestRequestResponse');
+const {createProduct}=require('../controllers/nodes/Product');
 
 router.post('/api/test',delay,createProduct);
 
