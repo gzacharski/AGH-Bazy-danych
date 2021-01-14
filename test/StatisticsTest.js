@@ -12,7 +12,7 @@ describe("Get Customer served by Supplier", () => {
     it("Should Get Customer served by Supplier when valid request", done => {
         chai
             .request(app)
-            .get("/api/suppliers/"+supplierId+"/customers/"+fromDate+"/"+toDate+"/onequery")
+            .get("/stats/suppliers/"+supplierId+"/customers/"+fromDate+"/"+toDate+"/onequery")
             .end((err, res) => {
                 expect(res).to.have.status(200);
                 expect(res.text).contains("unique")
