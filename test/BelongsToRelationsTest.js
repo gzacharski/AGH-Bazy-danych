@@ -34,6 +34,7 @@ describe("Get Belongs To Relationships by specific Product and Category when val
     });
 });
 
+/*
 describe("Create and delete Belongs To relationship", () => {
     let productId = null;
     const categoryId = 1;
@@ -72,3 +73,4 @@ describe("Create and delete Belongs To relationship", () => {
             });
     });
 });
+*/
