@@ -19,7 +19,9 @@ const { health } = require('../controllers/Controller');
 const { select } = require('../middlewares/switchToNode');
 const {delay}=require('../middlewares/delayRequest');
 const {test}=require('../controllers/Test');
-router.post('/api/test',delay,test);
+const {createProduct}=require('../controllers/Product');
+router.post('/api/test',delay,createProduct);
+
 
 router.get('/health', health)
 
