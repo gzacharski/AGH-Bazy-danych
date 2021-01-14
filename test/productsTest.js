@@ -598,4 +598,28 @@ describe("Create new Product Order", () => {
                 done();
             });
     }).timeout(15000);
+    it("Should not create new Product Order when invalid request (too much stocks in order", done => {
+        chai
+            .request(app)
+            .post("/api/orders")
+            .send({
+                "customerId": validCustomerId,
+                "productId": validProductId,
+                "requiredDate" : "2020-06-01",
+                "shippedDate" : "2020-01-05",
+                "freight" : 1,
+                "shipName" : "Grdgtr Gdx Ivgjov",
+                "shipAddress" : "Evydnh St. 56",
+                "shipCity" : "Waviyoyim",
+                "shipPostalCode" : "9154-92838",
+                "shipCountry" : "Sweden",
+                "unitPrice" : 20.00,
+                "quantity" : 10000000,
+                "discount" : 5.5
+            })
+            .end((err, res) => {
+                expect(res).to.have.status(500);
+                done();
+            });
+    }).timeout(15000);
 });
