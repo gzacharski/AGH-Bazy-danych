@@ -30,7 +30,7 @@ describe("Create Product Order", () => {
                 expect(res).to.have.status(201);
                 done();
             });
-    });
+    }).timeout(15000);
 });
 
 describe("Create new Product Order", () => {
