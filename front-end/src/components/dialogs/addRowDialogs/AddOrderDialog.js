@@ -32,8 +32,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const initOrder = {
-    customerId: '',
-    productId: '',
+    //customerId: '',
+    //productId: 0,
     requiredDate : '',
     shippedDate : '',
     freight : 0,
@@ -129,20 +129,19 @@ export default function AddOrderDialog(props) {
         onClose();
         axios
             .post(`${url}/api/orders`, {
-                "customerId": "ALFKI",
-                "productId": 1,
-                "orderDate": "2020-01-01",
-                "requiredDate" : "2020-06-01",
-                "shippedDate" : "2020-01-05",
-                "freight" : 1,
-                "shipName" : "Grdgtr Gdx Ivgjov",
-                "shipAddress" : "Evydnh St. 56",
-                "shipCity" : "Waviyoyim",
-                "shipPostalCode" : "9154-92838",
-                "shipCountry" : "Sweden",
-                "unitPrice" : 20.00,
-                "quantity" : 1,
-                "discount" : 5.5
+                "customerId" : customer.id,
+                "productId" : product.id.low,
+                "requiredDate" : order.requiredDate,
+                "shippedDate" : order.shippedDate,
+                "freight" : order.freight,
+                "shipName" : order.shipName,
+                "shipAddress" : order.shipAddress,
+                "shipCity" : order.shipCity,
+                "shipPostalCode" : order.shipPostalCode,
+                "shipCountry" : order.shipCountry,
+                "unitPrice" : order.unitPrice,
+                "quantity" : order.quantity,
+                "discount" : order.discount
             })
             .then(response => {
                 setResponseSuccess(true);

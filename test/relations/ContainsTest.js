@@ -15,7 +15,7 @@ describe("Get all Contains relationships", () => {
                 expect(res.text).contains("nodes")
                 done();
             });
-    });
+    }).timeout(15000);
 });
 
 describe("Get Products contained in Order", () => {

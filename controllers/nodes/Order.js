@@ -255,12 +255,11 @@ module.exports.createOrderCrud = async (request, response) => {
             `MATCH (customer:Customer), (product:Product) 
             WHERE customer.id=$customerId AND product.id=$productId AND NOT(product.discontinued=1) AND product.unitsInStock>=$orderDetailsProperties.quantity 
             CREATE (customer)<-[obr:ORDERED_BY]-(order:Order)-[cr:CONTAINS]->(product) 
-            SET order+=$orderProperties, order.freight=toInteger($orderProperties.freight), order.id=toInteger($orderId) , cr+=$orderDetailsProperties, product.unitsInStock=product.unitsInStock-1 
+            SET order+=$orderProperties, order.freight=toInteger($orderProperties.freight), order.id=toInteger($orderId) , cr+=$orderDetailsProperties, product.unitsInStock=product.unitsInStock-$orderDetailsProperties.quantity  
             RETURN customer, order, cr, product`
 
         const customerId = nodeDetails.properties.customerId;
         const productId = nodeDetails.properties.productId;
-
         const orderId = Number.parseInt(uuid.v4(),16);
         const orderDate = todayDate();
         const requiredDate = nodeDetails.properties.requiredDate;
