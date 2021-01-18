@@ -82,7 +82,7 @@ describe("Update category by ID",()=>{
 });
 
 describe("Get all categories",()=>{
-    it("Should get category by ID from database", done=>{
+    it("Should get all categories from database", done=>{
         chai
             .request(app)
             .get(`/api/categories`)
@@ -91,7 +91,7 @@ describe("Get all categories",()=>{
                 expect(res.statusCode).to.be.oneOf([200]);
                 expect(res.body).to.have.property("quantity");
                 expect(res.body).to.have.property("nodes");
-                expect(res.body.quantity).to.be.greaterThan(1);
+                expect(res.body.quantity).to.be.greaterThan(0);
                 expect(res.body.nodes.filter(node => (
                         node.hasOwnProperty('name') 
                         && node.hasOwnProperty('description')
