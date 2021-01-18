@@ -10,6 +10,7 @@ chai.use(chaiHttp);
 const timeout = Number.parseInt(2000);
 
 let productID = undefined;
+let createdProduct=undefined;
 
 const product = {
     unitPrice: 0.0,
@@ -115,11 +116,39 @@ describe("Create new product",()=>{
                 expect(isEqual(res.body.supplier,supplier)).to.be.true;
                 expect(isEqual(res.body.product,tempProduct)).to.be.true;
                 expect(isEqual(res.body.categories,categories)).to.be.true;
+                createdProduct=res.body.product;
                 done();
             });
     }).timeout(timeout);
 });
 
+describe("Get product by ID",()=>{
+    it("Should get product by ID from database", done=>{
+        chai
+            .request(app)
+            .get(`/api/products/${productID}`)
+            .send()
+            .end((err, res) => {
+                
+                expect(res.statusCode).to.be.oneOf([200]);
+                expect(res.body).to.have.property('supplier');
+                expect(res.body).to.have.property("categories");
+                expect(res.body).to.have.property("product");
+                expect(Number.parseInt(res.body.product.id.low)).to.deep.equal(productID);
+
+                expect(isEqual(res.body.supplier,supplier)).to.be.true;
+                expect(isEqual(res.body.product,createdProduct)).to.be.true;
+                expect(
+                    isEqual(
+                        res.body.categories.sort((cat1,cat2)=>cat1.name.localeCompare(cat2.name)),
+                        categories
+                    )
+                ).to.be.true;
+                
+                done();
+            });
+    }).timeout(timeout);
+});
 
 describe("Delete product by ID",()=>{
     it("Should delete product by ID from database", done=>{

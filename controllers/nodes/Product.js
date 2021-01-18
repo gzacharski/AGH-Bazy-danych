@@ -93,13 +93,59 @@ module.exports.createProduct = async (request, response) => {
 
 module.exports.getProduct=async (request, response) => {
 
-    response
-        .status(200)
-        .send({
-            request
-        })
+    const session = driver.session(config);
+    const productID = request.params.id;
+    
+    try {
+        if (!await productExists(productID)) {
+            response
+                .status(404)
+                .send({
+                    message: `There is no product with provided id: ${productID}`
+                });
+        } else {
+            const query = 
+                `MATCH (s:Supplier)-[:SUPPLIES]->(p:Product)-[:BELONGS_TO]->(c:Category) 
+                WHERE p.id=$id 
+                RETURN s,p,c`;
+            const params = { id: Number.parseInt(productID) };
 
+            const result = await session.readTransaction(tx => tx.run(query, params));
+            const records = result.records.map(record => record._fields);
+
+            if (!result) throw new Error(`The server was not able to get a product.`);
+
+            const theProduct =records[0]
+                .filter(node=>node.labels.includes('Product'))[0]
+                .properties;
+
+            const theSupplier =records[0]
+                .filter(node=>node.labels.includes('Supplier'))[0]
+                .properties;
+
+            const theCategories=records
+                .map(record=>record.filter(node=>node.labels.includes('Category')))
+                .map(item=>item[0].properties);
+
+            response
+                .status(200)
+                .send({
+                    categories: theCategories,
+                    product: theProduct,
+                    supplier: theSupplier
+                });
+        }
+    } catch (error) {
+        response
+            .status(500)
+            .send({
+                error: error.message
+            });
+    } finally {
+        await session.close();
+    }
 }
+
 module.exports.updateProduct=async (request, response) => {
     response
         .status(200)
@@ -112,7 +158,6 @@ module.exports.deleteProduct=async (request, response) => {
     console.log("Deleting product by ID...");
 
     const session = driver.session(config);
-    const { categories, product, supplier } = request.body;
     const productID = request.params.id;
 
     try{
