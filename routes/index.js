@@ -56,9 +56,17 @@ const { health } = require("../controllers/Controller");
 const { select } = require('../middlewares/switchToNode');
 const {delay}=require('../middlewares/delayRequest');
 const {test}=require('../controllers/TestRequestResponse');
-const {createProduct}=require('../controllers/nodes/Product');
+const {
+  createProduct,
+  deleteProduct,
+  getProduct,
+  updateProduct,
+} = require("../controllers/nodes/Product");
 
-router.post('/api/test',delay,createProduct);
+router.post('/api/test',delay,test);
+router.get('/api/test',delay,test);
+router.put('/api/test',delay,test);
+router.delete('/api/test',delay,test);
 
 router.get('/health', health)
 
@@ -83,10 +91,10 @@ router.delete('/api/suppliers/:id',delay, select, deleteById);
 
 //advanced CRUD
 router.get('/api/products', select, getAll);
-router.get('/api/products/:id', select, getById);
-router.post('/api/products', select, create)
-router.put('/api/products/:id', select, updateById);
-router.delete('/api/products/:id', select, deleteById);
+router.get('/api/products/:id', delay, getProduct);
+router.post('/api/products', delay, createProduct);
+router.put('/api/products/:id', delay, updateProduct);
+router.delete('/api/products/:id', delay,deleteProduct);
 
 router.get('/api/orders/old', select, getAll);
 router.get('/api/orders/:id', select, getById);
