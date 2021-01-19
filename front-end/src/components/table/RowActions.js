@@ -61,7 +61,7 @@ export default function RowActions(props) {
         }
     }
 
-    const editDialog=(edit,title,openEdit)=>{
+    const editDialog=(update,title,openEdit)=>{
         if(title==="Products"){
             return(
                 <EditProductDialog

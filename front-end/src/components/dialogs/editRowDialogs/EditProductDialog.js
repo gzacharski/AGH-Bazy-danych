@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function EditRowDialog(props) {
+export default function EditProductDialog(props) {
 
     const classes = useStyles();
     const {onClose, open,updateRow} = props;
