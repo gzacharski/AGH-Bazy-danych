@@ -1,6 +1,7 @@
 const driver = require('../../config/dbconfig').driver;
 const config = require('../../config/dbconfig').config;
 const uuid = require('uuid');
+const {uniqWith,isEqual}=require("lodash");
 
 const productExists = async (productID) => {
 
@@ -147,11 +148,77 @@ module.exports.getProduct=async (request, response) => {
 }
 
 module.exports.updateProduct=async (request, response) => {
-    response
-        .status(200)
-        .send({
-            request
-        })
+
+    console.log("Updating product...");
+
+    const session = driver.session(config);
+    const { categories, product, supplier } = request.body;
+    const productID = Number.parseInt(request.params.id);
+
+    try {
+        if (!await productExists(productID)) {
+            response
+                .status(404)
+                .send({
+                    message: `There is no product with provided id: ${productID}`
+                });
+        } else {
+
+            //spliting one query beaceuse of cartesian output
+            const query =
+                `MATCH (:Supplier)-[supplies:SUPPLIES]->(p:Product)-[belongs_to:BELONGS_TO]->(:Category) 
+                WHERE p.id=$productID
+                DELETE supplies,belongs_to
+                WITH p
+                UNWIND $categories as category
+                MATCH (s:Supplier), (c:Category)
+                WHERE c.id=category.id.low and s.id=$supplier.id.low
+                MERGE (s)-[:SUPPLIES]->(p)
+                SET p.name=$product.name,
+                    p.quantityPerUnit=$product.quantityPerUnit,
+                    p.unitPrice=toFloat($product.unitPrice),
+                    p.unitsInStock=toInteger($product.unitsInStock),
+                    p.unitsOnOrder=toInteger($product.unitsOnOrder),
+                    p.reorderLevel=toInteger($product.reorderLevel),
+                    p.discontinued=toInteger($product.discontinued)
+                MERGE (p)-[:BELONGS_TO]->(c)
+                RETURN s,p,c`;
+
+            const params = { productID, categories, supplier, product };
+            const result = await session.writeTransaction(tx => tx.run(query, params));
+            
+            const records = result.records.map(record => record._fields);
+
+            const theProduct =records[0]
+                .filter(node=>node.labels.includes('Product'))[0]
+                .properties;
+
+            const theSupplier =records[0]
+                .filter(node=>node.labels.includes('Supplier'))[0]
+                .properties;
+
+            const theCategories=uniqWith(records
+                .map(record=>record.filter(node=>node.labels.includes('Category')))
+                .map(item=>item[0].properties),isEqual);
+                
+            response
+                .status(201)
+                .send({
+                    categories: theCategories,
+                    product: theProduct,
+                    supplier: theSupplier
+                });
+        }
+    } catch (error) {
+        console.log(error);
+        response
+            .status(500)
+            .send({
+                error: error.message
+            })
+    } finally {
+        await session.close();
+    }
 }
 
 module.exports.deleteProduct=async (request, response) => {
