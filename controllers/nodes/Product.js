@@ -35,10 +35,7 @@ module.exports.createProduct = async (request, response) => {
 
     try {
         const query =
-            `UNWIND $categories as category
-            MATCH (c:Category), (s:Supplier)
-            WHERE c.id=category.id.low and s.id=$supplierID
-            MERGE (s)-[:SUPPLIES]->(p:Product)
+            `CREATE (p:Product)
             SET p.id=id(p),
                 p.name=$product.name,
                 p.quantityPerUnit=$product.quantityPerUnit,
@@ -47,6 +44,11 @@ module.exports.createProduct = async (request, response) => {
                 p.unitsOnOrder=toInteger($product.unitsOnOrder),
                 p.reorderLevel=toInteger($product.reorderLevel),
                 p.discontinued=toInteger($product.discontinued)
+            WITH p
+            UNWIND $categories as category
+            MATCH (c:Category), (s:Supplier)
+            WHERE c.id=category.id.low and s.id=$supplierID
+            MERGE (s)-[:SUPPLIES]->(p)
             MERGE (p)-[:BELONGS_TO]->(c)
             RETURN s,p,c`;
 
@@ -68,9 +70,9 @@ module.exports.createProduct = async (request, response) => {
             .filter(node=>node.labels.includes('Supplier'))[0]
             .properties;
 
-        const theCategories=records
+        const theCategories=uniqWith(records
             .map(record=>record.filter(node=>node.labels.includes('Category')))
-            .map(item=>item[0].properties);
+            .map(item=>item[0].properties),isEqual);
 
         response
             .status(201)
