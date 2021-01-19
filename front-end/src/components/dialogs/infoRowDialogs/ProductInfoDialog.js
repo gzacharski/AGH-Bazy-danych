@@ -1,13 +1,11 @@
 import axios from 'axios';
 import {
-    Backdrop,
     CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
     DialogTitle,
     Divider,
-    Grid,
     TextField
 } from "@material-ui/core";
 import { makeStyles } from '@material-ui/core/styles';
@@ -117,8 +115,8 @@ export default function ProductInfoDialog(props) {
                                 />
                             );
                         })}
-                        {supplier?mountSupplier():null}
-                        {categories?mountCategories():null}
+                        {supplier?mountSupplier():<CircularProgress color="primary" />}
+                        {categories?mountCategories():<CircularProgress color="primary" />}
                     </form>
                 </DialogContent>
                 <DialogActions>
