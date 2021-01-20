@@ -177,34 +177,59 @@ module.exports.getStatsForProduct = async (request, response) => {
     const session = driver.session(config);
     try{
         const query = `MATCH (o:Order)-[r:CONTAINS]->(p:Product) WHERE p.id=$id
-                        RETURN p.name, 
-                                sum(r.unitPrice * r.quantity), 
-                                sum(r.quantity), 
-                                avg(r.unitPrice), 
-                                collect(DISTINCT o.shipCountry)`;
+                        RETURN {    
+                            productName: p.name, 
+                            totalIncome: sum(r.unitPrice * r.quantity), 
+                            totalUnitsSold: sum(r.quantity), 
+                            averagePrice: avg(r.unitPrice), 
+                            countriesShipped: collect(DISTINCT o.shipCountry) 
+                        }`;
         const params =  {id: Number.parseInt(id)};
 
         const result = await session.readTransaction(tx => tx.run(query,params));
-        const productName = result.records.map(record => record.get(0))[0];
-        const totalIncome = result.records.map(record => record.get(1))[0];
-        let totalUnitsSold = result.records.map(record => record.get(2))[0];
-        if (totalUnitsSold.low) {
-            totalUnitsSold = totalUnitsSold.low;
-        }
-        const averagePrice = result.records.map(record => record.get(3))[0];
-        const countriesShipped = result.records.map(record => record.get(4));
+        const productStats = result.records.map(record => record.get(0));
 
-        if (!totalIncome) throw new Error(`ERROR - The server was not able to get statistics for product: ${id}.`);
+        if (!productStats) throw new Error(`ERROR - The server was not able to get statistics for product: ${id}.`);
 
         response
             .status(200)
+            .send(productStats)
+    }
+
+    catch (error) {
+        response
+            .status(500)
             .send({
-                productName: productName,
-                totalIncome: totalIncome,
-                totalUnitsSold: totalUnitsSold,
-                averagePrice: averagePrice,
-                countriesShipped: countriesShipped
-            })
+                error: error.message
+            });
+    } finally {
+        await session.close();
+    }
+}
+
+module.exports.getStatsForAllProducts = async (request, response) => {
+    console.log('Get statistics for product...');
+    const id = request.params.id;
+    const session = driver.session(config);
+    try{
+        const query = `MATCH (o:Order)-[r:CONTAINS]->(p:Product)
+                        RETURN 
+                        {    
+                            productName: p.name, 
+                            totalIncome: sum(r.unitPrice * r.quantity), 
+                            totalUnitsSold: sum(r.quantity), 
+                            averagePrice: avg(r.unitPrice), 
+                            countriesShipped: collect(DISTINCT o.shipCountry) 
+                        }`;
+        const params =  {id: Number.parseInt(id)};
+        const result = await session.readTransaction(tx => tx.run(query,params));
+        const statsForProducts = result.records.map(record => record.get(0));
+
+        if (!statsForProducts) throw new Error(`ERROR - The server was not able to get statistics for all products.`);
+
+        response
+            .status(200)
+            .send(statsForProducts)
     }
 
     catch (error) {

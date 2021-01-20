@@ -7,6 +7,7 @@ const {
     getAllProductsPurchasedByCustomer,
     getStatsForCategory,
     getStatsForProduct,
+    getStatsForAllProducts
 } = require("../controllers/Statistics");
 const { select } = require('../middlewares/switchToNode');
 const {test}=require('../controllers/TestRequestResponse');
@@ -18,6 +19,7 @@ router.post('/test',test);
 router.get('/products/customers/:customerID/orders',getAllProductsPurchasedByCustomer);
 
 router.get('/products/:id', select, getStatsForProduct)
+router.get('/products', select, getStatsForAllProducts)
 router.get('/categories/:id', select, getStatsForCategory)
 
 router.get('/suppliers/:id/customers/:from/:to/manyqueries', select, getCustomersServedBySupplier);
