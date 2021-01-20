@@ -1,14 +1,17 @@
 import axios from 'axios';
+import Autocomplete from "@material-ui/lab/Autocomplete";
 import {
     Backdrop,
     CircularProgress,
     Chip,
+    Checkbox,
     Dialog,
     DialogActions,
     DialogContent,
     DialogTitle,
     Divider,
     FormControl,
+    FormControlLabel,
     Input,
     InputLabel,
     MenuItem,
@@ -32,7 +35,6 @@ const useStyles = makeStyles((theme) => ({
     root: {
         '& .MuiTextField-root': {
             margin: theme.spacing(1),
-            // width: '25ch',
         },
     },
     chips: {
@@ -78,8 +80,17 @@ export default function EditProductDialog(props) {
         setProduct({ ...product, [property]: value })
     }
 
+    const handleCancel=()=>{
+        setProduct(null);
+        setSuppliers([]);
+        setSelectedSupplier(null);
+        setCategories([]);
+        setSelectedCategories(null);
+        onClose();
+    }
+
     //useEffect(loadProductByID, []);
-    const loadData=()=>{
+    const loadData = ()=>{
         loadProductByID();
         loadSuppliers();
         loadCategories();
@@ -88,15 +99,19 @@ export default function EditProductDialog(props) {
     function loadProductByID(){
         axios.get(`${url}/api/products/${productID}`)
             .then(response => {
-                console.log("Loading product details...");
-                console.log(response);
-
-                setProduct(response.data.product);
+                
+                const tempProduct=response.data.product;
+                setProduct({
+                    unitPrice: tempProduct.unitPrice,
+                    unitsInStock: tempProduct.unitsInStock.low,
+                    reorderLevel: tempProduct.reorderLevel.low,
+                    name: tempProduct.name,
+                    quantityPerUnit: tempProduct.quantityPerUnit,
+                    discontinued: tempProduct.discontinued.low,
+                    unitsOnOrder: tempProduct.unitsOnOrder.low
+                });
                 setSelectedSupplier(response.data.supplier);
                 setSelectedCategories(response.data.categories);
-                console.log("test");
-                console.log(response);
-                
             })
             .catch(error => {
                 console.log(error);
@@ -134,15 +149,33 @@ export default function EditProductDialog(props) {
         handleToggleBackdrop();
         onClose();
 
-        updateRow(row)
+        updateRow({
+            productID,
+            product,
+            supplier: selectedSupplier,
+            categories : selectedCategories
+        })
             .then(response=>{
                 console.log(response);
+                setSelectedCategories(null);
+                setProduct(null);
+                setSelectedSupplier(null);
+
                 handleCloseBackdrop();
             })
             .catch(error=>{
+                setSelectedCategories(null);
+                setProduct(null);
+                setSelectedSupplier(null);
                 handleCloseBackdrop();
                 console.log(error);
             })
+    }
+
+    const handleChangeCheckbox=()=>{
+        setProduct({...product,
+            discontinued : product.discontinued===0?1:0
+        });
     }
 
     const productDetails=()=>{
@@ -167,7 +200,7 @@ export default function EditProductDialog(props) {
                     margin="dense"
                     required
                     type="text"
-                    defaultValue={product.quantityPerUnit.low}
+                    defaultValue={product.quantityPerUnit}
                     onChange={handleChange('quantityPerUnit')}
                     InputLabelProps={{
                         shrink: true,
@@ -212,6 +245,17 @@ export default function EditProductDialog(props) {
                         shrink: true,
                     }}
                 />
+                <FormControlLabel
+                    control={
+                    <Checkbox
+                        checked={product.discontinued===1?true:false}
+                        onChange={handleChangeCheckbox}
+                        name="discontinued"
+                        color="primary"
+                    />
+                    }
+                    label="Discontinued"
+                />
                 <TextField
                     fullWidth
                     id="product-units-on-order"
@@ -233,74 +277,75 @@ export default function EditProductDialog(props) {
         setSelectedSupplier(event.target.value);
     };
 
-    const convertSuppliersToSelectItems = () => {
+    const getSupplierIndex=(id,suppliers)=>{
+        for(let i=0; i<suppliers.length; i++){
+            if(suppliers[i].id.low===id){
+                return i;
+            }
+        }
+        return "";
+    }
 
-        const selectedSupplier2=(
-            <MenuItem key={selectedSupplier.id.low} value={selectedSupplier}>
-                {selectedSupplier.companyName}
-            </MenuItem>
-        );
+    const convertSuppliersToSelectItems = () => {
 
         const supplierSelectItems = suppliers.map(supplier => (
             <MenuItem key={supplier.id.low} value={supplier}>
                 {supplier.companyName}
             </MenuItem>
         ));
-        console.log(selectedSupplier);
 
         return (
-            <FormControl fullWidth>
+            <FormControl fullWidth required>
                 <InputLabel id="supplier-select-label">Supplier</InputLabel>
                 <Select
                     labelId="supplier-select-label"
                     id="supplier-select"
-                    value={selectedSupplier2}
+                    value={suppliers[getSupplierIndex(selectedSupplier.id.low,suppliers)]}
                     onChange={handleSupplierChange}
-                >
+                >   
                     {supplierSelectItems}
                 </Select>
             </FormControl>
         );
     }
 
-    const handleSelectedCategoriesChange = (event) => {
-        console.log(event.target.value);
-        setSelectedCategories(event.target.value);
+    const handleSelectedCategoriesChange = (_, selectedOptions) => {
+        setSelectedCategories(selectedOptions);
     }
 
     const convertCategoriesToMultipleSelect = () => {
-
         const categoriesToShow = categories.map(category => (
-            <MenuItem
-                key={category.id.low}
-                value={category}
-            >
+            <MenuItem key={category.id.low} value={category} selected={true}>
                 {category.name}
             </MenuItem>
         ));
         
         return (
-            <FormControl fullWidth>
-                <InputLabel id="multiple-category-label">Categories</InputLabel>
-                <Select
-                    labelId="multiple-category-label"
-                    id="category-label"
-                    value={selectedCategories}
-                    onChange={handleSelectedCategoriesChange}
-                    multiple
-                    input={<Input id="select-multiple-chip" />}
-                    renderValue={selected => (
-                        <div className={classes.chips}>
-                            {selected.map(value => (
-                                <Chip key={value.id.low} label={value.name} className={classes.chip} />
-                            ))}
-                        </div>
-                    )}
-                    MenuProps={MenuProps}
-                >
-                    {categoriesToShow}
-                </Select>
-            </FormControl>
+            <>
+            <Autocomplete
+                id="combo-box-category"
+                multiple
+                fullWidth
+                disableCloseOnSelect
+                value={selectedCategories}
+                options={categories}
+                getOptionLabel={option => option.name}
+                getOptionSelected={(option, value) => value.id.low === option.id.low}
+                renderInput={params => (
+                    <TextField {...params} label="Categories" variant="outlined" fullWidth />
+                )}
+                renderOption={(option, { selected }) => (
+                    <>
+                        <Checkbox
+                            style={{ marginRight: 8 }}
+                            checked={selected}
+                        />
+                        {option.name}
+                    </>
+                )}
+                onChange={handleSelectedCategoriesChange}
+                />
+            </>
         );
     }
 
@@ -336,7 +381,7 @@ export default function EditProductDialog(props) {
                         </form>
                     </DialogContent>
                     <DialogActions>
-                        <button className="btn btn-light" onClick={onClose}>
+                        <button className="btn btn-light" onClick={handleCancel}>
                             Cancel
                         </button>
                         <button type="submit" form="editForm" className="btn btn-light" >

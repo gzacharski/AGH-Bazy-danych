@@ -126,9 +126,9 @@ module.exports.getProduct=async (request, response) => {
                 .filter(node=>node.labels.includes('Supplier'))[0]
                 .properties;
 
-            const theCategories=records
+            const theCategories=uniqWith(records
                 .map(record=>record.filter(node=>node.labels.includes('Category')))
-                .map(item=>item[0].properties);
+                .map(item=>item[0].properties),isEqual);
 
             response
                 .status(200)

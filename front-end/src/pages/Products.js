@@ -58,9 +58,59 @@ export default function Products() {
         console.log(product);
     }
 
-    const updateProduct = (product) => {
+    const updateProduct = async (updatedProduct) => {
         console.log("Update specified Product...");
-        console.log(product);
+        console.log(updatedProduct);
+
+        const productID=updatedProduct.productID;
+        const tempProduct=updatedProduct.product;
+
+        const updatedProductsTable=products
+            .map(product=>{
+                if(Number.parseInt(product.id.low)===productID){
+                    product={
+                        discontinued: {low: tempProduct.discontinued, high: 0},
+                        id: {low: productID, high: 0},
+                        name: tempProduct.name,
+                        quantityPerUnit: tempProduct.quantityPerUnit,
+                        reorderLevel: {low: tempProduct.reorderLevel, high: 0},
+                        unitPrice: tempProduct.unitPrice,
+                        unitsInStock: tempProduct.unitsInStock,
+                        unitsOnOrder: {low: tempProduct.unitsOnOrder, high: 0},
+                    };
+                }
+                
+                return product;
+            });
+
+        await axios.put(`${url}/api/products/${productID}`,updatedProduct)
+            .then(response=>{
+                console.log(response);
+                if(response.status===201){
+                    setResponse({
+                        success: true,
+                        message: 'Product has been updated.'
+                    });
+                    setOpenSnackbar(true);
+                    setProducts(updatedProductsTable);
+                }else{
+                    setResponse({
+                        success: false,
+                        message: 'Product could not been updated.'
+                    });
+                    setOpenSnackbar(true);
+                }
+            })
+            .catch(error=>{
+                console.log(error);
+                setResponse({
+                    success: false,
+                    message: 'Error! Something went wrong. :('
+                });
+                setOpenSnackbar(true);
+            });
+
+        return response;
     }
 
     const deleteProduct = async (removedProduct) => {
