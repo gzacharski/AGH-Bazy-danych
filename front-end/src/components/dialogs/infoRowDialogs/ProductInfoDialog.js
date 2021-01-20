@@ -1,11 +1,17 @@
 import axios from 'axios';
 import {
     CircularProgress,
+    Chip,
     Dialog,
     DialogActions,
     DialogContent,
     DialogTitle,
     Divider,
+    FormControl,
+    Input,
+    InputLabel,
+    MenuItem,
+    Select,
     TextField
 } from "@material-ui/core";
 import { makeStyles } from '@material-ui/core/styles';
@@ -24,8 +30,27 @@ const useStyles = makeStyles((theme) => ({
     },
     container : {
         flexGrow: 1,
-    }
+    },
+    chips: {
+        display: 'flex',
+        flexWrap: 'wrap',
+    },
+    chip: {
+        margin: 2,
+    },
 }));
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+
+const MenuProps = {
+    PaperProps: {
+        style: {
+            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+            width: 250,
+        },
+    },
+};
 
 export default function ProductInfoDialog(props) {
 
@@ -57,7 +82,7 @@ export default function ProductInfoDialog(props) {
         return(
             <TextField
                     fullWidth
-                    label="Company name"
+                    label="Supplier company name"
                     InputProps={{
                         readOnly: true,
                     }}
@@ -70,23 +95,38 @@ export default function ProductInfoDialog(props) {
 
     const mountCategories=()=>{
 
-        const tempCategories=categories.map(category=>(
-            <TextField
-                    fullWidth
-                    label="Category name"
-                    InputProps={{
-                        readOnly: true,
-                    }}
-                    disabled
-                    variant="outlined"
-                    defaultValue={category.name}
-                />
+        const selectedCategories=categories.map(category=>(
+            <MenuItem
+                key={category.id.low}
+                value={category}
+            >
+                {category.name}
+            </MenuItem>
         ));
 
         return(
-            <>
-                {tempCategories}
-            </>
+            <FormControl fullWidth>
+                <InputLabel id="multiple-category-label">Category</InputLabel>
+                <Select
+                    labelId="multiple-category-label"
+                    id="category-label"
+                    value={categories}
+                    // onChange={handleSelectedCategoriesChange}
+                    multiple
+                    disabled
+                    input={<Input id="select-multiple-chip" />}
+                    renderValue={selected => (
+                        <div className={classes.chips}>
+                            {selected.map(value => (
+                                <Chip key={value.id.low} label={value.name} className={classes.chip} />
+                            ))}
+                        </div>
+                    )}
+                    MenuProps={MenuProps}
+                >
+                    {selectedCategories}
+                </Select>
+            </FormControl>
         )
     }
 
