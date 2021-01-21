@@ -64,10 +64,7 @@ class Suppliers extends Component {
     updateSupplier = async (updatedSupplier)=>{
 
         const theSupplier = {
-            id: {
-                low: updatedSupplier.cells[0].value,
-                high: 0
-            },
+            id: updatedSupplier.cells[0].value,
             companyName: updatedSupplier.cells[1].value,
             contactName: updatedSupplier.cells[2].value,
             contactTitle: updatedSupplier.cells[3].value,
@@ -81,7 +78,9 @@ class Suppliers extends Component {
         const updatedSuppliers=this.state.suppliers.map(
             supplier=>(supplier.id===theSupplier.id?theSupplier:supplier)
         )
-
+        console.log(theSupplier)
+        console.log("$$$$Supplier")
+        console.log(theSupplier.id)
         await axios.put(`${url}/api/suppliers/${theSupplier.id}`,{
             companyName: theSupplier.companyName,
             contactName: theSupplier.contactName,
@@ -120,7 +119,7 @@ class Suppliers extends Component {
                 this.setState({
                     response: {
                         success: false,
-                        message: 'Error :( Category could not been updated.'
+                        message: 'Error :( Supplier could not been updated.'
                     },
                     openSnackbar: true
                 });

@@ -69,14 +69,14 @@ export default function Products() {
             .map(product=>{
                 if(Number.parseInt(product.id)===productID){
                     product={
-                        discontinued: {low: tempProduct.discontinued, high: 0},
-                        id: {low: productID, high: 0},
+                        discontinued: tempProduct.discontinued,
+                        id: productID,
                         name: tempProduct.name,
                         quantityPerUnit: tempProduct.quantityPerUnit,
-                        reorderLevel: {low: tempProduct.reorderLevel, high: 0},
+                        reorderLevel: tempProduct.reorderLevel,
                         unitPrice: tempProduct.unitPrice,
                         unitsInStock: tempProduct.unitsInStock,
-                        unitsOnOrder: {low: tempProduct.unitsOnOrder, high: 0},
+                        unitsOnOrder: tempProduct.unitsOnOrder,
                     };
                 }
                 

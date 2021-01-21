@@ -101,14 +101,14 @@ describe("Create new product",()=>{
                 expect(res.body).to.have.property("product");
 
                 let tempProduct={
-                    reorderLevel: { low: product.reorderLevel, high: 0 },
+                    reorderLevel: product.reorderLevel,
                     unitPrice: product.unitPrice,
-                    unitsInStock: { low: product.unitsInStock, high: 0 },
+                    unitsInStock: product.unitsInStock,
                     name: product.name,
                     id: res.body.product.id,
-                    discontinued: { low: product.discontinued, high: 0 },
+                    discontinued: product.discontinued,
                     quantityPerUnit: product.quantityPerUnit,
-                    unitsOnOrder: { low: product.unitsOnOrder, high: 0 }
+                    unitsOnOrder: product.unitsOnOrder
                 };
                 productID=Number.parseInt(res.body.product.id);
 
@@ -203,14 +203,14 @@ describe("Update product by ID",()=>{
                 expect(res.body).to.have.property("product");
 
                 let tempProduct={
-                    reorderLevel: { low: product.reorderLevel, high: 0 },
+                    reorderLevel: product.reorderLevel,
                     unitPrice: product.unitPrice,
-                    unitsInStock: { low: product.unitsInStock, high: 0 },
+                    unitsInStock: product.unitsInStock,
                     name: product.name,
                     id: res.body.product.id,
-                    discontinued: { low: product.discontinued, high: 0 },
+                    discontinued: product.discontinued,
                     quantityPerUnit: product.quantityPerUnit,
-                    unitsOnOrder: { low: product.unitsOnOrder, high: 0 }
+                    unitsOnOrder: product.unitsOnOrder
                 };
                 productID=Number.parseInt(res.body.product.id);
                 

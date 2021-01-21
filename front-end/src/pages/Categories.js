@@ -58,10 +58,7 @@ class Categories extends Component {
     updateCategory = async (updatedCategory) => {
 
         const theCategory = {
-            id: {
-                low: updatedCategory.cells[0].value,
-                high: 0
-            },
+            id: updatedCategory.cells[0].value,
             name: updatedCategory.cells[1].value,
             description: updatedCategory.cells[2].value
         }

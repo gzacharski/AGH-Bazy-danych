@@ -65,7 +65,6 @@ const initProduct = {
     unitPrice: 0,
     unitsInStock: 0,
     reorderLevel: 0,
-    reorderLevel: 0,
     unitsOnOrder: 0,
     discontinued: 0
 }
