@@ -417,6 +417,170 @@ module.exports.createOrderCrud = async (request, response) => {
     }
 }
 
+module.exports.updateExistingOrderDetailsCrud = async (request, response) => {
+    console.log('Update Order - existing Order and Order details properties...');
+
+    const session = driver.session(config);
+
+    try {
+        const customer = request.body.customer;
+        const orderProperties = request.body.orderProperties;
+        const orderDetails = request.body.orderDetails;
+
+        const query =
+            `MATCH (c:Customer)<-[obr:ORDERED_BY]-(o:Order) 
+            WHERE c.id=$customer.id AND o.id=$orderProperties.id
+            SET o.shipCity=$orderProperties.shipCity, 
+                o.freight=toInteger($orderProperties.freight),
+                o.requiredDate=$orderProperties.requiredDate,
+                o.shipName=$orderProperties.shipName,
+                o.shipPostalCode=$orderProperties.shipPostalCode,
+                o.shipCountry=$orderProperties.shipCountry,
+                o.shippedDate=$orderProperties.shippedDate,
+                o.orderDate=$orderProperties.orderDate,
+                o.shipAddress=$orderProperties.shipAddress
+            WITH c, o, $orderDetails as orderDetails 
+            UNWIND orderDetails as orderDetail
+            MATCH (o:Order)-[cr:CONTAINS]->(p:Product) 
+            WHERE o.id=$orderProperties.id AND cr.odID=orderDetail.odID AND p.id=orderDetail.productId AND NOT(p.discontinued=1) AND p.unitsInStock>=orderDetail.quantity
+            SET cr.unitPrice=orderDetail.unitPrice,
+                cr.quantity=orderDetail.quantity,
+                cr.discount=orderDetail.discount
+            RETURN c,o,cr,p`;
+
+        const orderParams = {
+            customer: customer,
+            orderProperties: orderProperties,
+            orderDetails: orderDetails
+        };
+
+        const result = await session.writeTransaction(tx => tx.run(query, orderParams));
+
+        console.log(result);
+        const nodes = result.records;
+
+        if (nodes.length<1) throw new Error(`The server was not able to update the Order.`);
+
+        const records = result.records.map(record => record._fields);
+        const customerResult = uniqWith(records.map(row => row[0].properties), isEqual);
+        const orderResult = uniqWith(records.map(row => row[1].properties), isEqual);
+        const orderDetailsResponse = records.map(row => row[2] );
+        const productsResponse = records.map(row => row[3]);
+
+        if (!orderResult) throw new Error(`Cannot update existing Order properties.`);
+        if (!orderDetailsResponse) throw new Error(`Cannot update existing Contains relationship properties.`);
+
+        let orderDetailsResult = [];
+        for(let i=0; i<orderDetailsResponse.length; i++){
+            orderDetailsResult.push({
+                "productId": productsResponse[i].properties.id.low,
+                "unitPrice": orderDetailsResponse[i].properties.unitPrice,
+                "quantity" : orderDetailsResponse[i].properties.quantity,
+                "discount" : orderDetailsResponse[i].properties.discount
+            });
+        }
+
+        response
+            .status(200)
+            .send({
+                customer: customerResult[0],
+                orders: orderResult[0],
+                orderDetails: orderDetailsResult
+            });
+
+    } catch (error) {
+        response
+            .status(500)
+            .send({
+                error: error.message
+            });
+    } finally {
+        await session.close();
+    }
+}
+
+
+module.exports.updateNewOrderDetailsCrud = async (request, response) => {
+    console.log('Delete all CONTAINS relations by Order ID and create new one + Order update...');
+
+    const session = driver.session(config);
+
+    try {
+        const customer = request.body.customer;
+        const orderProperties = request.body.orderProperties;
+        const orderDetails = request.body.orderDetails;
+
+        const orderParams = {
+            customer: customer,
+            orderProperties: orderProperties,
+            orderDetails: orderDetails
+        };
+
+        const deleteQuery  =
+            `MATCH (o:Order)-[crToDelete:CONTAINS]->(p:Product)
+            WHERE o.id=$orderProperties.id
+            DETACH DELETE crToDelete`;
+
+        const deleteResult = await session.writeTransaction(tx => tx.run(deleteQuery, orderParams));
+
+        const query =
+            `MATCH (c:Customer)<-[obr:ORDERED_BY]-(o:Order) 
+            WHERE c.id=$customer.id AND o.id=$orderProperties.id
+            WITH c, o, $orderDetails as orderDetails 
+            UNWIND orderDetails as orderDetail
+            MATCH (p:Product)
+            WHERE p.id=orderDetail.productId AND NOT(p.discontinued=1) AND p.unitsInStock>=orderDetail.quantity
+            MERGE (o)-[cr:CONTAINS]->(p) 
+            SET cr.odID=id(cr), cr.unitPrice=orderDetail.unitPrice, cr.quantity=orderDetail.quantity, cr.discount=orderDetail.discount,
+            p.unitsInStock=p.unitsInStock-orderDetail.quantity
+            RETURN c,o,cr,p`;
+
+
+        const result = await session.writeTransaction(tx => tx.run(query, orderParams));
+        const nodes = result.records;
+
+        if (nodes.length<1) throw new Error(`The server was not able to update Order.`);
+
+        const records = result.records.map(record => record._fields);
+        const customerResult = uniqWith(records.map(row => row[0].properties), isEqual);
+        const orderResult = uniqWith(records.map(row => row[1].properties), isEqual);
+        const orderDetailsResponse = records.map(row => row[2] );
+        const productsResponse = records.map(row => row[3]);
+
+
+        if (!orderResult) throw new Error(`Cannot update existing Order.`);
+        if (!orderDetailsResponse) throw new Error(`Cannot update Contains relationship.`);
+
+        let orderDetailsResult = [];
+        for(let i=0; i<orderDetailsResponse.length; i++){
+            orderDetailsResult.push({
+                "productId": productsResponse[i].properties.id.low,
+                "unitPrice": orderDetailsResponse[i].properties.unitPrice,
+                "quantity" : orderDetailsResponse[i].properties.quantity,
+                "discount" : orderDetailsResponse[i].properties.discount
+            });
+        }
+
+        response
+            .status(200)
+            .send({
+                customer: customerResult[0],
+                orders: orderResult[0],
+                orderDetails: orderDetailsResult
+            });
+
+    } catch (error) {
+        response
+            .status(500)
+            .send({
+                error: error.message
+            });
+    } finally {
+        await session.close();
+    }
+}
+
+
 module.exports.deleteOrderCrudById = async (request, response) => {
     console.log('Delete Order by Id CRUD...');
 
