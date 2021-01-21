@@ -254,17 +254,21 @@ module.exports.getStatsForCategory = async (request, response) => {
     try{
         const statsQuery = `MATCH (o:Order)-[contains:CONTAINS]->(p:Product)-[belongs:BELONGS_TO]->(c:Category)
                         WHERE c.id=$id
-                        RETURN c.name, 
-                                sum(contains.unitPrice * contains.quantity),
-                                sum(contains.quantity)`;
+                        RETURN {
+                            categoryName: c.name, 
+                            totalIncome: sum(contains.unitPrice * contains.quantity * (1 - contains.discount)),
+                            totalUnitsSold: sum(contains.quantity)
+                        }`;
         const statsParams =  {id: Number.parseInt(id)};
         const statsResult = await session.readTransaction(tx => tx.run(statsQuery,statsParams));
         const categoryStats = statsResult.records.map(record => record.get(0))[0];
 
         const mostSoldProductQuery = `MATCH (o:Order)-[contains:CONTAINS]->(p:Product)-[belongs:BELONGS_TO]->(c:Category)
                         WHERE c.id=$id
-                        RETURN p.name,
-                                sum(contains.quantity) as count ORDER BY count DESC`;
+                        RETURN {
+                            mostSoldProduct: p.name,
+                            mostSoldProductUnitsSold: sum(contains.quantity) 
+                        } as ret ORDER BY ret.mostSoldProductUnitsSold DESC LIMIT 1`;
         const mostSoldProductParams =  {id: Number.parseInt(id)};
         const mostSoldProductRes = await session.readTransaction(tx => tx.run(mostSoldProductQuery,mostSoldProductParams));
         const mostSoldProductStats = mostSoldProductRes.records.map(record => record.get(0))[0];

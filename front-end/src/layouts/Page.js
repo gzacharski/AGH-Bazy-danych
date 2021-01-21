@@ -19,6 +19,7 @@ const Page = () => {
                         <Route path='/orders' component={Orders} />
                         <Route path='/products' component={Products} />
                         <Route path='/suppliers' component={Suppliers} />
+                        <Route path='/stats/products' component={StatsProducts} />
                     </Switch>
                 </main>
         </div>
