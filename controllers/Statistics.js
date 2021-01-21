@@ -179,9 +179,11 @@ module.exports.getStatsForProduct = async (request, response) => {
         const query = `MATCH (o:Order)-[r:CONTAINS]->(p:Product) WHERE p.id=$id
                         RETURN {    
                             productName: p.name, 
-                            totalIncome: sum(r.unitPrice * r.quantity), 
+                            totalIncome: sum(r.unitPrice * r.quantity * (1 - r.discount)), 
                             totalUnitsSold: sum(r.quantity), 
                             averagePrice: avg(r.unitPrice), 
+                            averageDiscount: avg(r.discount),
+                            maxDiscount: max(r.discount),
                             countriesShipped: collect(DISTINCT o.shipCountry) 
                         }`;
         const params =  {id: Number.parseInt(id)};
@@ -208,7 +210,7 @@ module.exports.getStatsForProduct = async (request, response) => {
 }
 
 module.exports.getStatsForAllProducts = async (request, response) => {
-    console.log('Get statistics for product...');
+    console.log('Get statistics for all products...');
     const id = request.params.id;
     const session = driver.session(config);
     try{
@@ -216,9 +218,11 @@ module.exports.getStatsForAllProducts = async (request, response) => {
                         RETURN 
                         {    
                             productName: p.name, 
-                            totalIncome: sum(r.unitPrice * r.quantity), 
+                            totalIncome: sum(r.unitPrice * r.quantity * (1 - r.discount)), 
                             totalUnitsSold: sum(r.quantity), 
-                            averagePrice: avg(r.unitPrice), 
+                            averagePrice: avg(r.unitPrice),
+                            averageDiscount: avg(r.discount),
+                            maxDiscount: max(r.discount), 
                             countriesShipped: collect(DISTINCT o.shipCountry) 
                         }`;
         const params =  {id: Number.parseInt(id)};
@@ -255,12 +259,7 @@ module.exports.getStatsForCategory = async (request, response) => {
                                 sum(contains.quantity)`;
         const statsParams =  {id: Number.parseInt(id)};
         const statsResult = await session.readTransaction(tx => tx.run(statsQuery,statsParams));
-        const categoryName = statsResult.records.map(record => record.get(0))[0];
-        const totalIncome = statsResult.records.map(record => record.get(1))[0];
-        let totalUnitsSold = statsResult.records.map(record => record.get(2))[0];
-        if (totalUnitsSold.low) {
-            totalUnitsSold = totalUnitsSold.low;
-        }
+        const categoryStats = statsResult.records.map(record => record.get(0))[0];
 
         const mostSoldProductQuery = `MATCH (o:Order)-[contains:CONTAINS]->(p:Product)-[belongs:BELONGS_TO]->(c:Category)
                         WHERE c.id=$id
@@ -268,21 +267,12 @@ module.exports.getStatsForCategory = async (request, response) => {
                                 sum(contains.quantity) as count ORDER BY count DESC`;
         const mostSoldProductParams =  {id: Number.parseInt(id)};
         const mostSoldProductRes = await session.readTransaction(tx => tx.run(mostSoldProductQuery,mostSoldProductParams));
-        const mostSoldProduct = mostSoldProductRes.records.map(record => record.get(0))[0];
-        let mostSoldProductUnitsSold = mostSoldProductRes.records.map(record => record.get(1))[0];
-        if (mostSoldProductUnitsSold.low) {
-            mostSoldProductUnitsSold = mostSoldProductUnitsSold.low;
-        }
+        const mostSoldProductStats = mostSoldProductRes.records.map(record => record.get(0))[0];
+        const result = Object.assign(categoryStats, mostSoldProductStats);
 
         response
             .status(200)
-            .send({
-                categoryName: categoryName,
-                totalIncome: totalIncome,
-                totalUnitsSold: totalUnitsSold,
-                mostSoldProduct: mostSoldProduct,
-                mostSoldProductUnitsSold: mostSoldProductUnitsSold
-            })
+            .send(result)
     }
 
     catch (error) {

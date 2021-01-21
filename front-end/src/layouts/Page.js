@@ -6,6 +6,7 @@ import Home from '../pages/Home';
 import Orders from '../pages/Orders';
 import Products from '../pages/Products';
 import Suppliers from "../pages/Suppliers";
+import StatsProducts from "../pages/StatsProducts";
 
 const Page = () => {
     return (
