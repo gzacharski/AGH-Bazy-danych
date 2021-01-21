@@ -61,7 +61,8 @@ describe("Create new Product Order (for one product)", () => {
                 done();
             });
     }).timeout(15000);
-    it("Should not create new Product Order when invalid request (too much stocks in order", done => {
+
+    it("Should not create new Product Order when invalid request (too much stocks in order)", done => {
         chai
             .request(app)
             .post("/api/orders")
@@ -85,4 +86,67 @@ describe("Create new Product Order (for one product)", () => {
                 done();
             });
     }).timeout(15000);
+});
+
+
+describe("Create new Product Order (for many products)", () => {
+    let orderId = null;
+    it("Should create new Order for many Products when valid request", done => {
+        chai
+            .request(app)
+            .post("/api/orders")
+            .send({
+                "customer": {
+                    "country": "Mexico",
+                    "address": "Mataderos  2312",
+                    "city": "M?xico D.F.",
+                    "phone": "(5) 555-3932",
+                    "postalCode": "5023",
+                    "name": "Antonio Moreno",
+                    "company": "Antonio Moreno Taquer?a",
+                    "id": "ANTON",
+                    "title": "Owner"
+                },
+                "orderProperties":{
+                    "shipCity": "Reims",
+                    "freight": 0,
+                    "requiredDate": "1996-08-01",
+                    "shipName": "Vins et alcools Chevalier",
+                    "shipPostalCode": "51100",
+                    "shipCountry": "France",
+                    "shippedDate": "1996-07-16",
+                    "shipAddress": "59 rue de l''Abbaye"
+                },
+                "orderDetails": [
+                    {
+                        "productId": 22,
+                        "unitPrice": 20.00,
+                        "quantity": 0,
+                        "discount" : 5.5
+                    },
+                    {
+                        "productId": 23,
+                        "unitPrice": 10.99,
+                        "quantity": 0,
+                        "discount" : 0
+                    }
+                ]
+            })
+            .end((err, res) => {
+                expect(res).to.have.status(201);
+                orderId = res.body.orders.id.low;
+                done();
+            });
+    }).timeout(15000);
+    //after
+    it("Should remove new Order for many Products when valid request", done => {
+        chai
+            .request(app)
+            .delete("/api/orders/"+orderId)
+            .end((err, res) => {
+                expect(res).to.have.status(200);
+                done();
+            });
+    }).timeout(15000);
+
 });

@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
 
 const initOrder = {
     requiredDate : '',
-    shippedDate : '24.05.2017',
+    shippedDate : '',
     freight : 0,
     shipName : '',
     shipAddress : '',
@@ -152,17 +152,17 @@ export default function AddOrderDialog(props) {
         console.log("Adding order...");
 
         const tempOrderDetails=productsAddedToOrder.map(product=>({
-            productId: product.data.id.low,
-            unitPrice: product.details.unitPrice,
-            quantity : product.details.quantity,
-            discount : product.details.discount
+            productId: Number.parseInt(product.data.id.low),
+            unitPrice: Number.parseInt(product.details.unitPrice),
+            quantity : Number.parseInt(product.details.quantity),
+            discount : Number.parseInt(product.details.discount)
         }));
 
         setResponseSuccess(false);
         handleToggleBackdrop();
         onClose();
         axios
-            .post(`${url}/api/test`, {
+            .post(`${url}/api/orders`, {
                 orderProperties : order,
                 customer : customer,
                 orderDetails : tempOrderDetails,
@@ -176,7 +176,7 @@ export default function AddOrderDialog(props) {
                     setCustomer('');
                     setProduct('');
                     setProductsAddedToOrder([]);
-                    //create(response.data.orders);
+                    create(response.data.orders);
                 }else{
                     setResponseSuccess(false);
                 }
