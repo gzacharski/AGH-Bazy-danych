@@ -177,34 +177,63 @@ module.exports.getStatsForProduct = async (request, response) => {
     const session = driver.session(config);
     try{
         const query = `MATCH (o:Order)-[r:CONTAINS]->(p:Product) WHERE p.id=$id
-                        RETURN p.name, 
-                                sum(r.unitPrice * r.quantity), 
-                                sum(r.quantity), 
-                                avg(r.unitPrice), 
-                                collect(DISTINCT o.shipCountry)`;
+                        RETURN {    
+                            productName: p.name, 
+                            totalIncome: sum(r.unitPrice * r.quantity * (1 - r.discount)), 
+                            totalUnitsSold: sum(r.quantity), 
+                            averagePrice: avg(r.unitPrice), 
+                            averageDiscount: avg(r.discount),
+                            maxDiscount: max(r.discount),
+                            countriesShipped: collect(DISTINCT o.shipCountry) 
+                        }`;
         const params =  {id: Number.parseInt(id)};
 
         const result = await session.readTransaction(tx => tx.run(query,params));
-        const productName = result.records.map(record => record.get(0))[0];
-        const totalIncome = result.records.map(record => record.get(1))[0];
-        let totalUnitsSold = result.records.map(record => record.get(2))[0];
-        if (totalUnitsSold.low) {
-            totalUnitsSold = totalUnitsSold.low;
-        }
-        const averagePrice = result.records.map(record => record.get(3))[0];
-        const countriesShipped = result.records.map(record => record.get(4));
+        const productStats = result.records.map(record => record.get(0));
 
-        if (!totalIncome) throw new Error(`ERROR - The server was not able to get statistics for product: ${id}.`);
+        if (!productStats) throw new Error(`ERROR - The server was not able to get statistics for product: ${id}.`);
 
         response
             .status(200)
+            .send(productStats)
+    }
+
+    catch (error) {
+        response
+            .status(500)
             .send({
-                productName: productName,
-                totalIncome: totalIncome,
-                totalUnitsSold: totalUnitsSold,
-                averagePrice: averagePrice,
-                countriesShipped: countriesShipped
-            })
+                error: error.message
+            });
+    } finally {
+        await session.close();
+    }
+}
+
+module.exports.getStatsForAllProducts = async (request, response) => {
+    console.log('Get statistics for all products...');
+    const id = request.params.id;
+    const session = driver.session(config);
+    try{
+        const query = `MATCH (o:Order)-[r:CONTAINS]->(p:Product)
+                        RETURN 
+                        {    
+                            productName: p.name, 
+                            totalIncome: sum(r.unitPrice * r.quantity * (1 - r.discount)), 
+                            totalUnitsSold: sum(r.quantity), 
+                            averagePrice: avg(r.unitPrice),
+                            averageDiscount: avg(r.discount),
+                            maxDiscount: max(r.discount), 
+                            countriesShipped: collect(DISTINCT o.shipCountry) 
+                        }`;
+        const params =  {id: Number.parseInt(id)};
+        const result = await session.readTransaction(tx => tx.run(query,params));
+        const statsForProducts = result.records.map(record => record.get(0));
+
+        if (!statsForProducts) throw new Error(`ERROR - The server was not able to get statistics for all products.`);
+
+        response
+            .status(200)
+            .send(statsForProducts)
     }
 
     catch (error) {
@@ -225,39 +254,31 @@ module.exports.getStatsForCategory = async (request, response) => {
     try{
         const statsQuery = `MATCH (o:Order)-[contains:CONTAINS]->(p:Product)-[belongs:BELONGS_TO]->(c:Category)
                         WHERE c.id=$id
-                        RETURN c.name, 
-                                sum(contains.unitPrice * contains.quantity),
-                                sum(contains.quantity)`;
+                        RETURN {
+                            categoryName: c.name, 
+                            totalIncome: sum(contains.unitPrice * contains.quantity * (1 - contains.discount)),
+                            totalUnitsSold: sum(contains.quantity),
+                            averagePrice: avg(contains.unitPrice),
+                            averageDiscount: avg(contains.discount)
+                        }`;
         const statsParams =  {id: Number.parseInt(id)};
         const statsResult = await session.readTransaction(tx => tx.run(statsQuery,statsParams));
-        const categoryName = statsResult.records.map(record => record.get(0))[0];
-        const totalIncome = statsResult.records.map(record => record.get(1))[0];
-        let totalUnitsSold = statsResult.records.map(record => record.get(2))[0];
-        if (totalUnitsSold.low) {
-            totalUnitsSold = totalUnitsSold.low;
-        }
+        const categoryStats = statsResult.records.map(record => record.get(0))[0];
 
         const mostSoldProductQuery = `MATCH (o:Order)-[contains:CONTAINS]->(p:Product)-[belongs:BELONGS_TO]->(c:Category)
                         WHERE c.id=$id
-                        RETURN p.name,
-                                sum(contains.quantity) as count ORDER BY count DESC`;
+                        RETURN {
+                            mostSoldProduct: p.name,
+                            mostSoldProductUnitsSold: sum(contains.quantity)
+                        } as ret ORDER BY ret.mostSoldProductUnitsSold DESC LIMIT 1`;
         const mostSoldProductParams =  {id: Number.parseInt(id)};
         const mostSoldProductRes = await session.readTransaction(tx => tx.run(mostSoldProductQuery,mostSoldProductParams));
-        const mostSoldProduct = mostSoldProductRes.records.map(record => record.get(0))[0];
-        let mostSoldProductUnitsSold = mostSoldProductRes.records.map(record => record.get(1))[0];
-        if (mostSoldProductUnitsSold.low) {
-            mostSoldProductUnitsSold = mostSoldProductUnitsSold.low;
-        }
+        const mostSoldProductStats = mostSoldProductRes.records.map(record => record.get(0))[0];
+        const result = Object.assign(categoryStats, mostSoldProductStats);
 
         response
             .status(200)
-            .send({
-                categoryName: categoryName,
-                totalIncome: totalIncome,
-                totalUnitsSold: totalUnitsSold,
-                mostSoldProduct: mostSoldProduct,
-                mostSoldProductUnitsSold: mostSoldProductUnitsSold
-            })
+            .send(result)
     }
 
     catch (error) {

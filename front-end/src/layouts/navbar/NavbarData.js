@@ -37,5 +37,17 @@ export const NavbarData=[
         path : '/customers',
         icon : <IoIcons.IoMdPeople/>,
         cName: 'nav-text'
+    },
+    {
+        title: 'Statistics for products',
+        path : '/stats/products',
+        icon : <IoIcons.IoMdPeople/>,
+        cName: 'nav-text'
+    },
+    {
+        title: 'Statistics for categories',
+        path : '/stats/categories',
+        icon : <IoIcons.IoMdPeople/>,
+        cName: 'nav-text'
     }
 ]
