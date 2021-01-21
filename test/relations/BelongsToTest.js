@@ -38,8 +38,8 @@ describe("Get Belongs To Relationships by specific Product and Category when val
 describe("Create and delete Belongs To relationship", () => {
     let productId = null;
     const categoryId = 2;
-    //then
-    const productName = "testProduct"
+    //when
+    const productName = "testProduct1"
     before(function (done) {
         chai
             .request(app)
@@ -52,7 +52,7 @@ describe("Create and delete Belongs To relationship", () => {
                 done()
             });
     })
-
+    //then
     it("Should create Belongs To relationship when valid request", done => {
         chai
             .request(app)
@@ -62,11 +62,21 @@ describe("Create and delete Belongs To relationship", () => {
                 done();
             });
     });
-
+    //after
     it("Should delete Belongs To relationship when valid request", done => {
         chai
             .request(app)
             .delete("/api/products/"+productId+"/categories/"+categoryId)
+            .end((err, res) => {
+                expect(res).to.have.status(200);
+                done();
+            });
+    });
+
+    it("Should delete created product before for belongs to relationship creation purposes" , done => {
+        chai
+            .request(app)
+            .delete("/api/products/" + productId)
             .end((err, res) => {
                 expect(res).to.have.status(200);
                 done();

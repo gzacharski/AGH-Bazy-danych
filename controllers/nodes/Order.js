@@ -1,3 +1,5 @@
+const {uniqWith, isEqual} = require('lodash');
+
 const driver = require('../../config/dbconfig').driver;
 const config = require('../../config/dbconfig').config;
 const uuid = require('uuid');
@@ -35,7 +37,7 @@ const nodeExists = async (id, label) => {
 }
 
 module.exports.createProductOrder = async (request, response) => {
-    console.log('Create product order...');
+    console.log('Create one Product Order - many simple queries...');
 
     const customerId = request.params.customer;
     const productId = request.params.product;
@@ -177,74 +179,9 @@ module.exports.createProductOrder = async (request, response) => {
     }
 }
 
-module.exports.getOrderCrud = async (request, response) => {
-    console.log('Get all Orders CRUD...');
 
-    const session = driver.session(config);
-
-    try{
-        const query = `MATCH (customer:Customer)<-[obr:ORDERED_BY]-(order:Order)-[cr:CONTAINS]->(product:Product) RETURN customer, order, cr, product`;
-
-        const result = await session.readTransaction(tx => tx.run(query));
-        const nodes = result.records;
-
-        if (!nodes) throw new Error(`ERROR - The server was not able to get Orders with related Customers and Products (and other details).`);
-
-        response
-            .status(200)
-            .send({
-                quantity: nodes.length,
-                nodes
-            })
-    }
-
-    catch (error) {
-        response
-            .status(500)
-            .send({
-                error: error.message
-            });
-    } finally {
-        await session.close();
-    }
-}
-
-module.exports.getOrderCrudCustomer = async (request, response) => {
-    console.log('Get all Orders of Customer CRUD...');
-
-    const id = request.params.id;
-    const session = driver.session(config);
-
-    try{
-        const query = `MATCH (customer:Customer)<-[obr:ORDERED_BY]-(order:Order)-[cr:CONTAINS]->(product:Product) WHERE customer.id=$id RETURN order, cr, product`;
-        const params =  {id: id };
-        const result = await session.readTransaction(tx => tx.run(query,params));
-        const nodes = result.records;
-
-        if (!nodes) throw new Error(`ERROR - The server was not able to get Orders and related Products (and other details) for specific Customer of id ${id}.`);
-
-        response
-            .status(200)
-            .send({
-                quantity: nodes.length,
-                nodes
-            })
-    }
-
-    catch (error) {
-        response
-            .status(500)
-            .send({
-                error: error.message
-            });
-    } finally {
-        await session.close();
-    }
-}
-
-
-module.exports.createOrderCrud = async (request, response) => {
-    console.log('Create Order CRUD...');
+module.exports.createOrderCrudOneProduct = async (request, response) => {
+    console.log('Create one Product Order - one complex query....');
 
     const session = driver.session(config);
 
@@ -325,6 +262,161 @@ module.exports.createOrderCrud = async (request, response) => {
     }
 }
 
+module.exports.getOrderCrud = async (request, response) => {
+    console.log('Get all Orders CRUD...');
+
+    const session = driver.session(config);
+
+    try{
+        const query =
+            `MATCH (customer:Customer)<-[obr:ORDERED_BY]-(order:Order)-[cr:CONTAINS]->(product:Product)
+            RETURN customer, order, cr, product`;
+
+        const result = await session.readTransaction(tx => tx.run(query));
+        const nodes = result.records;
+
+        if (!nodes) throw new Error(`ERROR - The server was not able to get Orders with related Customers and Products (and other details).`);
+
+        response
+            .status(200)
+            .send({
+                quantity: nodes.length,
+                nodes
+            })
+    }
+
+    catch (error) {
+        response
+            .status(500)
+            .send({
+                error: error.message
+            });
+    } finally {
+        await session.close();
+    }
+}
+
+module.exports.getOrderCrudCustomer = async (request, response) => {
+    console.log('Get all Orders of Customer CRUD...');
+
+    const id = request.params.id;
+    const session = driver.session(config);
+
+    try{
+        const query =
+            `MATCH (customer:Customer)<-[obr:ORDERED_BY]-(order:Order)-[cr:CONTAINS]->(product:Product)
+            WHERE customer.id=$id 
+            RETURN order, cr, product`;
+        const params =  {id: id };
+        const result = await session.readTransaction(tx => tx.run(query,params));
+        const nodes = result.records;
+
+        const records = result.records.map(record => record._fields);
+
+        if (!nodes) throw new Error(`ERROR - The server was not able to get Orders and related Products (and other details) for specific Customer of id ${id}.`);
+
+        response
+            .status(200)
+            .send({
+                quantity: records.length,
+                records
+            })
+    }
+
+    catch (error) {
+        response
+            .status(500)
+            .send({
+                error: error.message
+            });
+    } finally {
+        await session.close();
+    }
+}
+
+
+module.exports.createOrderCrud = async (request, response) => {
+    console.log('Create Order CRUD...');
+
+    const session = driver.session(config);
+
+    try {
+        const customer = request.body.customer;
+        const orderProperties = request.body.orderProperties;
+        const orderDetails = request.body.orderDetails;
+        const orderId = Number.parseInt(uuid.v4(),16);
+        const orderDate = todayDate();
+
+
+        const query =
+            `CREATE (o:Order)
+            SET o.id=id(o)+100000, o+=$orderProperties, o.orderDate=$orderDate, o.freight=toInteger($orderProperties.freight)
+            WITH o
+            MATCH (c:Customer) 
+            WHERE c.id=$customer.id 
+            MERGE (c)<-[obr:ORDERED_BY]-(o) 
+            WITH c, o, $orderDetails as orderDetails 
+            UNWIND orderDetails as orderDetail
+            MATCH (p:Product) 
+            WHERE p.id=orderDetail.productId AND NOT(p.discontinued=1) AND p.unitsInStock>=orderDetail.quantity
+            MERGE (o)-[cr:CONTAINS]->(p) 
+            SET cr.odID=id(cr), cr.unitPrice=orderDetail.unitPrice, cr.quantity=orderDetail.quantity, cr.discount=orderDetail.discount,
+            p.unitsInStock=p.unitsInStock-orderDetail.quantity
+            RETURN c,o,cr,p`;
+
+        const orderParams = {
+            customer: customer,
+            orderProperties: orderProperties,
+            orderDetails: orderDetails,
+            orderId: orderId,
+            orderDate: orderDate
+        };
+
+        if (await nodeExists(orderId, 'Order')) throw new Error(`There is an existing Order with provided id: ${orderId}`);
+
+        const result = await session.writeTransaction(tx => tx.run(query, orderParams));
+        const nodes = result.records;
+
+        if (nodes.length<1) throw new Error(`The server was not able to register a new Order.`);
+
+        const records = result.records.map(record => record._fields);
+        const customerResult = uniqWith(records.map(row => row[0].properties), isEqual);
+        const orderResult = uniqWith(records.map(row => row[1].properties), isEqual);
+        const orderDetailsResponse = records.map(row => row[2] );
+        const productsResponse = records.map(row => row[3]);
+
+        if (!orderResult) throw new Error(`Cannot create new Order.`);
+        if (!orderDetailsResponse) throw new Error(`Cannot create new Contains relationship.`);
+
+        let orderDetailsResult = [];
+        for(let i=0; i<orderDetailsResponse.length; i++){
+            orderDetailsResult.push({
+                "productId": productsResponse[i].properties.id.low,
+                "unitPrice": orderDetailsResponse[i].properties.unitPrice,
+                "quantity" : orderDetailsResponse[i].properties.quantity,
+                "discount" : orderDetailsResponse[i].properties.discount
+                });
+        }
+
+        response
+            .status(201)
+            .send({
+                customer: customerResult[0],
+                orders: orderResult[0],
+                orderDetails: orderDetailsResult
+            });
+
+    } catch (error) {
+        response
+            .status(500)
+            .send({
+                error: error.message
+            });
+    } finally {
+        await session.close();
+    }
+}
+
 module.exports.deleteOrderCrudById = async (request, response) => {
     console.log('Delete Order by Id CRUD...');
 
@@ -332,7 +424,10 @@ module.exports.deleteOrderCrudById = async (request, response) => {
     const session = driver.session(config);
 
     try {
-        const query = `MATCH (customer:Customer)<-[obr:ORDERED_BY]-(order:Order)-[cr:CONTAINS]->(product:Product) WHERE order.id=$id DETACH DELETE obr, order, cr`;
+        const query =
+            `MATCH (customer:Customer)<-[obr:ORDERED_BY]-(order:Order)-[cr:CONTAINS]->(product:Product) 
+            WHERE order.id=$id 
+            DETACH DELETE obr, order, cr`;
         const params =  {id: Number.parseInt(id)};
         await session.writeTransaction(tx => tx.run(query, params));
 
@@ -343,6 +438,58 @@ module.exports.deleteOrderCrudById = async (request, response) => {
                 message: `Order ${id} has been deleted.`
             });
     } catch (error) {
+        response
+            .status(500)
+            .send({
+                error: error.message
+            });
+    } finally {
+        await session.close();
+    }
+}
+
+module.exports.getCustomerOrderDetailsByOrderId = async (request, response) => {
+    console.log('Get Customer OrderDetails by Order ID...');
+
+    const id = request.params.id;
+    const session = driver.session(config);
+
+    try{
+        const query =
+            `MATCH (customer:Customer)<-[obr:ORDERED_BY]-(order:Order)-[containsRelation:CONTAINS]->(product:Product)
+            WHERE order.id=$id
+            RETURN customer, containsRelation, product`;
+        const params =  {id: Number.parseInt(id) };
+        const result = await session.readTransaction(tx => tx.run(query,params));
+        const nodes = result.records;
+
+        if (!nodes) throw new Error(`ERROR - The server was not able to get Customer and Order Orders of Order ID ${id}.`);
+
+        const records = result.records.map(record => record._fields);
+        const customerResult = uniqWith(records.map(row => row[0].properties), isEqual);
+        const orderDetailsResponse  = uniqWith(records.map(row => row[1].properties), isEqual);
+        const productsResponse  = uniqWith(records.map(row => row[2].properties), isEqual);
+
+        let orderDetailsResult = [];
+        for(let i=0; i<orderDetailsResponse.length; i++){
+            orderDetailsResult.push({
+                "product": productsResponse[i],
+                "unitPrice": orderDetailsResponse[i].unitPrice,
+                "quantity" : orderDetailsResponse[i].quantity,
+                "discount" : orderDetailsResponse[i].discount
+            });
+        }
+
+        response
+            .status(200)
+            .send({
+                quantity: orderDetailsResult.length,
+                customerId: customerResult,
+                orderDetailsResult
+            })
+    }
+
+    catch (error) {
         response
             .status(500)
             .send({

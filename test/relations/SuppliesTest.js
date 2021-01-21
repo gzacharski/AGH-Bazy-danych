@@ -66,8 +66,8 @@ describe("Get Supplies Relationships by specific Supplier and Product (existing 
 describe("Create and delete Supplies relationship", () => {
     let productId = null;
     const supplierId = 1;
-    //then
-    const productName = "testProduct"
+    //when
+    const productName = "testProduct2"
     before(function (done) {
         chai
             .request(app)
@@ -81,6 +81,7 @@ describe("Create and delete Supplies relationship", () => {
             });
     })
 
+    //then
     it("Should create Supplies relationship when valid request", done => {
         chai
             .request(app)
@@ -91,10 +92,21 @@ describe("Create and delete Supplies relationship", () => {
             });
     });
 
+    //after
     it("Should delete Supplies relationship when valid request", done => {
         chai
             .request(app)
             .delete("/api/suppliers/"+supplierId+"/products/"+productId)
+            .end((err, res) => {
+                expect(res).to.have.status(200);
+                done();
+            });
+    });
+
+    it("Should delete created product before for supplies relationship creation purposes" , done => {
+        chai
+            .request(app)
+            .delete("/api/products/" + productId)
             .end((err, res) => {
                 expect(res).to.have.status(200);
                 done();

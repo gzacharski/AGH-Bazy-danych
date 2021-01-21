@@ -45,10 +45,12 @@ const {
 } = require("../controllers/relations/Contains");
 const {
   createProductOrder,
+  createOrderCrudOneProduct,
   getOrderCrud,
   getOrderCrudCustomer,
   createOrderCrud,
   deleteOrderCrudById,
+  getCustomerOrderDetailsByOrderId,
 } = require("../controllers/nodes/Order");
 
 const { health } = require("../controllers/Controller");
@@ -128,10 +130,12 @@ router.delete('/api/orders/products/:id', select, deleteContainsRelationById);
 router.put('/api/orders/products/:id', select, updateContainsRelationById);
 
 router.post('/api/customers/:customer/products/:product', select, createProductOrder);
+router.post('/api/orders/oneproduct', select, createOrderCrudOneProduct);
 
 router.get('/api/orders', select, getOrderCrud);
 router.get('/api/orders/customers/:id', select, getOrderCrudCustomer);
 router.post('/api/orders', select, createOrderCrud);
 router.delete('/api/orders/:id', select, deleteOrderCrudById);
+router.get('/api/orders/:id/customer/orderdetails', getCustomerOrderDetailsByOrderId);
 
 module.exports = router;

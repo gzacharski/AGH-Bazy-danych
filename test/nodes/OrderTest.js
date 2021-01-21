@@ -33,13 +33,13 @@ describe("Create Product Order", () => {
     }).timeout(15000);
 });
 
-describe("Create new Product Order", () => {
+describe("Create new Product Order (for one product)", () => {
     const validCustomerId = 'ALFKI';
     const validProductId = 1;
     it("Should create new Product Order when valid request", done => {
         chai
             .request(app)
-            .post("/api/orders")
+            .post("/api/orders/oneproduct")
             .send({
                 "customerId": validCustomerId,
                 "productId": validProductId,
