@@ -33,11 +33,11 @@ export default function Orders() {
             })
     }
 
-    const createOrder =(Order)=>{
+    const createOrder =(order)=>{
         console.log("Creating new Order...");
         console.log("Appending new Order to Table...");
-        console.log(Order);
-        setOrders([...orders,Order]);
+        console.log(order);
+        setOrders([...orders,order]);
     }
 
     const readOrder =(Order) =>{

@@ -1,44 +1,98 @@
 import EditButton from "../buttons/EditButton";
-import EditRowDialog from '../dialogs/EditRowDialog';
+import EditRowDialog from '../dialogs/editRowDialogs/EditRowDialog';
 import InfoButton from '../buttons/InfoButton';
-import MoreRowInfoDialog from '../dialogs/MoreRowInfoDialog';
+import MoreRowInfoDialog from '../dialogs/infoRowDialogs/MoreRowInfoDialog';
 import React, {useState} from 'react';
 import RemoveButton from '../buttons/RemoveButton';
 import RemoveRowDialog from '../dialogs/RemoveRowDialog';
+import ProductInfoDialog from '../dialogs/infoRowDialogs/ProductInfoDialog';
+import OrderInfoDialog from '../dialogs/infoRowDialogs/OrderInfoDialog';
+import EditProductDialog from '../dialogs/editRowDialogs/EditProductDialog';
+import EditOrderDialog from '../dialogs/editRowDialogs/EditOrderDialog';
 
 export default function RowActions(props) {
 
-    const {data, headers}=props;
-    const {update,remove}=props.crudActions;
+    const {data, headers, title}=props;
+    const {update,remove,read}=props.crudActions;
 
     const [openMoreInfo, setOpenMoreInfo] = useState(false);
-
-    const handleOpenMoreInfo = () => {
-        setOpenMoreInfo(true);
-    }
-
-    const handleCloseMoreInfo = () => {
-        setOpenMoreInfo(false);
-    }
+    const handleOpenMoreInfo = () => setOpenMoreInfo(true);
+    const handleCloseMoreInfo = () => setOpenMoreInfo(false);
 
     const [openEdit,setOpenEdit]=useState(false);
-
-    const handleOpenEdit = () => {
-        setOpenEdit(true);
-    }
-
-    const handleCloseEdit= () => {
-        setOpenEdit(false);
-    }
+    const handleOpenEdit = () => setOpenEdit(true);
+    const handleCloseEdit= () => setOpenEdit(false);
 
     const [openRemove, setOpenRemove]=useState(false);
+    const handleOpenRemove =() => setOpenRemove(true);
+    const handleCloseRemove = () => setOpenRemove(false);
 
-    const handleOpenRemove =() => {
-        setOpenRemove(true);
+    const moreInfoDialog=(read,title,openMoreInfo)=>{
+        if(title==="Products"){
+            return (
+                <ProductInfoDialog
+                    row={data}
+                    titles={headers}
+                    onClose={handleCloseMoreInfo} 
+                    open={openMoreInfo}
+                    getRow={read}
+                />
+            );
+        }else if(title==="Orders"){
+            return (
+                <OrderInfoDialog
+                    row={data}
+                    titles={headers}
+                    onClose={handleCloseMoreInfo} 
+                    open={openMoreInfo}
+                    getRow={read}
+                />
+            );
+        }else{
+            return(
+                <MoreRowInfoDialog 
+                    row={data}
+                    titles={headers}
+                    onClose={handleCloseMoreInfo} 
+                    open={openMoreInfo}
+                    getRow={read}
+                />
+            );
+        }
     }
 
-    const handleCloseRemove = () => {
-        setOpenRemove(false);
+    const editDialog=(update,title,openEdit)=>{
+        if(title==="Products"){
+            return(
+                <EditProductDialog
+                    row={data}
+                    titles={headers}
+                    onClose={handleCloseEdit} 
+                    open={openEdit}
+                    updateRow={update}
+                />
+            );
+        }else if(title==="Orders"){
+            return(
+                <EditOrderDialog
+                    row={data}
+                    titles={headers}
+                    onClose={handleCloseEdit} 
+                    open={openEdit}
+                    updateRow={update}
+                />
+            );
+        }else{
+            return(
+                <EditRowDialog
+                    row={data}
+                    titles={headers}
+                    onClose={handleCloseEdit} 
+                    open={openEdit}
+                    updateRow={update}
+                />
+            );
+        }
     }
 
     return (
@@ -46,22 +100,11 @@ export default function RowActions(props) {
             <InfoButton
                 handleOpen={handleOpenMoreInfo}
             />
-            <MoreRowInfoDialog 
-                row={data}
-                titles={headers}
-                onClose={handleCloseMoreInfo} 
-                open={openMoreInfo}
-            />
+            {moreInfoDialog(read,title,openMoreInfo)}
             <EditButton
                 handleOpen={handleOpenEdit}
             />
-            <EditRowDialog
-                row={data}
-                titles={headers}
-                onClose={handleCloseEdit} 
-                open={openEdit}
-                updateRow={update}
-            />
+            {editDialog(update,title,openEdit)}
             <RemoveButton
                 handleOpen={handleOpenRemove}
             />

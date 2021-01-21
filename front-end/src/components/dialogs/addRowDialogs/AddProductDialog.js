@@ -140,15 +140,17 @@ export default function AddProductDialog(props) {
 
     const addProduct = () => {
         console.log("Adding product...");
-        console.log(product);
-        console.log(supplier);
-        console.log(selectedCategories);
+        console.log({
+            product,
+            supplier,
+            categories: selectedCategories
+        });
 
         setResponseSuccess(false);
         handleToggleBackdrop();
         onClose();
         axios
-            .post(`${url}/api/test`, {
+            .post(`${url}/api/products`, {
                 product,
                 supplier,
                 categories: selectedCategories

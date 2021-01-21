@@ -122,7 +122,12 @@ export default function Table(props) {
                                                 </td>
                                             )
                                         })}
-                                        <RowActions data={row} headers={headerGroups} crudActions={crudActions}/>
+                                        <RowActions 
+                                            data={row} 
+                                            title={title} 
+                                            headers={headerGroups} 
+                                            crudActions={crudActions}
+                                        />
                                     </tr>
                                 </>
                             )
