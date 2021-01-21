@@ -4,7 +4,7 @@ const uri='bolt://localhost:7687';
 const user='neo4j';
 const password='test';
 
-const driver=neo4j.driver(uri, neo4j.auth.basic(user,password),{ disableLosslessIntegers: false });
+const driver=neo4j.driver(uri, neo4j.auth.basic(user,password),{ disableLosslessIntegers: true });
 
 const dbConfig={
     database: 'northwind',

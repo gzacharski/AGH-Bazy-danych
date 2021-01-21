@@ -267,31 +267,34 @@ module.exports.getStatsForCategory = async (request, response) => {
     try{
         const statsQuery = `MATCH (o:Order)-[contains:CONTAINS]->(p:Product)-[belongs:BELONGS_TO]->(c:Category)
                         WHERE c.id=$id
+                        CALL {
+                            MATCH (o:Order)-[contains:CONTAINS]->(p:Product)-[belongs:BELONGS_TO]->(c:Category), 
+                                    (s:Supplier)-[supplies:SUPPLIES]->(p:Product)
+                            WHERE c.id=$id
+                            RETURN {
+                                  supplier: s.companyName,
+                                  mostSoldProduct: p.name,
+                                  mostSoldProductUnitsSold: sum(contains.quantity)
+                            } as mostSold ORDER BY mostSold.mostSoldProductUnitsSold DESC LIMIT 1
+                        }
                         RETURN {
                             categoryName: c.name, 
-                            totalIncome: sum(contains.unitPrice * contains.quantity * (1 - contains.discount)),
+                            totalIncomeGenerated: sum(contains.unitPrice * contains.quantity * (1 - contains.discount)),
                             totalUnitsSold: sum(contains.quantity),
                             averagePrice: avg(contains.unitPrice),
-                            averageDiscount: avg(contains.discount)
+                            averageDiscount: avg(contains.discount),
+                            totalUnitsInStock: sum(p.unitsInStock),
+                            mostSoldProduct: mostSold.mostSoldProduct,
+                            mostSoldProductUnitsSold: mostSold.mostSoldProductUnitsSold,
+                            mostSoldProductSupplier: mostSold.supplier
                         }`;
         const statsParams =  {id: Number.parseInt(id)};
         const statsResult = await session.readTransaction(tx => tx.run(statsQuery,statsParams));
         const categoryStats = statsResult.records.map(record => record.get(0))[0];
 
-        const mostSoldProductQuery = `MATCH (o:Order)-[contains:CONTAINS]->(p:Product)-[belongs:BELONGS_TO]->(c:Category)
-                        WHERE c.id=$id
-                        RETURN {
-                            mostSoldProduct: p.name,
-                            mostSoldProductUnitsSold: sum(contains.quantity)
-                        } as ret ORDER BY ret.mostSoldProductUnitsSold DESC LIMIT 1`;
-        const mostSoldProductParams =  {id: Number.parseInt(id)};
-        const mostSoldProductRes = await session.readTransaction(tx => tx.run(mostSoldProductQuery,mostSoldProductParams));
-        const mostSoldProductStats = mostSoldProductRes.records.map(record => record.get(0))[0];
-        const result = Object.assign(categoryStats, mostSoldProductStats);
-
         response
             .status(200)
-            .send(result)
+            .send(categoryStats)
     }
 
     catch (error) {

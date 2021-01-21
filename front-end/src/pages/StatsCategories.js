@@ -11,23 +11,15 @@ function Alert(props) {
 
 export default function StatsCategories() {
     const columns = [
-        { Header: 'categoryName', accessor: 'categoryName' },
-        { Header: 'Total Income', accessor: 'totalIncome' },
-        { Header: 'Total Units Sold', accessor: (row) => {
-                if (row.totalUnitsSold.low) {
-                    return row.totalUnitsSold.low;
-                }
-                return row.totalUnitsSold
-            }},
+        { Header: 'Category Name', accessor: 'categoryName' },
+        { Header: 'Total Income Generated', accessor: 'totalIncomeGenerated' },
+        { Header: 'Total Units Sold', accessor: 'totalUnitsSold' },
         { Header: 'Average Price', accessor: 'averagePrice' },
         { Header: 'Average Discount', accessor: 'averageDiscount' },
+        { Header: 'Total Units In Stock', accessor: 'totalUnitsInStock' },
         { Header: 'Most Sold Product', accessor: 'mostSoldProduct' },
-        { Header: 'Most Sold Product Units Sold', accessor: (row) => {
-                if (row.mostSoldProductUnitsSold.low) {
-                    return row.mostSoldProductUnitsSold.low;
-                }
-                return row.mostSoldProductUnitsSold
-        }}
+        { Header: 'Units Sold Of Most Sold Product', accessor: 'mostSoldProductUnitsSold' },
+        { Header: 'Supplier For Most Sold Product', accessor: 'mostSoldProductSupplier' }
     ];
     const [stats, setStats] = useState([]);
     const [openSnackbar, setOpenSnackbar] = useState(null);

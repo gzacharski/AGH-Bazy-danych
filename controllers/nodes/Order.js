@@ -26,7 +26,7 @@ const nodeExists = async (id, label) => {
         if (label === 'Customer') {
             exists = result.records.length !== 0 && result.records[0].get(0).properties.id === id;
         } else {
-            exists = result.records.length !== 0 && result.records[0].get(0).properties.id.low === Number.parseInt(id);
+            exists = result.records.length !== 0 && result.records[0].get(0).properties.id === Number.parseInt(id);
         }
 
     } finally {
@@ -391,7 +391,7 @@ module.exports.createOrderCrud = async (request, response) => {
         let orderDetailsResult = [];
         for(let i=0; i<orderDetailsResponse.length; i++){
             orderDetailsResult.push({
-                "productId": productsResponse[i].properties.id.low,
+                "productId": productsResponse[i].properties.id,
                 "unitPrice": orderDetailsResponse[i].properties.unitPrice,
                 "quantity" : orderDetailsResponse[i].properties.quantity,
                 "discount" : orderDetailsResponse[i].properties.discount
@@ -472,7 +472,7 @@ module.exports.updateExistingOrderDetailsCrud = async (request, response) => {
         let orderDetailsResult = [];
         for(let i=0; i<orderDetailsResponse.length; i++){
             orderDetailsResult.push({
-                "productId": productsResponse[i].properties.id.low,
+                "productId": productsResponse[i].properties.id,
                 "unitPrice": orderDetailsResponse[i].properties.unitPrice,
                 "quantity" : orderDetailsResponse[i].properties.quantity,
                 "discount" : orderDetailsResponse[i].properties.discount
