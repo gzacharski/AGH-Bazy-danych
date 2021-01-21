@@ -6,13 +6,21 @@ import MuiAlert from "@material-ui/lab/Alert";
 import {
     Backdrop,
     CircularProgress,
+    Chip,
     Dialog,
     DialogActions,
     DialogContent,
     DialogTitle,
-    Divider, FormControl, InputLabel, MenuItem, Select, Snackbar,
+    Divider, 
+    FormControl, 
+    InputLabel, 
+    MenuItem,
+    Paper, 
+    Select, 
+    Snackbar,
     TextField
 } from "@material-ui/core";
+import ProductOrderDetailsDialog from './ProductOrderDetailsDialog';
 
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -29,11 +37,20 @@ const useStyles = makeStyles((theme) => ({
             marginTop: theme.spacing(2),
         },
     },
+    paper:{
+        display: 'flex',
+        justifyContent: 'center',
+        flexWrap: 'wrap',
+        listStyle: 'none',
+        padding: theme.spacing(0.5),
+        margin: 0,
+    },
+    chip: {
+        margin: theme.spacing(0.5),
+    },
 }));
 
 const initOrder = {
-    //customerId: '',
-    //productId: 0,
     requiredDate : '',
     shippedDate : '',
     freight : 0,
@@ -42,9 +59,6 @@ const initOrder = {
     shipCity : '',
     shipPostalCode : '',
     shipCountry : '',
-    unitPrice : 0,
-    quantity : 0,
-    discount : 0
 }
 
 export default function AddOrderDialog(props) {
@@ -61,6 +75,8 @@ export default function AddOrderDialog(props) {
     const [openBackdrop, setOpenBackdrop] = useState(false);
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [responseSuccess,setResponseSuccess]=useState(false);
+    const [productsAddedToOrder,setProductsAddedToOrder]=useState([]);
+    const [openChipDialog,setOpenChipDialog]=useState(false);
 
     useEffect(loadCustomers, []);
 
@@ -119,39 +135,54 @@ export default function AddOrderDialog(props) {
     const handleProductChange = (event) => {
         console.log(event.target.value);
         setProduct(event.target.value);
+        const tempProduct={
+            data: event.target.value,
+            details : {
+                unitPrice : 0,
+                quantity : 0,
+                discount :0
+            }
+        }
+        setProductsAddedToOrder([...productsAddedToOrder,tempProduct])
+        console.log("Products in order");
+        console.log(tempProduct);
     }
 
     const addOrder = () => {
         console.log("Adding order...");
-        console.log(customer.id);
-        console.log(product.id.low);
-        console.log(order);
+
+        const tempOrderDetails=productsAddedToOrder.map(product=>({
+            productId: Number.parseInt(product.data.id.low),
+            unitPrice: Number.parseInt(product.details.unitPrice),
+            quantity : Number.parseInt(product.details.quantity),
+            discount : Number.parseInt(product.details.discount)
+        }));
+
         setResponseSuccess(false);
         handleToggleBackdrop();
         onClose();
         axios
             .post(`${url}/api/orders`, {
-                "customerId" : customer.id,
-                "productId" : product.id.low,
-                "requiredDate" : order.requiredDate,
-                "shippedDate" : order.shippedDate,
-                "freight" : order.freight,
-                "shipName" : order.shipName,
-                "shipAddress" : order.shipAddress,
-                "shipCity" : order.shipCity,
-                "shipPostalCode" : order.shipPostalCode,
-                "shipCountry" : order.shipCountry,
-                "unitPrice" : order.unitPrice,
-                "quantity" : order.quantity,
-                "discount" : order.discount
+                orderProperties : order,
+                customer : customer,
+                orderDetails : tempOrderDetails,
             })
             .then(response => {
-                setResponseSuccess(true);
-                setOrder(initOrder);
+                console.log(response);
+                
+                if(response.status===201 || response.status===200){
+                    setResponseSuccess(true);
+                    setOrder(initOrder);
+                    setCustomer('');
+                    setProduct('');
+                    setProductsAddedToOrder([]);
+                    create(response.data.orders);
+                }else{
+                    setResponseSuccess(false);
+                }
+                
                 handleCloseBackdrop();
                 handleClickSnackbar();
-                create(response.data);
-                console.log(response);
             })
             .catch(error => {
                 setResponseSuccess(false);
@@ -165,9 +196,10 @@ export default function AddOrderDialog(props) {
 
         const customerSelectItems = customers.map(customer => (
             <MenuItem key={customer.id} value={customer}>
-                {customer.id}
+                {customer.name}
             </MenuItem>
         ));
+
 
         return (
             <FormControl fullWidth>
@@ -187,14 +219,14 @@ export default function AddOrderDialog(props) {
     const convertProductToSelectItems = () => {
 
         const productSelectItems = products.map(product => (
-            <MenuItem key={product.id} value={product}>
+            <MenuItem key={product.id.low} value={product}>
                 {product.name}
             </MenuItem>
         ));
 
         return (
             <FormControl fullWidth>
-                <InputLabel id="product-select-label">Product</InputLabel>
+                <InputLabel id="product-select-label">Add product</InputLabel>
                 <Select
                     labelId="product-select-label"
                     id="product-select"
@@ -207,6 +239,70 @@ export default function AddOrderDialog(props) {
         );
     }
 
+    const removeProductFromOrder=(removedProduct)=>{
+        console.log(`removed ${removedProduct.data.name}`);
+        const tempProductAddedToOrder=productsAddedToOrder
+            .filter(product =>product.data.id.low!==removedProduct.data.id.low);
+        setProductsAddedToOrder(tempProductAddedToOrder);
+    }
+
+    const [productDetails,setProductDetails]=useState(null);
+
+    const openProductDetailsDialog=(product)=>{
+        setProductDetails(product);
+        setOpenChipDialog(true);
+        console.log(`Chiped cliked ${product.data.name}`);
+    }
+
+    const updateProductsAddedToOrder=(updatedProduct)=>{
+        setProductDetails(null);
+        const tempProductsAddedToOrder=productsAddedToOrder
+            .filter(product=>product.data.id.low!==updatedProduct.data.id.low);
+        
+        setProductsAddedToOrder(tempProductsAddedToOrder.concat(updatedProduct));
+        console.log(productsAddedToOrder);
+    }
+
+    const handleCloseChipDialog=()=>{
+        setOpenChipDialog(false);
+        setProductDetails(null);
+    }
+
+    const showProducts=()=>{
+        const temProducts=productsAddedToOrder.map(product =>
+            <li key={product.data.id.low}>
+                <Chip 
+                    label={product.data.name} 
+                    className={classes.chip}
+                    onDelete={()=>removeProductFromOrder(product)}
+                    onClick={()=>openProductDetailsDialog(product)}
+                />
+            </li>
+        );
+        
+        return (
+            <Paper component="ul" className={classes.paper}>
+                {temProducts}
+                {productDetails!==null?
+                    <ProductOrderDetailsDialog
+                        onClose={handleCloseChipDialog}
+                        open={openChipDialog}
+                        product={productDetails}
+                        add={updateProductsAddedToOrder}
+                    />
+                    :null
+                }
+            </Paper>
+        )
+    };
+
+    const handleCancelAddOrder=()=>{
+        setOrder(initOrder);
+        setCustomer('');
+        setProduct('');
+        setProductsAddedToOrder([]);
+        onClose();
+    }
 
     return (
         <>
@@ -221,11 +317,12 @@ export default function AddOrderDialog(props) {
                     onClose={onClose}
                     open={open}
                 >
-                    <DialogTitle>Add new category</DialogTitle>
+                    <DialogTitle>Create new order</DialogTitle>
                     <Divider />
                     <DialogContent>
                         {customers !== null ? convertCustomerToSelectItems() : null}
                         {products !== null ? convertProductToSelectItems() : null}
+                        {productsAddedToOrder.length!==0? showProducts():null}
                         <TextField
                             autoFocus
                             fullWidth
@@ -233,8 +330,12 @@ export default function AddOrderDialog(props) {
                             label="Required Date"
                             margin="dense"
                             required
-                            type="text"
+                            type="date"
+                            //defaultValue={new Date().toISOString().slice(0,10)}
                             value={order.requiredDate}
+                            InputLabelProps={{
+                                shrink: true,
+                              }}
                             onChange={handleChange('requiredDate')}
                         />
                         <TextField
@@ -243,8 +344,11 @@ export default function AddOrderDialog(props) {
                             label="Shipped Date"
                             margin="dense"
                             required
-                            type="text"
+                            type="date"
                             value={order.shippedDate}
+                            InputLabelProps={{
+                                shrink: true,
+                              }}
                             onChange={handleChange('shippedDate')}
                         />
                         <TextField
@@ -307,39 +411,9 @@ export default function AddOrderDialog(props) {
                             value={order.shipCountry}
                             onChange={handleChange('shipCountry')}
                         />
-                        <TextField
-                            fullWidth
-                            id="unit-price"
-                            label="Unit Price"
-                            margin="dense"
-                            required
-                            type="number"
-                            value={order.unitPrice}
-                            onChange={handleChange('unitPrice')}
-                        />
-                        <TextField
-                            fullWidth
-                            id="quantity"
-                            label="Quantity"
-                            margin="dense"
-                            required
-                            type="number"
-                            value={order.quantity}
-                            onChange={handleChange('quantity')}
-                        />
-                        <TextField
-                            fullWidth
-                            id="discount"
-                            label="Discount"
-                            margin="dense"
-                            required
-                            type="number"
-                            value={order.discount}
-                            onChange={handleChange('discount')}
-                        />
                     </DialogContent>
                     <DialogActions>
-                        <button className="btn btn-light" onClick={onClose}>
+                        <button className="btn btn-light" onClick={handleCancelAddOrder}>
                             Cancel
                         </button>
                         <button className="btn btn-light" onClick={addOrder}>
