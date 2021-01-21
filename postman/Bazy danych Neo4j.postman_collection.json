@@ -3128,6 +3128,95 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Create Order - many product in one Order",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"customer\": {\r\n            \"country\": \"Mexico\",\r\n            \"address\": \"Mataderos  2312\",\r\n            \"city\": \"M?xico D.F.\",\r\n            \"phone\": \"(5) 555-3932\",\r\n            \"postalCode\": \"5023\",\r\n            \"name\": \"Antonio Moreno\",\r\n            \"company\": \"Antonio Moreno Taquer?a\",\r\n            \"id\": \"ANTON\",\r\n            \"title\": \"Owner\"\r\n        },\r\n    \"orderProperties\":{\r\n            \"shipCity\": \"Reims\",\r\n            \"freight\": 0,\r\n            \"requiredDate\": \"1996-08-01\",\r\n            \"shipName\": \"Vins et alcools Chevalier\",\r\n            \"shipPostalCode\": \"51100\",\r\n            \"shipCountry\": \"France\",\r\n            \"shippedDate\": \"1996-07-16\",\r\n            \"orderDate\": \"1996-07-04\",\r\n            \"shipAddress\": \"59 rue de l''Abbaye\"\r\n        },\r\n    \"orderDetails\": [\r\n            {\r\n                \"productId\": 22,\r\n                \"unitPrice\": 20.00,\r\n                \"quantity\": 1,\r\n                \"discount\" : 5.5\r\n            },\r\n            {\r\n                \"productId\": 23,\r\n                \"unitPrice\": 10.99,\r\n                \"quantity\": 2,\r\n                \"discount\" : 0\r\n            }\r\n        ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/orders",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Orders - existing",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"customer\": {\r\n            \"country\": \"Mexico\",\r\n            \"address\": \"Mataderos  2312\",\r\n            \"city\": \"M?xico D.F.\",\r\n            \"phone\": \"(5) 555-3932\",\r\n            \"postalCode\": \"5023\",\r\n            \"name\": \"Antonio Moreno\",\r\n            \"company\": \"Antonio Moreno Taquer?a\",\r\n            \"id\": \"ANTON\",\r\n            \"title\": \"Owner\"\r\n        },\r\n    \"orderProperties\":{\r\n            \"shipCity\": \"Reims\",\r\n            \"freight\": 1,\r\n            \"requiredDate\": \"1996-08-01\",\r\n            \"id\": 131693,\r\n            \"shipName\": \"Vins et alcools Chevalier\",\r\n            \"shipPostalCode\": \"51100\",\r\n            \"shipCountry\": \"France\",\r\n            \"shippedDate\": \"1996-07-16\",\r\n            \"orderDate\": \"1996-07-04\",\r\n            \"shipAddress\": \"59 rue de l''Abbaye\"\r\n        },\r\n    \"orderDetails\": [\r\n            {\r\n                \"productId\": 32,\r\n                \"odID\": 214340,\r\n                \"unitPrice\": 8.99,\r\n                \"quantity\": 0,\r\n                \"discount\" : 5.0\r\n            }\r\n        ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/orders/existing",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"orders",
+								"existing"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Orders - new",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"customer\": {\r\n            \"country\": \"Mexico\",\r\n            \"address\": \"Mataderos  2312\",\r\n            \"city\": \"M?xico D.F.\",\r\n            \"phone\": \"(5) 555-3932\",\r\n            \"postalCode\": \"5023\",\r\n            \"name\": \"Antonio Moreno\",\r\n            \"company\": \"Antonio Moreno Taquer?a\",\r\n            \"id\": \"ANTON\",\r\n            \"title\": \"Owner\"\r\n        },\r\n    \"orderProperties\":{\r\n            \"shipCity\": \"Reims\",\r\n            \"freight\": 1,\r\n            \"requiredDate\": \"1996-08-01\",\r\n            \"id\": 131693,\r\n            \"shipName\": \"Vins et alcools Chevalier\",\r\n            \"shipPostalCode\": \"51100\",\r\n            \"shipCountry\": \"France\",\r\n            \"shippedDate\": \"1996-07-16\",\r\n            \"orderDate\": \"1996-07-04\",\r\n            \"shipAddress\": \"59 rue de l''Abbaye\"\r\n        },\r\n    \"orderDetails\": [\r\n            {\r\n                \"productId\": 32,\r\n                \"unitPrice\": 8.99,\r\n                \"quantity\": 0,\r\n                \"discount\" : 5.0\r\n            }\r\n        ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/orders/new",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"orders",
+								"new"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},

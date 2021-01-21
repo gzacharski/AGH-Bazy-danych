@@ -49,6 +49,8 @@ const {
   getOrderCrud,
   getOrderCrudCustomer,
   createOrderCrud,
+  updateExistingOrderDetailsCrud,
+  updateNewOrderDetailsCrud,
   deleteOrderCrudById,
   getCustomerOrderDetailsByOrderId,
 } = require("../controllers/nodes/Order");
@@ -101,7 +103,7 @@ router.delete('/api/products/:id', delay,deleteProduct);
 router.get('/api/orders/old', select, getAll);
 router.get('/api/orders/:id', select, getById);
 router.post('/api/orders/old', select, create)
-router.put('/api/orders/:id', select, updateById);
+router.put('/api/orders/:id/old', select, updateById);
 router.delete('/api/orders/:id/old', select, deleteById);
 
 
@@ -143,6 +145,8 @@ router.post('/api/orders/oneproduct', select, createOrderCrudOneProduct);
 router.get('/api/orders', select, getOrderCrud);
 router.get('/api/orders/customers/:id', select, getOrderCrudCustomer);
 router.post('/api/orders', select, createOrderCrud);
+router.put('/api/orders/existing', updateExistingOrderDetailsCrud); //update existing Order node properties and CONTAINS relationship properties
+router.put('/api/orders/new', updateNewOrderDetailsCrud);
 router.delete('/api/orders/:id', select, deleteOrderCrudById);
 router.get('/api/orders/:id/customer/orderdetails', getCustomerOrderDetailsByOrderId);
 

@@ -39,7 +39,10 @@ module.exports.getCustomersServedBySupplier = async (request, response) => {
     const session = driver.session(config);
 
     try{
-        const suppliesQuery = `MATCH (supplier:Supplier)-[r:SUPPLIES]->(product:Product) WHERE supplier.id=$id RETURN product`;
+        const suppliesQuery =
+            `MATCH (supplier:Supplier)-[r:SUPPLIES]->(product:Product) 
+            WHERE supplier.id=$id 
+            RETURN product`;
         const suppliesParams =  {id: Number.parseInt(id) };
 
         const productsResult = await session.readTransaction(tx => tx.run(suppliesQuery,suppliesParams));
@@ -50,7 +53,10 @@ module.exports.getCustomersServedBySupplier = async (request, response) => {
         let orders =[];
 
         for(let i=0; i<products.length; i++){
-            const containsQuery = `MATCH (order:Order)-[r:CONTAINS]->(product:Product) WHERE product.id=$id AND order.orderDate>=$from AND order.orderDate<=$to RETURN order`;
+            const containsQuery =
+                `MATCH (order:Order)-[r:CONTAINS]->(product:Product) W
+                HERE product.id=$id AND order.orderDate>=$from AND order.orderDate<=$to 
+                RETURN order`;
             let containsParams =  {
                 id: Number.parseInt(products[i]),
                 from: from,
@@ -65,7 +71,10 @@ module.exports.getCustomersServedBySupplier = async (request, response) => {
         let customers = [];
 
         for(let i=0; i<orders.length; i++){
-            const orderedByQuery = `MATCH (order:Order)-[r:ORDERED_BY]->(customer:Customer) WHERE order.id=$id RETURN customer`;
+            const orderedByQuery =
+                `MATCH (order:Order)-[r:ORDERED_BY]->(customer:Customer) 
+                WHERE order.id=$id 
+                RETURN customer`;
             let orderedByParams =  {id: Number.parseInt(orders[i]) };
             let customersResult = await session.readTransaction(tx => tx.run(orderedByQuery,orderedByParams));
             let customersProperties = customersResult.records.map(record => record.get(0).properties.id);
@@ -103,7 +112,11 @@ module.exports.getCustomersServedBySupplierOneQuery = async (request, response) 
     const session = driver.session(config);
 
     try{
-        const query = `MATCH (supplier:Supplier)-[rs:SUPPLIES]->(product:Product)<-[cr:CONTAINS]-(order:Order)-[or:ORDERED_BY]->(customer:Customer) WHERE supplier.id=$id AND order.orderDate >= $from AND order.orderDate <= $to RETURN customer`;
+        const query =
+            `MATCH (supplier:Supplier)-[rs:SUPPLIES]->(product:Product)<-[cr:CONTAINS]-(order:Order)-[or:ORDERED_BY]->(customer:Customer) 
+            WHERE supplier.id=$id AND order.orderDate >= $from AND order.orderDate <= $to 
+            RETURN customer`;
+
         const params =  {id: Number.parseInt(id), from: from, to: to };
 
         const result = await session.readTransaction(tx => tx.run(query,params));
