@@ -257,7 +257,9 @@ module.exports.getStatsForCategory = async (request, response) => {
                         RETURN {
                             categoryName: c.name, 
                             totalIncome: sum(contains.unitPrice * contains.quantity * (1 - contains.discount)),
-                            totalUnitsSold: sum(contains.quantity)
+                            totalUnitsSold: sum(contains.quantity),
+                            averagePrice: avg(contains.unitPrice),
+                            averageDiscount: avg(contains.discount)
                         }`;
         const statsParams =  {id: Number.parseInt(id)};
         const statsResult = await session.readTransaction(tx => tx.run(statsQuery,statsParams));
@@ -267,7 +269,7 @@ module.exports.getStatsForCategory = async (request, response) => {
                         WHERE c.id=$id
                         RETURN {
                             mostSoldProduct: p.name,
-                            mostSoldProductUnitsSold: sum(contains.quantity) 
+                            mostSoldProductUnitsSold: sum(contains.quantity)
                         } as ret ORDER BY ret.mostSoldProductUnitsSold DESC LIMIT 1`;
         const mostSoldProductParams =  {id: Number.parseInt(id)};
         const mostSoldProductRes = await session.readTransaction(tx => tx.run(mostSoldProductQuery,mostSoldProductParams));
