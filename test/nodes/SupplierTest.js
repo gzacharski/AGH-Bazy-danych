@@ -31,7 +31,7 @@ describe("Create new supplier",()=>{
                 expect(res.statusCode).to.be.oneOf([200,201]);
                 expect(res.body).to.have.property("id");
                 expect(res.body).to.have.property("companyName");
-                supplierID=Number.parseInt(res.body.id.low);
+                supplierID=Number.parseInt(res.body.id);
 
                 let tempSupplier=supplier;
                 tempSupplier.id={

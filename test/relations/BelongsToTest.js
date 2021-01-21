@@ -48,7 +48,7 @@ describe("Create and delete Belongs To relationship", () => {
             .end((err, res) => {
                 expect(res).to.have.status(201);
                 expect(res.body.name).equals(productName)
-                productId = res.body.id.low
+                productId = res.body.id
                 done()
             });
     })

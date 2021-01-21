@@ -16,7 +16,7 @@ const nodeExists = async (id, label) => {
         if (label === 'Customer') {
             exists = result.records.length !== 0 && result.records[0].get(0).properties.id === id;
         } else {
-            exists = result.records.length !== 0 && result.records[0].get(0).properties.id.low === Number.parseInt(id);
+            exists = result.records.length !== 0 && result.records[0].get(0).properties.id === Number.parseInt(id);
         }
 
     } finally {

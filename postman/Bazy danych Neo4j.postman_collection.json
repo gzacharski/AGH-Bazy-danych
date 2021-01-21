@@ -113,7 +113,7 @@
 											"    pm.expect(isEqual(requestBody,responseBody)).to.be.true;\r",
 											"});\r",
 											"\r",
-											"pm.collectionVariables.set(\"employee_id\", pm.response.json().id.low);"
+											"pm.collectionVariables.set(\"employee_id\", pm.response.json().id);"
 										],
 										"type": "text/javascript"
 									}
@@ -564,7 +564,7 @@
 											"    pm.expect(isEqual(requestBody,responseBody)).to.be.true;\r",
 											"});\r",
 											"\r",
-											"pm.collectionVariables.set(\"category_id\", pm.response.json().id.low);"
+											"pm.collectionVariables.set(\"category_id\", pm.response.json().id);"
 										],
 										"type": "text/javascript"
 									}
@@ -1489,7 +1489,7 @@
 											"    pm.expect(isEqual(requestBody,responseBody)).to.be.true;\r",
 											"});\r",
 											"\r",
-											"pm.collectionVariables.set(\"product_id\", pm.response.json().id.low);"
+											"pm.collectionVariables.set(\"product_id\", pm.response.json().id);"
 										],
 										"type": "text/javascript"
 									}
@@ -1932,7 +1932,7 @@
 											"    pm.expect(isEqual(requestBody,responseBody)).to.be.true;\r",
 											"});\r",
 											"\r",
-											"pm.collectionVariables.set(\"shipper_id\", pm.response.json().id.low);"
+											"pm.collectionVariables.set(\"shipper_id\", pm.response.json().id);"
 										],
 										"type": "text/javascript"
 									}
@@ -2375,7 +2375,7 @@
 											"    pm.expect(isEqual(requestBody,responseBody)).to.be.true;\r",
 											"});\r",
 											"\r",
-											"pm.collectionVariables.set(\"supplier_id\", pm.response.json().id.low);"
+											"pm.collectionVariables.set(\"supplier_id\", pm.response.json().id);"
 										],
 										"type": "text/javascript"
 									}

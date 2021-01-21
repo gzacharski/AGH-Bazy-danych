@@ -16,7 +16,7 @@ const nodeExists = async (id, label) => {
         if (label === 'Customer') {
             exists = result.records.length !== 0 && result.records[0].get(0).properties.id === id;
         } else {
-            exists = result.records.length !== 0 && result.records[0].get(0).properties.id.low === Number.parseInt(id);
+            exists = result.records.length !== 0 && result.records[0].get(0).properties.id === Number.parseInt(id);
         }
 
     } finally {
@@ -46,7 +46,7 @@ module.exports.getCustomersServedBySupplier = async (request, response) => {
         const suppliesParams =  {id: Number.parseInt(id) };
 
         const productsResult = await session.readTransaction(tx => tx.run(suppliesQuery,suppliesParams));
-        const products = productsResult.records.map(record => record.get(0).properties.id.low);
+        const products = productsResult.records.map(record => record.get(0).properties.id);
 
         if (!products) throw new Error(`ERROR - The server was not able to get Products supplies by Supplier: ${id}.`);
 
@@ -64,7 +64,7 @@ module.exports.getCustomersServedBySupplier = async (request, response) => {
             };
 
             let productOrdersResult = await session.readTransaction(tx => tx.run(containsQuery,containsParams));
-            let productOrders = productOrdersResult.records.map(record => record.get(0).properties.id.low);
+            let productOrders = productOrdersResult.records.map(record => record.get(0).properties.id);
             orders = orders.concat(productOrders);
         }
 

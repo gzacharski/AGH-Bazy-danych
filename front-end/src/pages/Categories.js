@@ -15,7 +15,7 @@ class Categories extends Component {
         categories: [],
         errorMsg: '',
         columns: [
-            { Header: 'Id', accessor: 'id.low' },
+            { Header: 'Id', accessor: 'id' },
             { Header: 'Name', accessor: 'name' },
             { Header: 'Description', accessor: 'description' }
         ],
@@ -67,10 +67,10 @@ class Categories extends Component {
         }
 
         const updatedCategories = this.state.categories.map(
-            category => (category.id.low === theCategory.id.low ? theCategory : category)
+            category => (category.id === theCategory.id ? theCategory : category)
         )
 
-        await axios.put(`${url}/api/categories/${theCategory.id.low}`, {
+        await axios.put(`${url}/api/categories/${theCategory.id}`, {
             name: theCategory.name,
             description: theCategory.description
         })
@@ -118,7 +118,7 @@ class Categories extends Component {
         const id = removedCategory.cells[0].value;
 
         const updatedCategories = this.state.categories.filter(
-            category => category.id.low !== id
+            category => category.id !== id
         );
 
         let hasBeenRemoved = {

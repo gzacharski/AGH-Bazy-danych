@@ -15,7 +15,7 @@ class Suppliers extends Component {
         suppliers: [],
         errorMsg: '',
         columns : [
-            { Header: 'Id', accessor: 'id.low' },
+            { Header: 'Id', accessor: 'id' },
             { Header: 'Company name', accessor: 'companyName' },
             { Header: 'Contact name', accessor: 'contactName' },
             { Header: 'Contact title', accessor: 'contactTitle' },
@@ -79,10 +79,10 @@ class Suppliers extends Component {
         }
 
         const updatedSuppliers=this.state.suppliers.map(
-            supplier=>(supplier.id.low===theSupplier.id.low?theSupplier:supplier)
+            supplier=>(supplier.id===theSupplier.id?theSupplier:supplier)
         )
 
-        await axios.put(`${url}/api/suppliers/${theSupplier.id.low}`,{
+        await axios.put(`${url}/api/suppliers/${theSupplier.id}`,{
             companyName: theSupplier.companyName,
             contactName: theSupplier.contactName,
             contactTitle: theSupplier.contactTitle,
@@ -134,7 +134,7 @@ class Suppliers extends Component {
         const id = removedSupplier.cells[0].value;
 
         const updatedSuppliers=this.state.suppliers.filter(
-            supplier=>supplier.id.low!==id
+            supplier=>supplier.id!==id
         );
 
         await axios.delete(`${url}/api/suppliers/${id}`)

@@ -97,7 +97,7 @@ export default function ProductInfoDialog(props) {
 
         const selectedCategories=categories.map(category=>(
             <MenuItem
-                key={category.id.low}
+                key={category.id}
                 value={category}
             >
                 {category.name}
@@ -118,7 +118,7 @@ export default function ProductInfoDialog(props) {
                     renderValue={selected => (
                         <div className={classes.chips}>
                             {selected.map(value => (
-                                <Chip key={value.id.low} label={value.name} className={classes.chip} />
+                                <Chip key={value.id} label={value.name} className={classes.chip} />
                             ))}
                         </div>
                     )}

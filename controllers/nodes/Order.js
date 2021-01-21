@@ -553,7 +553,7 @@ module.exports.updateNewOrderDetailsCrud = async (request, response) => {
         let orderDetailsResult = [];
         for(let i=0; i<orderDetailsResponse.length; i++){
             orderDetailsResult.push({
-                "productId": productsResponse[i].properties.id.low,
+                "productId": productsResponse[i].properties.id,
                 "unitPrice": orderDetailsResponse[i].properties.unitPrice,
                 "quantity" : orderDetailsResponse[i].properties.quantity,
                 "discount" : orderDetailsResponse[i].properties.discount

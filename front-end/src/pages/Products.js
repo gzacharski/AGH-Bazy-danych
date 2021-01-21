@@ -12,14 +12,14 @@ function Alert(props) {
 export default function Products() {
     const [products, setProducts] = useState([]);
     const columns = [
-        { Header: 'Id', accessor: 'id.low' },
+        { Header: 'Id', accessor: 'id' },
         { Header: 'Name', accessor: 'name' },
         { Header: 'Quantity per unit', accessor: 'quantityPerUnit' },
         { Header: 'Unit price', accessor: 'unitPrice' },
-        { Header: 'Units in stock', accessor: 'unitsInStock.low' },
-        { Header: 'Reorder level', accessor: 'reorderLevel.low' },
-        { Header: 'Discontinued', accessor: 'discontinued.low' },
-        { Header: 'Units on order', accessor: 'unitsOnOrder.low' }
+        { Header: 'Units in stock', accessor: 'unitsInStock' },
+        { Header: 'Reorder level', accessor: 'reorderLevel' },
+        { Header: 'Discontinued', accessor: 'discontinued' },
+        { Header: 'Units on order', accessor: 'unitsOnOrder' }
     ];
     const [response, setResponse] = useState({ success: false, message: "" });
     const [openSnackbar,setOpenSnackbar]=useState(false);
@@ -67,7 +67,7 @@ export default function Products() {
 
         const updatedProductsTable=products
             .map(product=>{
-                if(Number.parseInt(product.id.low)===productID){
+                if(Number.parseInt(product.id)===productID){
                     product={
                         discontinued: {low: tempProduct.discontinued, high: 0},
                         id: {low: productID, high: 0},
@@ -121,7 +121,7 @@ export default function Products() {
             .value;
 
         const updatedProductsTable=products
-            .filter(product=>Number.parseInt(product.id.low)!==productID);
+            .filter(product=>Number.parseInt(product.id)!==productID);
 
         await axios.delete(`${url}/api/products/${productID}`)
             .then(response=>{

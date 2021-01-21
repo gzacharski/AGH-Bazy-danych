@@ -28,7 +28,7 @@ describe("Create new category",()=>{
                 expect(res.body).to.have.property("description");
                 expect(res.body.name).to.deep.equal(category.name);
                 expect(res.body.description).to.deep.equal(category.description);
-                categoryID=Number.parseInt(res.body.id.low);
+                categoryID=Number.parseInt(res.body.id);
                 done();
             });
     }).timeout(timeout);
@@ -45,7 +45,7 @@ describe("Get category by ID",()=>{
                 expect(res.body).to.have.property("id");
                 expect(res.body).to.have.property("name");
                 expect(res.body).to.have.property("description");
-                expect(res.body.id.low).to.deep.equal(categoryID);
+                expect(res.body.id).to.deep.equal(categoryID);
                 expect(res.body.name).to.deep.equal(category.name);
                 expect(res.body.description).to.deep.equal(category.description);
                 done();
@@ -72,7 +72,7 @@ describe("Update category by ID",()=>{
                 expect(res.body).to.have.property("name");
                 expect(res.body).to.have.property("description");
                 expect(res.body).to.have.property("testproperty");
-                expect(res.body.id.low).to.deep.equal(categoryID);
+                expect(res.body.id).to.deep.equal(categoryID);
 
                 delete res.body.id;
                 expect(isEqual(res.body,updatedCategory)).to.be.true;
