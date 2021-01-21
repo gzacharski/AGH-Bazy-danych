@@ -28,7 +28,7 @@ export default function StatsCategories() {
     useEffect(getCategories, []);
 
     function getCategories() {
-        axios.get(`${url}/stats/categories/1`)
+        axios.get(`${url}/stats/categories/2`)
             .then(response => {
                 console.log(response.data)
                 setStats([response.data])

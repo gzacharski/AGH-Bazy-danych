@@ -101,13 +101,20 @@ export default function RowActions(props) {
                 handleOpen={handleOpenMoreInfo}
             />
             {moreInfoDialog(read,title,openMoreInfo)}
-            <EditButton
-                handleOpen={handleOpenEdit}
-            />
+            {
+                title === "Stats for categories" || title === "Stats for products" ||
+                <EditButton
+                    handleOpen={handleOpenEdit}
+                />
+            }
+
             {editDialog(update,title,openEdit)}
-            <RemoveButton
-                handleOpen={handleOpenRemove}
-            />
+            {
+                title === "Stats for categories" || title === "Stats for products" ||
+                <RemoveButton
+                    handleOpen={handleOpenRemove}
+                />
+            }
             <RemoveRowDialog
                 row={data}
                 titles={headers}
