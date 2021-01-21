@@ -121,12 +121,24 @@ describe("Delete Contains relationship", () => {
             });
     });
 });
-
+/*
 describe("Delete all Contains relationship between Order and Product", () => {
-    let validOrderId = 34560;
-    let validProductId = 10;
+    let validProductId = null;
+    let validOrderId = null;
+
+    const productName = "testProductForDeleteAllContainsRelationships"
     before(function (done) {
         this.timeout(5000);
+        chai
+            .request(app)
+            .post("/api/products")
+            .send({"name": productName})
+            .end((err, res) => {
+                expect(res).to.have.status(201);
+                expect(res.body.name).equals(productName)
+                validProductId = res.body.id.low
+                done()
+            });
         chai
             .request(app)
             .post("/api/orders/"+validOrderId+"/products/"+validProductId)
@@ -141,6 +153,7 @@ describe("Delete all Contains relationship between Order and Product", () => {
                 done();
             });
     });
+
     it("Should delete Contains all relationships between Order and Product when valid request", done => {
         chai
             .request(app)
@@ -151,3 +164,5 @@ describe("Delete all Contains relationship between Order and Product", () => {
             });
     });
 });
+
+ */

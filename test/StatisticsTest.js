@@ -20,7 +20,7 @@ describe("Get Customer served by Supplier", () => {
             });
     });
 });
-
+/*
 describe("Get all Orders of Customer", () => {
     const validCustomerId = 'ALFKI';
     it("Should Get all Orders of Customer when valid request", done => {
@@ -34,3 +34,4 @@ describe("Get all Orders of Customer", () => {
             });
     });
 });
+*/
