@@ -456,7 +456,6 @@ module.exports.updateExistingOrderDetailsCrud = async (request, response) => {
 
         const result = await session.writeTransaction(tx => tx.run(query, orderParams));
 
-        console.log(result);
         const nodes = result.records;
 
         if (nodes.length<1) throw new Error(`The server was not able to update the Order.`);
