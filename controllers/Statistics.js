@@ -54,8 +54,8 @@ module.exports.getCustomersServedBySupplier = async (request, response) => {
 
         for(let i=0; i<products.length; i++){
             const containsQuery =
-                `MATCH (order:Order)-[r:CONTAINS]->(product:Product) W
-                HERE product.id=$id AND order.orderDate>=$from AND order.orderDate<=$to 
+                `MATCH (order:Order)-[r:CONTAINS]->(product:Product)
+                WHERE product.id=$id AND order.orderDate>=$from AND order.orderDate<=$to 
                 RETURN order`;
             let containsParams =  {
                 id: Number.parseInt(products[i]),
