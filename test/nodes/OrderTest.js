@@ -7,7 +7,7 @@ chai.use(chaiHttp);
 
 describe("Create Product Order", () => {
     const validCustomerId = 'ALFKI';
-    const validProductId = 1;
+    const validProductId = 2
     it("Should create Product Order when valid request", done => {
         chai
             .request(app)
@@ -35,7 +35,7 @@ describe("Create Product Order", () => {
 
 describe("Create new Product Order (for one product)", () => {
     const validCustomerId = 'ALFKI';
-    const validProductId = 1;
+    const validProductId = 2
     it("Should create new Product Order when valid request", done => {
         chai
             .request(app)

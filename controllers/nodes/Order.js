@@ -93,7 +93,10 @@ module.exports.createProductOrder = async (request, response) => {
 
         const nodeLabelOrder = 'Order';
 
-        let createOrderQuery = `CREATE (n:${nodeLabelOrder}) SET n+=$properties, n.id=${orderId} RETURN n`;
+        let createOrderQuery =
+            `CREATE (n:${nodeLabelOrder}) 
+            SET n+=$properties, n.id=${orderId} 
+            RETURN n`;
 
         const orderParams = {
             properties: orderBodyParsed
@@ -124,7 +127,12 @@ module.exports.createProductOrder = async (request, response) => {
             "discount": Number.parseFloat(discount)
         }
 
-        const containsSuppliesQuery = `MATCH (o:${nodeLabelOrder}),(p:${nodeLabelProduct}) WHERE o.id = $order AND p.id = $product CREATE (o)-[r:CONTAINS]->(p) SET r+=$properties RETURN type(r)`;
+        const containsSuppliesQuery =
+            `MATCH (o:${nodeLabelOrder}),(p:${nodeLabelProduct}) 
+            WHERE o.id = $order AND p.id = $product 
+            CREATE (o)-[r:CONTAINS]->(p) 
+            SET r+=$properties 
+            RETURN type(r)`;
 
         const orderDetailsParams = {
             order: Number.parseInt(orderId),
@@ -138,7 +146,10 @@ module.exports.createProductOrder = async (request, response) => {
         if (!containsNode) throw new Error(`ERROR - cannot create CONTAINS relationship between Order: ${orderId} and Product: ${productId}.`);
 
         //create ordered by relation
-        const existingOrderCustomersQuery = `MATCH (o:${nodeLabelOrder})-[r:ORDERED_BY]-(c:${nodeLabelCustomer}) WHERE o.id = $id RETURN c`;
+        const existingOrderCustomersQuery =
+            `MATCH (o:${nodeLabelOrder})-[r:ORDERED_BY]-(c:${nodeLabelCustomer}) 
+            WHERE o.id = $id 
+            RETURN c`;
         const existingOrderCustomersParams =  {id: Number.parseInt(orderId)};
         const existingOrderCustomersResult = await session.writeTransaction(tx => tx.run(existingOrderCustomersQuery, existingOrderCustomersParams));
         const customersCount = existingOrderCustomersResult.records.length;
@@ -148,7 +159,11 @@ module.exports.createProductOrder = async (request, response) => {
             throw new Error(`ERROR - cannot create ORDERED BY relationship between Order: ${orderId} and Customer: ${customerId} Order: ${orderId} has already got Customer ${existingCustomer}.`);
         }
 
-        const relationOrderQuery = `MATCH (o:${nodeLabelOrder}),(c:${nodeLabelCustomer}) WHERE o.id = $order AND c.id =$customer CREATE (o)-[r:ORDERED_BY]->(c) RETURN type(r)`;
+        const relationOrderQuery =
+            `MATCH (o:${nodeLabelOrder}),(c:${nodeLabelCustomer}) 
+            WHERE o.id = $order AND c.id =$customer 
+            CREATE (o)-[r:ORDERED_BY]->(c) 
+            RETURN type(r)`;
 
         const orderedByParams =  {order: Number.parseInt(orderId), customer: customerId};
         const orderedByResult = await session.writeTransaction(tx => tx.run(relationOrderQuery, orderedByParams));
@@ -519,7 +534,7 @@ module.exports.updateNewOrderDetailsCrud = async (request, response) => {
         const deleteQuery  =
             `MATCH (o:Order)-[crToDelete:CONTAINS]->(p:Product)
             WHERE o.id=$orderProperties.id
-            DETACH DELETE crToDelete`;
+            DELETE crToDelete`;
 
         const deleteResult = await session.writeTransaction(tx => tx.run(deleteQuery, orderParams));
 
