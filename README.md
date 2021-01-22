@@ -19,13 +19,11 @@ Dokumentacja projektu jest dostępna w sekcji [Wiki](https://github.com/gzachars
 ## Uruchamianie
 1. Wytworzenie obrazu Dockerowego dla back-endu
    ```shell script
-   cd back-end
-   docker build -t back-end .
+   docker build -t back-end back-end
    ```
 1. Wytworzenie obrazu Dockerowego dla front-endu
    ```shell script
-   cd front-end
-   docker build -t front-end .
+   docker build -t front-end front-end
    ```
 1. Wystartowanie Neo4j wraz z bazą Northwind, back-endu i front-endu w kontenerach Dockerowych:
    ```shell script

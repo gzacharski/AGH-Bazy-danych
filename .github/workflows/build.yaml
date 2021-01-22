@@ -11,9 +11,9 @@ jobs:
         with:
           node-version: '14'
       - name: Build back-end image
-        run: cd back-end && docker build -t back-end .
+        run: docker build -t back-end back-end
       - name: Build front-end image
-        run: cd front-end && docker build -t front-end .
+        run: docker build -t front-end back-end
       - name: Start the database, back-end, front-end
         run: docker-compose up -d
       - name: Wait until database is ready
