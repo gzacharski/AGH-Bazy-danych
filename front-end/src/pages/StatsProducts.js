@@ -16,7 +16,7 @@ class StatsProducts extends Component {
         errorMsg: '',
         columns: [
             { Header: 'Product Name', accessor: 'productName' },
-            { Header: 'Total Income', accessor: 'totalIncome' },
+            { Header: 'Total Income Generated', accessor: 'totalIncome' },
             { Header: 'Total Units Sold', accessor: 'totalUnitsSold' },
             { Header: 'Average Price', accessor: 'averagePrice' },
             { Header: 'Average Discount', accessor: 'averageDiscount' },

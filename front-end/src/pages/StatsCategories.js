@@ -1,7 +1,7 @@
 import axios from 'axios';
 import MuiAlert from '@material-ui/lab/Alert';
 import React, {useEffect, useState} from 'react';
-import {Snackbar} from '@material-ui/core';
+import {MenuItem, Snackbar, TextField} from '@material-ui/core';
 import Table from '../components/table/Table';
 import { url } from '../config/config';
 
@@ -22,16 +22,30 @@ export default function StatsCategories() {
         { Header: 'Supplier For Most Sold Product', accessor: 'mostSoldProductSupplier' }
     ];
     const [stats, setStats] = useState([]);
+    const [categories, setCategories] = useState([]);
     const [openSnackbar, setOpenSnackbar] = useState(null);
     const [response, setResponse] = useState({success: false, message: ''});
+    const [selectedCategory, setSelectedCategory] = useState(1)
+    const [anchorEl, setAnchorEl] = useState(false)
 
-    useEffect(getCategories, []);
+    useEffect(getCategories, [selectedCategory]);
 
     function getCategories() {
-        axios.get(`${url}/stats/categories/2`)
+        axios.get(`${url}/stats/categories/` + selectedCategory)
             .then(response => {
+                console.log("Getting stats for category " + selectedCategory)
                 console.log(response.data)
                 setStats([response.data])
+            })
+            .catch(error => {
+                console.log(error);
+            })
+
+        axios.get(`${url}/api/categories`)
+            .then(response => {
+                console.log("Getting categories...")
+                console.log(response.data.nodes)
+                setCategories(response.data.nodes)
             })
             .catch(error => {
                 console.log(error);
@@ -48,6 +62,18 @@ export default function StatsCategories() {
     return (
         <>
             <div>
+                <TextField
+                    required={true}
+                    id="category"
+                    select
+                    label="Select Category"
+                    value="asdfajsdflksdfl"
+                    onChange={() => console.log()}
+                >
+                    {categories.map((category) => (
+                        <MenuItem key={category.id} onClick={() => setSelectedCategory(category.id)}>{category.name}</MenuItem>
+                    ))}
+                </TextField>
                 <Table
                     title="Stats for categories"
                     data={stats}

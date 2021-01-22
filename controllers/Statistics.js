@@ -224,7 +224,6 @@ module.exports.getStatsForProduct = async (request, response) => {
 
 module.exports.getStatsForAllProducts = async (request, response) => {
     console.log('Get statistics for all products...');
-    const id = request.params.id;
     const session = driver.session(config);
     try{
         const query = `MATCH (o:Order)-[r:CONTAINS]->(p:Product)
@@ -238,8 +237,7 @@ module.exports.getStatsForAllProducts = async (request, response) => {
                             maxDiscount: max(r.discount), 
                             countriesShipped: collect(DISTINCT o.shipCountry) 
                         }`;
-        const params =  {id: Number.parseInt(id)};
-        const result = await session.readTransaction(tx => tx.run(query,params));
+        const result = await session.readTransaction(tx => tx.run(query,null));
         const statsForProducts = result.records.map(record => record.get(0));
 
         if (!statsForProducts) throw new Error(`ERROR - The server was not able to get statistics for all products.`);
