@@ -22,7 +22,7 @@
   },
   "scripts": {
     "test": "mocha --exit --recursive",
-    "run": "npm start & wait-on http://localhost:3000/health && mocha --exit --recursive"
+    "run": "wait-on http://localhost:3000/health && mocha --exit --recursive"
   },
   "repository": {
     "type": "git",
