@@ -121,13 +121,13 @@ describe("Create new Product Order (for many products)", () => {
                     {
                         "productId": 22,
                         "unitPrice": 20.00,
-                        "quantity": 0,
+                        "quantity": 1,
                         "discount" : 5.5
                     },
                     {
                         "productId": 23,
                         "unitPrice": 10.99,
-                        "quantity": 0,
+                        "quantity": 1,
                         "discount" : 0
                     }
                 ]
