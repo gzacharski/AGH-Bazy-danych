@@ -62,9 +62,11 @@ export default function Orders() {
         console.log(Order);
     }
 
-    const updateOrder = (Order)=>{
+    const updateOrder = async (updatedOrder)=>{
         console.log("Update specified Order...");
-        console.log(Order);
+        console.log(updatedOrder);
+
+        return response;
     }
 
     const deleteOrder =async (removedOrder)=>{
