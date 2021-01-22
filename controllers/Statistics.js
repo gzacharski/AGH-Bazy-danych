@@ -202,7 +202,7 @@ module.exports.getStatsForProduct = async (request, response) => {
         const params =  {id: Number.parseInt(id)};
 
         const result = await session.readTransaction(tx => tx.run(query,params));
-        const productStats = result.records.map(record => record.get(0));
+        const productStats = result.records.map(record => record.get(0))[0];
 
         if (!productStats) throw new Error(`ERROR - The server was not able to get statistics for product: ${id}.`);
 
