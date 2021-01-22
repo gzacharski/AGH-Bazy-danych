@@ -1,7 +1,7 @@
 import axios from 'axios';
 import MuiAlert from '@material-ui/lab/Alert';
-import React, {Component, useEffect, useState} from 'react';
-import {Button, FormControl, InputLabel, Menu, MenuItem, Select, Snackbar} from '@material-ui/core';
+import React, {useEffect, useState} from 'react';
+import {Snackbar} from '@material-ui/core';
 import Table from '../components/table/Table';
 import { url } from '../config/config';
 
@@ -52,12 +52,6 @@ export default function StatsCategories() {
                     title="Stats for categories"
                     data={stats}
                     columns={columns}
-                    crudActions={{
-                        create: () => console.log("create"),
-                        read: () => console.log("read"),
-                        update: () => console.log("update"),
-                        remove: () => console.log("remove")
-                    }}
                 />
             </div>
             <Snackbar open={openSnackbar} autoHideDuration={3000} onClose={handleCloseSnackbar}>
