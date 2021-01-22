@@ -134,7 +134,7 @@ describe("Create new Product Order (for many products)", () => {
             })
             .end((err, res) => {
                 expect(res).to.have.status(201);
-                orderId = res.body.orders.id.low;
+                orderId = res.body.orders.id;
                 done();
             });
     }).timeout(15000);

@@ -31,13 +31,10 @@ describe("Create new supplier",()=>{
                 expect(res.statusCode).to.be.oneOf([200,201]);
                 expect(res.body).to.have.property("id");
                 expect(res.body).to.have.property("companyName");
-                supplierID=Number.parseInt(res.body.id.low);
+                supplierID=Number.parseInt(res.body.id);
 
                 let tempSupplier=supplier;
-                tempSupplier.id={
-                    low:supplierID,
-                    high:0
-                }
+                tempSupplier.id=supplierID
 
                 expect(isEqual(res.body,tempSupplier)).to.be.true;
                 done();
@@ -57,10 +54,7 @@ describe("Get supplier by ID",()=>{
                 expect(res.body).to.have.property("companyName");
 
                 let tempSupplier=supplier;
-                tempSupplier.id={
-                    low:supplierID,
-                    high:0
-                }
+                tempSupplier.id=supplierID
                 expect(isEqual(res.body,tempSupplier)).to.be.true;
                 done();
             });
@@ -86,10 +80,7 @@ describe("Update supplier by ID",()=>{
                 expect(res.body).to.have.property("testproperty");
 
                 let tempSupplier=Object.assign({},supplier,updatedSupplier);
-                tempSupplier.id={
-                    low:supplierID,
-                    high:0
-                }
+                tempSupplier.id=supplierID
 
                 expect(isEqual(res.body,supplier)).to.be.false;
                 expect(isEqual(res.body,tempSupplier)).to.be.true;

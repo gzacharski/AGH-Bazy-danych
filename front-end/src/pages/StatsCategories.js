@@ -1,7 +1,7 @@
 import axios from 'axios';
 import MuiAlert from '@material-ui/lab/Alert';
-import React, {Component, useEffect, useState} from 'react';
-import {Button, FormControl, InputLabel, Menu, MenuItem, Select, Snackbar} from '@material-ui/core';
+import React, {useEffect, useState} from 'react';
+import {Snackbar} from '@material-ui/core';
 import Table from '../components/table/Table';
 import { url } from '../config/config';
 
@@ -11,23 +11,15 @@ function Alert(props) {
 
 export default function StatsCategories() {
     const columns = [
-        { Header: 'categoryName', accessor: 'categoryName' },
-        { Header: 'Total Income', accessor: 'totalIncome' },
-        { Header: 'Total Units Sold', accessor: (row) => {
-                if (row.totalUnitsSold.low) {
-                    return row.totalUnitsSold.low;
-                }
-                return row.totalUnitsSold
-            }},
+        { Header: 'Category Name', accessor: 'categoryName' },
+        { Header: 'Total Income Generated', accessor: 'totalIncomeGenerated' },
+        { Header: 'Total Units Sold', accessor: 'totalUnitsSold' },
         { Header: 'Average Price', accessor: 'averagePrice' },
         { Header: 'Average Discount', accessor: 'averageDiscount' },
+        { Header: 'Total Units In Stock', accessor: 'totalUnitsInStock' },
         { Header: 'Most Sold Product', accessor: 'mostSoldProduct' },
-        { Header: 'Most Sold Product Units Sold', accessor: (row) => {
-                if (row.mostSoldProductUnitsSold.low) {
-                    return row.mostSoldProductUnitsSold.low;
-                }
-                return row.mostSoldProductUnitsSold
-        }}
+        { Header: 'Units Sold Of Most Sold Product', accessor: 'mostSoldProductUnitsSold' },
+        { Header: 'Supplier For Most Sold Product', accessor: 'mostSoldProductSupplier' }
     ];
     const [stats, setStats] = useState([]);
     const [openSnackbar, setOpenSnackbar] = useState(null);
@@ -36,7 +28,7 @@ export default function StatsCategories() {
     useEffect(getCategories, []);
 
     function getCategories() {
-        axios.get(`${url}/stats/categories/1`)
+        axios.get(`${url}/stats/categories/2`)
             .then(response => {
                 console.log(response.data)
                 setStats([response.data])
@@ -60,12 +52,6 @@ export default function StatsCategories() {
                     title="Stats for categories"
                     data={stats}
                     columns={columns}
-                    crudActions={{
-                        create: () => console.log("create"),
-                        read: () => console.log("read"),
-                        update: () => console.log("update"),
-                        remove: () => console.log("remove")
-                    }}
                 />
             </div>
             <Snackbar open={openSnackbar} autoHideDuration={3000} onClose={handleCloseSnackbar}>

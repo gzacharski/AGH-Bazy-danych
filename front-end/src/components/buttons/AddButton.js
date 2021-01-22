@@ -44,11 +44,14 @@ export default function AddButton(props) {
 
     return(
         <>
-            <Tooltip title="Add">
-                <IconButton aria-label="Add" onClick={handleOpen}>
-                    <IoMdAdd/>
-                </IconButton>
-            </Tooltip>
+            {
+                title === "Stats for categories" || title === "Stats for products" ||
+                <Tooltip title="Add">
+                    <IconButton aria-label="Add" onClick={handleOpen}>
+                        <IoMdAdd/>
+                    </IconButton>
+                </Tooltip>
+            }
             {addDialog(add,title,open)}
         </>
     );

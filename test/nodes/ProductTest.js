@@ -101,16 +101,16 @@ describe("Create new product",()=>{
                 expect(res.body).to.have.property("product");
 
                 let tempProduct={
-                    reorderLevel: { low: product.reorderLevel, high: 0 },
+                    reorderLevel: product.reorderLevel,
                     unitPrice: product.unitPrice,
-                    unitsInStock: { low: product.unitsInStock, high: 0 },
+                    unitsInStock: product.unitsInStock,
                     name: product.name,
                     id: res.body.product.id,
-                    discontinued: { low: product.discontinued, high: 0 },
+                    discontinued: product.discontinued,
                     quantityPerUnit: product.quantityPerUnit,
-                    unitsOnOrder: { low: product.unitsOnOrder, high: 0 }
+                    unitsOnOrder: product.unitsOnOrder
                 };
-                productID=Number.parseInt(res.body.product.id.low);
+                productID=Number.parseInt(res.body.product.id);
 
                 expect(isEqual(res.body.supplier,supplier)).to.be.true;
                 expect(isEqual(res.body.product,tempProduct)).to.be.true;
@@ -133,7 +133,7 @@ describe("Get product by ID",()=>{
                 expect(res.body).to.have.property('supplier');
                 expect(res.body).to.have.property("categories");
                 expect(res.body).to.have.property("product");
-                expect(Number.parseInt(res.body.product.id.low)).to.deep.equal(productID);
+                expect(Number.parseInt(res.body.product.id)).to.deep.equal(productID);
 
                 expect(isEqual(res.body.supplier,supplier)).to.be.true;
                 expect(isEqual(res.body.product,createdProduct)).to.be.true;
@@ -203,16 +203,16 @@ describe("Update product by ID",()=>{
                 expect(res.body).to.have.property("product");
 
                 let tempProduct={
-                    reorderLevel: { low: product.reorderLevel, high: 0 },
+                    reorderLevel: product.reorderLevel,
                     unitPrice: product.unitPrice,
-                    unitsInStock: { low: product.unitsInStock, high: 0 },
+                    unitsInStock: product.unitsInStock,
                     name: product.name,
                     id: res.body.product.id,
-                    discontinued: { low: product.discontinued, high: 0 },
+                    discontinued: product.discontinued,
                     quantityPerUnit: product.quantityPerUnit,
-                    unitsOnOrder: { low: product.unitsOnOrder, high: 0 }
+                    unitsOnOrder: product.unitsOnOrder
                 };
-                productID=Number.parseInt(res.body.product.id.low);
+                productID=Number.parseInt(res.body.product.id);
                 
                 expect(isEqual(res.body.supplier,supplier)).to.be.true;
                 expect(isEqual(res.body.product,tempProduct)).to.be.true;
@@ -228,7 +228,7 @@ describe("Update product by ID",()=>{
 //*********
 describe("Delete supplier by ID",()=>{
     it("Should delete supplier by ID from database", done=>{
-        const supplierID=Number.parseInt(supplier.id.low);
+        const supplierID=Number.parseInt(supplier.id);
         chai
             .request(app)
             .delete(`/api/suppliers/${supplierID}`)
@@ -303,7 +303,7 @@ describe("Try get product by ID which doesn't exist",()=>{
 //*********
 describe("Delete supplier by ID",()=>{
     it("Should delete supplier by ID from database", done=>{
-        const supplierID=Number.parseInt(firstSupplierID.low);
+        const supplierID=Number.parseInt(firstSupplierID);
         chai
             .request(app)
             .delete(`/api/suppliers/${supplierID}`)
@@ -325,7 +325,7 @@ describe("Delete supplier by ID",()=>{
 describe("Delete created categories",()=>{
     categories.forEach(category=>
         it("Should delete category by ID from database", done=>{
-            const categoryID=Number.parseInt(category.id.low);
+            const categoryID=Number.parseInt(category.id);
             chai
                 .request(app)
                 .delete(`/api/categories/${categoryID}`)

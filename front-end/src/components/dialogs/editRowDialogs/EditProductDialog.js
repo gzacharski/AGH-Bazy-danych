@@ -103,12 +103,12 @@ export default function EditProductDialog(props) {
                 const tempProduct=response.data.product;
                 setProduct({
                     unitPrice: tempProduct.unitPrice,
-                    unitsInStock: tempProduct.unitsInStock.low,
-                    reorderLevel: tempProduct.reorderLevel.low,
+                    unitsInStock: tempProduct.unitsInStock,
+                    reorderLevel: tempProduct.reorderLevel,
                     name: tempProduct.name,
                     quantityPerUnit: tempProduct.quantityPerUnit,
-                    discontinued: tempProduct.discontinued.low,
-                    unitsOnOrder: tempProduct.unitsOnOrder.low
+                    discontinued: tempProduct.discontinued,
+                    unitsOnOrder: tempProduct.unitsOnOrder
                 });
                 setSelectedSupplier(response.data.supplier);
                 setSelectedCategories(response.data.categories);
@@ -279,7 +279,7 @@ export default function EditProductDialog(props) {
 
     const getSupplierIndex=(id,suppliers)=>{
         for(let i=0; i<suppliers.length; i++){
-            if(suppliers[i].id.low===id){
+            if(suppliers[i].id===id){
                 return i;
             }
         }
@@ -289,7 +289,7 @@ export default function EditProductDialog(props) {
     const convertSuppliersToSelectItems = () => {
 
         const supplierSelectItems = suppliers.map(supplier => (
-            <MenuItem key={supplier.id.low} value={supplier}>
+            <MenuItem key={supplier.id} value={supplier}>
                 {supplier.companyName}
             </MenuItem>
         ));
@@ -300,7 +300,7 @@ export default function EditProductDialog(props) {
                 <Select
                     labelId="supplier-select-label"
                     id="supplier-select"
-                    value={suppliers[getSupplierIndex(selectedSupplier.id.low,suppliers)]}
+                    value={suppliers[getSupplierIndex(selectedSupplier.id,suppliers)]}
                     onChange={handleSupplierChange}
                 >   
                     {supplierSelectItems}
@@ -315,7 +315,7 @@ export default function EditProductDialog(props) {
 
     const convertCategoriesToMultipleSelect = () => {
         const categoriesToShow = categories.map(category => (
-            <MenuItem key={category.id.low} value={category} selected={true}>
+            <MenuItem key={category.id} value={category} selected={true}>
                 {category.name}
             </MenuItem>
         ));
@@ -330,7 +330,7 @@ export default function EditProductDialog(props) {
                 value={selectedCategories}
                 options={categories}
                 getOptionLabel={option => option.name}
-                getOptionSelected={(option, value) => value.id.low === option.id.low}
+                getOptionSelected={(option, value) => value.id === option.id}
                 renderInput={params => (
                     <TextField {...params} label="Categories" variant="outlined" fullWidth />
                 )}

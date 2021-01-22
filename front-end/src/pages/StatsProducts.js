@@ -17,12 +17,7 @@ class StatsProducts extends Component {
         columns: [
             { Header: 'Product Name', accessor: 'productName' },
             { Header: 'Total Income', accessor: 'totalIncome' },
-            { Header: 'Total Units Sold', accessor: (row) => {
-                    if (row.totalUnitsSold.low) {
-                        return row.totalUnitsSold.low;
-                    }
-                    return row.totalUnitsSold
-            }},
+            { Header: 'Total Units Sold', accessor: 'totalUnitsSold' },
             { Header: 'Average Price', accessor: 'averagePrice' },
             { Header: 'Average Discount', accessor: 'averageDiscount' },
             { Header: 'Max Discount', accessor: 'maxDiscount' },

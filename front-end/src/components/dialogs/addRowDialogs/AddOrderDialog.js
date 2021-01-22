@@ -152,7 +152,7 @@ export default function AddOrderDialog(props) {
         console.log("Adding order...");
 
         const tempOrderDetails=productsAddedToOrder.map(product=>({
-            productId: Number.parseInt(product.data.id.low),
+            productId: Number.parseInt(product.data.id),
             unitPrice: Number.parseInt(product.details.unitPrice),
             quantity : Number.parseInt(product.details.quantity),
             discount : Number.parseInt(product.details.discount)
@@ -219,7 +219,7 @@ export default function AddOrderDialog(props) {
     const convertProductToSelectItems = () => {
 
         const productSelectItems = products.map(product => (
-            <MenuItem key={product.id.low} value={product}>
+            <MenuItem key={product.id} value={product}>
                 {product.name}
             </MenuItem>
         ));
@@ -242,7 +242,7 @@ export default function AddOrderDialog(props) {
     const removeProductFromOrder=(removedProduct)=>{
         console.log(`removed ${removedProduct.data.name}`);
         const tempProductAddedToOrder=productsAddedToOrder
-            .filter(product =>product.data.id.low!==removedProduct.data.id.low);
+            .filter(product =>product.data.id!==removedProduct.data.id);
         setProductsAddedToOrder(tempProductAddedToOrder);
     }
 
@@ -257,7 +257,7 @@ export default function AddOrderDialog(props) {
     const updateProductsAddedToOrder=(updatedProduct)=>{
         setProductDetails(null);
         const tempProductsAddedToOrder=productsAddedToOrder
-            .filter(product=>product.data.id.low!==updatedProduct.data.id.low);
+            .filter(product=>product.data.id!==updatedProduct.data.id);
         
         setProductsAddedToOrder(tempProductsAddedToOrder.concat(updatedProduct));
         console.log(productsAddedToOrder);
@@ -270,7 +270,7 @@ export default function AddOrderDialog(props) {
 
     const showProducts=()=>{
         const temProducts=productsAddedToOrder.map(product =>
-            <li key={product.data.id.low}>
+            <li key={product.data.id}>
                 <Chip 
                     label={product.data.name} 
                     className={classes.chip}

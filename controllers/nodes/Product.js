@@ -18,7 +18,7 @@ const productExists = async (productID) => {
 
         const result = await session.readTransaction(tx => tx.run(checkQuery, params));
 
-        exists = result.records.length !== 0 && result.records[0].get(0).properties.id.low === Number.parseInt(productID);
+        exists = result.records.length !== 0 && result.records[0].get(0).properties.id === Number.parseInt(productID);
 
     } finally {
         await session.close();
@@ -47,14 +47,14 @@ module.exports.createProduct = async (request, response) => {
             WITH p
             UNWIND $categories as category
             MATCH (c:Category), (s:Supplier)
-            WHERE c.id=category.id.low and s.id=$supplierID
+            WHERE c.id=category.id and s.id=$supplierID
             MERGE (s)-[:SUPPLIES]->(p)
             MERGE (p)-[:BELONGS_TO]->(c)
             RETURN s,p,c`;
 
         const params = {
             categories,
-            supplierID: supplier.id.low,
+            supplierID: supplier.id,
             product 
         }
 
@@ -174,7 +174,7 @@ module.exports.updateProduct=async (request, response) => {
                 WITH p
                 UNWIND $categories as category
                 MATCH (s:Supplier), (c:Category)
-                WHERE c.id=category.id.low and s.id=$supplier.id.low
+                WHERE c.id=category.id and s.id=$supplier.id
                 MERGE (s)-[:SUPPLIES]->(p)
                 SET p.name=$product.name,
                     p.quantityPerUnit=$product.quantityPerUnit,

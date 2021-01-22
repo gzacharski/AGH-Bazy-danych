@@ -65,7 +65,6 @@ const initProduct = {
     unitPrice: 0,
     unitsInStock: 0,
     reorderLevel: 0,
-    reorderLevel: 0,
     unitsOnOrder: 0,
     discontinued: 0
 }
@@ -197,7 +196,7 @@ export default function AddProductDialog(props) {
     const convertSuppliersToSelectItems = () => {
 
         const supplierSelectItems = suppliers.map(supplier => (
-            <MenuItem key={supplier.id.low} value={supplier}>
+            <MenuItem key={supplier.id} value={supplier}>
                 {supplier.companyName}
             </MenuItem>
         ));
@@ -226,7 +225,7 @@ export default function AddProductDialog(props) {
 
         const categoriesToShow = categories.map(category => (
             <MenuItem
-                key={category.id.low}
+                key={category.id}
                 value={category}
             >
                 {category.name}
@@ -246,7 +245,7 @@ export default function AddProductDialog(props) {
                     renderValue={selected => (
                         <div className={classes.chips}>
                             {selected.map(value => (
-                                <Chip key={value.id.low} label={value.name} className={classes.chip} />
+                                <Chip key={value.id} label={value.name} className={classes.chip} />
                             ))}
                         </div>
                     )}
