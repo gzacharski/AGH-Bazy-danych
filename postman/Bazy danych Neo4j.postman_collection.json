@@ -3247,14 +3247,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:3000/api/suppliers/:id/customers/:from/:to/manyqueries",
+							"raw": "http://localhost:3000/stats/suppliers/:id/customers/:from/:to/manyqueries",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "3000",
 							"path": [
-								"api",
+								"stats",
 								"suppliers",
 								":id",
 								"customers",
@@ -3304,14 +3304,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:3000/api/suppliers/:id/customers/:from/:to/onequery",
+							"raw": "http://localhost:3000/stats/suppliers/:id/customers/:from/:to/onequery",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "3000",
 							"path": [
-								"api",
+								"stats",
 								"suppliers",
 								":id",
 								"customers",
