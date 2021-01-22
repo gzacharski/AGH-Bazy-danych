@@ -14,10 +14,6 @@ export default function Header(props){
                 </Link>
                 <span>Northwind Database - Neo4j</span>
             </div>
-            <form className="d-flex">
-                <input className="form-control me-2" type="search" placeholder="Search in database" aria-label="Szukaj"/>
-                <button className="btn btn-primary" type="button"><BiSearch/></button>
-            </form>
         </header>
     );
 }
