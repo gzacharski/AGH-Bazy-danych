@@ -13,7 +13,7 @@ jobs:
       - name: Build back-end image
         run: docker build -t back-end back-end
       - name: Build front-end image
-        run: docker build -t front-end back-end
+        run: docker build -t front-end front-end
       - name: Start the database, back-end, front-end
         run: docker-compose up -d
       - name: Wait until database is ready
