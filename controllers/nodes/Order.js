@@ -358,7 +358,7 @@ module.exports.createOrderCrud = async (request, response) => {
             WITH c, o, $orderDetails as orderDetails 
             UNWIND orderDetails as orderDetail
             MATCH (p:Product) 
-            WHERE p.id=orderDetail.productId AND NOT(p.discontinued=1) AND p.unitsInStock>=orderDetail.quantity
+            WHERE p.id=orderDetail.productId AND NOT(p.discontinued=1) AND p.unitsInStock>=orderDetail.quantity AND orderDetail.quantity>0
             MERGE (o)-[cr:CONTAINS]->(p) 
             SET cr.odID=id(cr), cr.unitPrice=orderDetail.unitPrice, cr.quantity=orderDetail.quantity, cr.discount=orderDetail.discount,
             p.unitsInStock=p.unitsInStock-orderDetail.quantity
@@ -442,7 +442,8 @@ module.exports.updateExistingOrderDetailsCrud = async (request, response) => {
             WITH c, o, $orderDetails as orderDetails 
             UNWIND orderDetails as orderDetail
             MATCH (o:Order)-[cr:CONTAINS]->(p:Product) 
-            WHERE o.id=$orderProperties.id AND cr.odID=orderDetail.odID AND p.id=orderDetail.productId AND NOT(p.discontinued=1) AND p.unitsInStock>=orderDetail.quantity
+            WHERE o.id=$orderProperties.id AND cr.odID=orderDetail.odID AND p.id=orderDetail.productId 
+                AND NOT(p.discontinued=1) AND p.unitsInStock>=orderDetail.quantity AND orderDetail.quantity>0
             SET cr.unitPrice=orderDetail.unitPrice,
                 cr.quantity=orderDetail.quantity,
                 cr.discount=orderDetail.discount
@@ -528,7 +529,7 @@ module.exports.updateNewOrderDetailsCrud = async (request, response) => {
             WITH c, o, $orderDetails as orderDetails 
             UNWIND orderDetails as orderDetail
             MATCH (p:Product)
-            WHERE p.id=orderDetail.productId AND NOT(p.discontinued=1) AND p.unitsInStock>=orderDetail.quantity
+            WHERE p.id=orderDetail.productId AND NOT(p.discontinued=1) AND p.unitsInStock>=orderDetail.quantity AND orderDetail.quantity>0
             MERGE (o)-[cr:CONTAINS]->(p) 
             SET cr.odID=id(cr), cr.unitPrice=orderDetail.unitPrice, cr.quantity=orderDetail.quantity, cr.discount=orderDetail.discount,
             p.unitsInStock=p.unitsInStock-orderDetail.quantity
