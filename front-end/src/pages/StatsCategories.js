@@ -52,6 +52,7 @@ export default function StatsCategories() {
                     title="Stats for categories"
                     data={stats}
                     columns={columns}
+                    crudActions={{}}
                 />
             </div>
             <Snackbar open={openSnackbar} autoHideDuration={3000} onClose={handleCloseSnackbar}>
