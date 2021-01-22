@@ -190,7 +190,7 @@ export default function EditRowDialog(props) {
         onClose();
         axios
             //.put(`${url}/api/orders/new`, {
-            .put(`${url}/api/test`, {
+            .put(`${url}/api/orders/new`, {
                 orderProperties : order,
                 customer : customer,
                 orderDetails : tempOrderDetails,

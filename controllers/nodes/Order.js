@@ -531,6 +531,14 @@ module.exports.updateNewOrderDetailsCrud = async (request, response) => {
             orderDetails: orderDetails
         };
 
+        const backProductsQuery  =
+            `MATCH (c:Customer)<-[obr:ORDERED_BY]-(o:Order)-[cr:CONTAINS]->(p:Product)
+            WHERE o.id=$orderProperties.id
+            SET p.unitsInStock=p.unitsInStock+cr.quantity
+            RETURN o,cr,p`;
+
+        const backResult = await session.writeTransaction(tx => tx.run(backProductsQuery, orderParams));
+
         const deleteQuery  =
             `MATCH (o:Order)-[crToDelete:CONTAINS]->(p:Product)
             WHERE o.id=$orderProperties.id
@@ -541,6 +549,15 @@ module.exports.updateNewOrderDetailsCrud = async (request, response) => {
         const query =
             `MATCH (c:Customer)<-[obr:ORDERED_BY]-(o:Order) 
             WHERE c.id=$customer.id AND o.id=$orderProperties.id
+            SET o.shipCity=$orderProperties.shipCity, 
+                o.freight=toInteger($orderProperties.freight),
+                o.requiredDate=$orderProperties.requiredDate,
+                o.shipName=$orderProperties.shipName,
+                o.shipPostalCode=$orderProperties.shipPostalCode,
+                o.shipCountry=$orderProperties.shipCountry,
+                o.shippedDate=$orderProperties.shippedDate,
+                o.orderDate=$orderProperties.orderDate,
+                o.shipAddress=$orderProperties.shipAddress
             WITH c, o, $orderDetails as orderDetails 
             UNWIND orderDetails as orderDetail
             MATCH (p:Product)
