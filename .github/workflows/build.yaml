@@ -10,7 +10,11 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: '14'
-      - name: Start the database
+      - name: Build back-end image
+        run: cd back-end && docker build -t back-end .
+      - name: Build front-end image
+        run: cd front-end && docker build -t front-end .
+      - name: Start the database, back-end, front-end
         run: docker-compose up -d
       - name: Wait until database is ready
         run: |
@@ -23,6 +27,6 @@ jobs:
             sleep 5
           done
       - name: Install dependencies
-        run: npm install
+        run: cd back-end && npm install
       - name: Run REST API and execute tests
-        run: npm run-script run
+        run: cd back-end && npm run-script run
