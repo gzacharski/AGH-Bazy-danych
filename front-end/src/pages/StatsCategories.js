@@ -26,7 +26,6 @@ export default function StatsCategories() {
     const [openSnackbar, setOpenSnackbar] = useState(null);
     const [response, setResponse] = useState({success: false, message: ''});
     const [selectedCategory, setSelectedCategory] = useState(1)
-    const [anchorEl, setAnchorEl] = useState(false)
 
     useEffect(getCategories, [selectedCategory]);
 
@@ -67,8 +66,8 @@ export default function StatsCategories() {
                     id="category"
                     select
                     label="Select Category"
-                    value="asdfajsdflksdfl"
-                    onChange={() => console.log()}
+                    value={selectedCategory}
+                    onChange={() => console.log("Chosen category " + selectedCategory)}
                 >
                     {categories.map((category) => (
                         <MenuItem key={category.id} onClick={() => setSelectedCategory(category.id)}>{category.name}</MenuItem>
