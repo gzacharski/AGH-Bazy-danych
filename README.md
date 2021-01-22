@@ -38,6 +38,7 @@ Dokumentacja projektu jest dostępna w sekcji [Wiki](https://github.com/gzachars
     ```
 1. Zainstalowanie bibliotek oraz wystartowanie aplikacji back-endu:
     ```shell script
+    cd back-end
     npm install
     npm start
     ```
