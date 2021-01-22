@@ -3,7 +3,7 @@ const bodyParser=require('body-parser');
 const cookieParser = require('cookie-parser');
 const cors = require("cors");
 
-const routes=require('./routes/index');
+const routes=require('./routes');
 const stats=require('./routes/statistics');
 
 const app=express();
