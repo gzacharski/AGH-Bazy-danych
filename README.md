@@ -17,32 +17,25 @@ Dokumentacja projektu jest dostępna w sekcji [Wiki](https://github.com/gzachars
 * Ciągła integracja (CI): GitHub Actions
 
 ## Uruchamianie
-1. Wystartowanie Neo4j wraz z bazą Northwind w kontenerze Dockerowym:
+1. Wytworzenie obrazu Dockerowego dla back-endu
    ```shell script
-    docker-compose up -d
-    ```
-1. Zainstalowanie bibliotek dla back-endu:
-    ```shell script
-    npm install
-    ```
-1. Wystartowanie aplikacji back-endu:
-    ```shell script
-    npm start
-    ```
-
-1. Zainstalowanie bibliotek dla front-endu:
-    ```shell script
-    cd front-end
-    npm install
-    ```
-1. Wystartowanie aplikacji front-endu:
-    ```shell script
-    npm start
-    ```
+   cd back-end
+   docker build -t back-end .
+   ```
+1. Wytworzenie obrazu Dockerowego dla front-endu
+   ```shell script
+   cd front-end
+   docker build -t front-end .
+   ```
+1. Wystartowanie Neo4j wraz z bazą Northwind, back-endu i front-endu w kontenerach Dockerowych:
+   ```shell script
+   docker-compose up -d
+   ```
 
 ## Testowanie
 
-1. Uruchomienie testów
+1. Uruchomienie testów dla back-endu
     ```shell script
+    cd back-end
     npm test
     ```

@@ -1,15 +1,12 @@
 version: '3'
 
-networks:
-  agh-db:
-
 services:
   neo4j-db:
     image: neo4j:4.2.1-enterprise
     container_name: neo4j-db
     ports:
-      - "7474:7474"
-      - "7687:7687"
+      - 7474:7474
+      - 7687:7687
     environment:
       - NEO4J_AUTH=neo4j/test
       - NEO4J_apoc_import_file_enabled=true
@@ -26,5 +23,22 @@ services:
       - ./entrypointWrapper.sh:/entrypointWrapper.sh
     # needed to resolve issues regarding file permissions and CR/LF between Unix and Windows
     entrypoint: bash -c "cp /entrypointWrapper.sh /en.sh && chmod a+x /en.sh && sed -i -e 's/\r$$//' /en.sh && /en.sh"
-    networks:
-      - agh-db
+    network_mode: host
+
+  back-end:
+    image: back-end
+    container_name: back-end
+    ports:
+      - 4000:4000
+    depends_on:
+      - neo4j-db
+    network_mode: host
+
+  front-end:
+    image: front-end
+    container_name: front-end
+    ports:
+      - 3000:3000
+    depends_on:
+      - back-end
+    network_mode: host
