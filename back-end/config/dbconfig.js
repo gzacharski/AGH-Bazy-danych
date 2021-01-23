@@ -1,6 +1,6 @@
 const neo4j=require('neo4j-driver');
 
-const uri='bolt://localhost:7687'; 
+const uri='bolt://neo4j-db:7687';
 const user='neo4j';
 const password='test';
 
