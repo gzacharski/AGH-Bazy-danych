@@ -23,6 +23,8 @@ Dokumentacja projektu jest dostępna w sekcji [Wiki](https://github.com/gzachars
    docker-compose up
    ```
 1. Aplikacja front-endu będzie dostępna pod adresem http://localhost:4000
+1. Konsola bazy danych jest dostępna pod adresem http://localhost:7474 
+   (dane do zalogowania URL: `neo4j://localhost:7687`, user: `neo4j`, pass: `test`, baza: `northwind`)
 
 ## Testowanie
 
