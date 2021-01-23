@@ -23,22 +23,27 @@ services:
       - ./entrypointWrapper.sh:/entrypointWrapper.sh
     # needed to resolve issues regarding file permissions and CR/LF between Unix and Windows
     entrypoint: bash -c "cp /entrypointWrapper.sh /en.sh && chmod a+x /en.sh && sed -i -e 's/\r$$//' /en.sh && /en.sh"
-    network_mode: host
 
   back-end:
-    image: back-end
     container_name: back-end
+    image: node:14
+    command: sh -c "npm install && npm start"
+    working_dir: /app
+    volumes:
+      - ./back-end/:/app
     ports:
-      - 4000:4000
+      - "3000:3000"
     depends_on:
       - neo4j-db
-    network_mode: host
 
   front-end:
-    image: front-end
     container_name: front-end
+    image: node:14
+    command: sh -c "npm install && npm start"
+    working_dir: /app
+    volumes:
+      - ./front-end/:/app
     ports:
-      - 3000:3000
+      - "4000:4000"
     depends_on:
       - back-end
-    network_mode: host
