@@ -350,7 +350,6 @@ MERGE (o)-[:SOLD_BY]->(e);
 //constraints for northwind database
 //*************************************
 CREATE CONSTRAINT ExistsCONTAINSodID ON ()-[rel:CONTAINS]-() ASSERT exists(rel.odID);
-CREATE CONSTRAINT UniqueCONTAINSodID ON ()-[rel:CONTAINS]-() ASSERT rel.odID IS UNIQUE;
 
 //*************************************
 //loading data from xml file
