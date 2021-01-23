@@ -128,7 +128,13 @@ export default function EditRowDialog(props) {
             .then(response => {
                 console.log("Loading products...");
                 console.log(response);
-                setProducts(response.data.nodes);
+
+                const tempProducts=response.data.nodes
+                    .filter(product => product.discontinued!==1 && product.unitsInStock!==0);
+                
+                console.log("Loading products...2");
+                console.log(tempProducts);
+                setProducts(tempProducts);
             })
             .catch(error => {
                 console.log(error);
