@@ -4,10 +4,10 @@
   "description": "Celem projektu jest zaimplementowanie systemu realizującego wybrane podstawowe operacje w przykładowej bazie Northwind w wybranej technologii.",
   "main": "index.js",
   "dependencies": {
-    "body-parser": "^1.19.0",
+    "body-parser": "^1.19.2",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "lodash": "^4.17.20",
     "neo4j-driver": "^4.2.1",
     "pug": "^3.0.0",
